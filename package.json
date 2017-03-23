@@ -1,0 +1,40 @@
+{
+  "name": "project_three",
+  "version": "1.0.0",
+  "description": "enter a property address, receive a transparent analysis of it's possible current value range",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundlerun": "webpack && node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nmsb10/app_a.git"
+  },
+  "author": "jonathon nagatani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nmsb10/app_a/issues"
+  },
+  "homepage": "https://github.com/nmsb10/app_a#readme",
+  "dependencies": {
+    "axios": "^0.15.3",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongoose": "^4.9.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-router": "^2.4.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.13",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-import": "^1.1.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "css-loader": "^0.27.3",
+    "file-loader": "^0.10.1",
+    "style-loader": "^0.14.1",
+    "webpack": "^1.13.1"
+  }
+}

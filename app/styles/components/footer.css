@@ -1,0 +1,45 @@
+footer{
+	background: rgba(255, 255, 255, 0.35);	
+	border-top: 3px solid rgba(255, 255, 255, 0);
+	text-align: center;
+	/*need clear:both for the footer if you want it to always be below
+	the bottommost middle section content. Without clear both, the footer
+	will go beneath the middle content.*/
+	clear:both;
+	position:fixed;
+	/*need to define width because position is fixed*/
+	width: 100%;
+	top: 100%;
+	margin-top: -30.667px;
+	/*used -30.667px for bottom margin because the footer height is 28px
+	and footer border is 3px, but renders as 2.667px for some reason*/
+	-webkit-transition: background 1s, border-top 3s; /* For Safari 3.1 to 6.0 */
+    transition: background 1s, border-top 3s;
+}
+
+footer:hover{
+	background: rgba(64,64,64,0.85);	
+	border-top: 3px solid rgba(48, 15, 45, 0.85);
+}
+
+#footer-content{
+	font-family: 'Georgia', Times, "Times New Roman", serif;
+	font-size: 10px;
+	color: #f2f2f2;
+	padding: 9px 0;
+}
+
+.footer-link:link, .footer-link:visited, .footer-link:active{
+	text-decoration: none;
+	color: #f2f2f2;
+	text-decoration: none;
+	-webkit-transition: color 1s; /* For Safari 3.1 to 6.0 */
+    transition: color 1s;
+}
+
+.footer-link:hover{
+	text-decoration: underline;
+	color: lime;
+/*	background-color: lime;
+	color: rgb(78, 42, 132);*/
+}
