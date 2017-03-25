@@ -1,9 +1,22 @@
 import * as React from 'react';
 import {SearchForm} from './SearchForm';
-import * as axios from 'axios';
 import * as d3 from 'd3';//https://www.npmjs.com/package/d3
+// import {helper} from './utils/helpers';
+var helper = require('./utils/helpers.js');
 
 class SearchProperty extends React.Component {
+	//set initial state
+	initializeState(){
+		this.setState({
+			loadedDB: false
+		});
+	}
+	//lifecycle methods
+	// componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
+	componentWillMount(){
+		this.initializeState();
+		console.log('props:', this.props);
+	}
 	componentDidMount(){
 		//http://stackoverflow.com/questions/16177037/how-to-extract-information-in-a-tsv-file-and-save-it-in-an-array-in-javascript
 		//https://github.com/d3/d3-request
@@ -16,14 +29,31 @@ class SearchProperty extends React.Component {
 		// 	}
 		// });
 		//http://learnjsdata.com/read_data.html
-		d3.queue().defer(d3.tsv,'/tsvplease').defer(d3.tsv,'/tsvTwo').await(this.analyze);
+		if(!this.state.loadedDB){
+			this.setState({
+				loadedDB: true
+			});			
+			var q = d3.queue();
+			//var tsvs = ['tsvplease', 'tsvTwo'];
+
+			var files = [ 'export900michigan.TSV', '800michigan.TSV'];
+			for(var i = 0; i < files.length; i++) {
+				q.defer(d3.tsv,'/tsv/'+files[i]);
+			}
+			q.await(this.analyze);
+
+		}else{
+			console.log('loaded the tsv files already');
+		}
 	}
 	analyze(error, tsvFileOne, tsvFileTwo){
 		if(error){
 			console.log(error);
 		}else{
-			console.log(tsvFileOne);
-			console.log(tsvFileTwo);
+			//console.log(tsvFileOne);
+			//console.log(tsvFileTwo);
+			var allData = tsvFileOne.concat(tsvFileTwo);
+			helper.loadDB(allData);
 		}
 	}
 	redirectToSearch(){
@@ -43,7 +73,7 @@ class SearchProperty extends React.Component {
 	render(){
 		return(
 			<div>
-				<h1>get your sales comparison analysis here.</h1>
+				<h3>get your sales comparison analysis here.</h3>
 				<SearchForm
 					searchPlease = {(submission) => this.searchProperty(submission)}
 					defaultPropertyType = {'AT'}

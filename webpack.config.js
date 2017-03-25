@@ -22,6 +22,7 @@ module.exports = {
 			},
 			{
 				//this lets you use css files!
+				//NB version of css-loader https://github.com/webpack-contrib/css-loader/issues/124
 				test: /\.css$/,
 				loader: "style-loader!css-loader"
 			}

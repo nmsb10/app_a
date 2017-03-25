@@ -15,10 +15,11 @@ var PORT = process.env.PORT || 3000;
 
 // Run Morgan for Logging
 //app.use(logger("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
-app.use(bodyParser.json({ type: "application/vnd.api+json" }));
+//app.use(bodyParser.json({ type: "application/vnd.api+json"}));
+app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
 
 //make the public folder a static directory
 app.use(express.static("./public"));
@@ -56,6 +57,11 @@ db.once("open", function() {
 // 	});
 // });
 
+//route to send a POST request to save properties to the database!
+app.post('/load/tsv', function(request, response){
+	console.log('in server.js: received data to put in mongoose models:',request.body);
+});
+
 //route to send POST requests to conduct a search
 app.post('/search', function(request, response){
 	response.json(request.body);
@@ -78,13 +84,15 @@ app.get('/', function(req, res) {
 
 // ======================================================
 // routes for tsv files
-app.get('/tsvplease', function(req, res){
-	res.sendFile(__dirname + '/tsv_files/export900michigan.TSV');
+
+app.get('/tsv/:fileName', function(req, res){
+	var file = req.params.fileName;
+	res.sendFile(__dirname + '/tsv_files/' + file);
 });
 
-app.get('/tsvTwo', function(req, res){
+/*app.get('/tsvTwo', function(req, res){
 	res.sendFile(__dirname + '/tsv_files/800michigan.TSV');
-});
+});*/
 
 // ======================================================
 // Listener

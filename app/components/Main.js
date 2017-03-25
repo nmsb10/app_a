@@ -5,6 +5,9 @@ import {Footer} from './Footer';
 class Main extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			dbLoaded: false
+		};
 	}
 	render() {
 		return (
