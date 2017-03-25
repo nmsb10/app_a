@@ -20,3 +20,6 @@ var TypeSchema = new Schema({
 
 var Type = mongoose.model("Type", TypeSchema);
 module.exports = Type;
+
+//http://blogs.wfmt.com/pianoforte/2014/10/03/yiming-zhang-piano/
+//http://blogs.wfmt.com/pianoforte/2013/05/03/david-kalhous/

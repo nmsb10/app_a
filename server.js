@@ -79,11 +79,11 @@ app.get('/', function(req, res) {
 // ======================================================
 // routes for tsv files
 app.get('/tsvplease', function(req, res){
-	res.sendFile(__dirname + '/mls_data_manually_downloaded/export900michigan.TSV');
+	res.sendFile(__dirname + '/tsv_files/export900michigan.TSV');
 });
 
 app.get('/tsvTwo', function(req, res){
-	res.sendFile(__dirname + '/mls_data_manually_downloaded/ConnectMLS_export.TSV');
+	res.sendFile(__dirname + '/tsv_files/800michigan.TSV');
 });
 
 // ======================================================

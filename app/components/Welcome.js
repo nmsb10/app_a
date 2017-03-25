@@ -2,7 +2,6 @@ import * as React from 'react';
 //import {imageOne} from '../assets/images/01.JPG';
 //http://stackoverflow.com/questions/37386901/react-webpack-loading-and-displaying-images-as-background-image
 
-
 class Welcome extends React.Component {
 	render() {
 		return (
