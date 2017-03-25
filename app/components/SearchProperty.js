@@ -1,18 +1,30 @@
 import * as React from 'react';
 import {SearchForm} from './SearchForm';
 import * as axios from 'axios';
-import * as d3 from 'd3';
-
+import * as d3 from 'd3';//https://www.npmjs.com/package/d3
 
 class SearchProperty extends React.Component {
 	componentDidMount(){
-		d3.tsv('/tsvplease', function(error, data) {
-			if(error){
-				console.log(error);
-			}else{
-				console.log(data);
-			}
-		});
+		//http://stackoverflow.com/questions/16177037/how-to-extract-information-in-a-tsv-file-and-save-it-in-an-array-in-javascript
+		//https://github.com/d3/d3-request
+		//nb: The d3.tsv method makes an AJAX request for data.
+		// d3.tsv('/tsvplease', function(error, data) {
+		// 	if(error){
+		// 		console.log(error);
+		// 	}else{
+		// 		console.log(data);
+		// 	}
+		// });
+		//http://learnjsdata.com/read_data.html
+		d3.queue().defer(d3.tsv,'/tsvplease').defer(d3.tsv,'/tsvTwo').await(this.analyze);
+	}
+	analyze(error, tsvFileOne, tsvFileTwo){
+		if(error){
+			console.log(error);
+		}else{
+			console.log(tsvFileOne);
+			console.log(tsvFileTwo);
+		}
 	}
 	redirectToSearch(){
 		//'search' is the Route path from routes.js

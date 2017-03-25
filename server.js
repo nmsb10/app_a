@@ -3,7 +3,6 @@ var express = require("express");
 var bodyParser = require("body-parser");
 //var logger = require("morgan");
 var mongoose = require("mongoose");
-var d3 = require("d3");//https://www.npmjs.com/package/d3
 
 // Require the Models Schemas: Type and Property
 var Type = require("./models/Type.js");
@@ -43,32 +42,6 @@ db.once("open", function() {
 });
 
 // ======================================================
-//going through the TSV files:
-//http://stackoverflow.com/questions/16177037/how-to-extract-information-in-a-tsv-file-and-save-it-in-an-array-in-javascript
-//https://github.com/d3/d3-request
-//nb: The d3.tsv method makes an AJAX request for data.
-// d3.tsv("./export900michigan.TSV", function(error, data) {
-// 	if(error){
-// 		console.log(error);
-// 	}else{
-// 		console.log(data);
-// 	}
-// });
-//http://learnjsdata.com/read_data.html
-// d3.queue()
-//   .defer(d3.csv, "/data/cities.csv")
-//   .defer(d3.tsv, "/data/animals.tsv")
-//   .await(analyze);
-
-// function analyze(error, cities, animals) {
-//   if(error) { console.log(error); }
-
-//   console.log(cities[0]);
-//   console.log(animals[0]);
-// }
-
-
-// ======================================================
 //routes:
 
 // This is the route we will send GET requests to retrieve any saved articles
@@ -103,8 +76,14 @@ app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
 
+// ======================================================
+// routes for tsv files
 app.get('/tsvplease', function(req, res){
 	res.sendFile(__dirname + '/mls_data_manually_downloaded/export900michigan.TSV');
+});
+
+app.get('/tsvTwo', function(req, res){
+	res.sendFile(__dirname + '/mls_data_manually_downloaded/ConnectMLS_export.TSV');
 });
 
 // ======================================================

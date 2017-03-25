@@ -25,16 +25,6 @@ module.exports = {
 				test: /\.css$/,
 				loader: "style-loader!css-loader"
 			}
-			// ,{
-			// 	//to use various image files:
-			// 	//test: /\.(jpe?g|JPG|png|gif|svg)$/i,
-			// 	test: /\.(jpe?g|png|gif|svg)$/i,
-			// 	//loader: "file-loader?name=../app/assets/images/[name].[ext]"
-			// 	//loader: "file-loader?name=[name].[ext]&publicPath=../app/assets/images/"
-			// 	loader: "file-loader"
-			// 	//loader: "url-loader?limit=25000"
-			// 	//http://stackoverflow.com/questions/37671342/how-to-load-image-files-with-webpack-file-loader
-			// }
 		]
 	},
 	//this will let you debug the react code in chrome dev tools. Errors will
