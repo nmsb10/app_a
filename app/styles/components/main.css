@@ -5,43 +5,16 @@ body {
 }
 
 body, html {
+	/*height 100% necessary so parallax class can use height 100%*/
     height: 100%;
 }
 
 #app{
+	/*height 100% necessary so parallax class can use height 100%*/
 	height:100%;
 }
 
-.prime-content, .all-content{
+.welcome-content, .all-content{
+	/*height 100% necessary so parallax class can use height 100%*/
 	height:100%;
 }
-
-h2{
-	font-size:35px;
-	color: purple;
-	text-shadow: 3px 3px lime;
-}
-
-.parallax{
-	/* The image used */
-    /*background-image: url("../../assets/images/01.JPG");*/
-    background-image: url("./01.JPG");
-
-    /* Full height */
-    height: 100%; 
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.parallax:nth-child(2){
-	/*background-image: url("./02.JPG");*/
-	height: 75%;
-}
-
-.parallax:nth-child(3){
-/*	background-image: url("./03.JPG");
-*/}

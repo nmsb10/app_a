@@ -1,8 +1,7 @@
 
 // -when using es6, use the react lifecycle events:
 // //need to initialize the state of the component in hooks (componentwillreceive props, componentwillmount) before the element is rendered
-// --componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
-// --componentWillUnmount is called right before you eg navigate to a different route / a different component
+
 import * as React from 'react';
 
 class SearchForm extends React.Component {
@@ -20,12 +19,18 @@ class SearchForm extends React.Component {
 	initializeState(){
 		this.setState({
 			propertyType: this.props.defaultPropertyType || '',
+			ptPlaceholder: 'hello there',
 			address: 'enter property address'
 		});
 	}
 	//lifecycle methods
+	// componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
 	componentWillMount(){
 		this.initializeState();
+	}
+	// componentWillUnmount is called right before you eg navigate to a different route / a different component
+	componentWillUnmount(){
+		console.log('component unmounted');
 	}
 	render(){
 		return(
@@ -43,12 +48,24 @@ class SearchForm extends React.Component {
 ----the first `(event) =>` is passed into the function from the input element
 
 					*/}
-					<label htmlFor = 'propertyType'>property type</label>
+					<label htmlFor = 'propertyType'>property type:</label>
+					{/* use value attribute to set the default select html element value*/}
+						<select
+							value = {this.state.propertyType}
+							className=''
+							id="propertyType"
+							onChange = {(event) => this.handleUpdateType(event)}
+						>
+							<option value='at'>attached (condo, townhome)</option>
+							<option value='de'>detached (single family home)</option>
+						</select>	
+					<label htmlFor = 'test'>property type</label>
 					<br/>
 					<input
-						defaultValue = {this.state.propertyType}
 						type = 'text'
-						id = 'propertyType'
+						id = 'test'
+						placeholder = {this.state.ptPlaceholder}
+						defaultValue = {this.state.propertyType}
 						onChange = {(event) => this.handleUpdateType(event)}
 					/>
 					<br/>

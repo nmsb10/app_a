@@ -7,14 +7,16 @@
 
 header{
 	width:100%;
-	background-color: rgba(255, 255, 255, 0.35);
 	color: #f2f2f2;
 	padding:0;
 	border:0;
 	margin:0;
-	border-bottom: 1.5px solid rgba(255, 255, 255, 0.35);
+	border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
 	-webkit-transition: background-color 1s, border-bottom 3s; /* For Safari 3.1 to 6.0 */
     transition: background-color 1s, border-bottom 3s;
+    /*position relative so can use z-index*/
+    position:relative;
+    z-index:1;
 }
 
 header:hover{
@@ -25,14 +27,16 @@ header:hover{
 header ul{
 	display: inline-block;
 	margin:0;
+	padding-left:0;
 }
 
 .h-li{
+	display: inline-block;
 	padding: 5px;
 	border-radius: 5px;
-	-webkit-transition: border-color 1s, box-shadow 1s; /* For Safari 3.1 to 6.0 */
-    transition: border-color 1s, box-shadow 1s;
-    display: inline-block;
+	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
 }
 
 .h-li:hover{
@@ -44,10 +48,11 @@ header ul{
 }
 
 .h-li a{
+	font-family: "Helvetica", 'Helvetica Neue', Arial, sans-serif;
 	color: #f2f2f2;
 	text-decoration: none;
 }
 
-.h-li a:hover{
+.h-li:hover a{
 	color: rgb(50, 50, 50);
 }

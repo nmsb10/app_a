@@ -10,20 +10,7 @@ class Main extends React.Component {
 		return (
 			<div className = 'all-content'>
 				<Header />
-				{/*
-					<h2>main main main hello great job.</h2>
-				*/}
-				<div className = 'prime-content'>
-					<div className = 'parallax'>
-					</div>
-					<div className = 'parallax'>
-					</div>
-					<div className = 'parallax'>
-					</div>
-				{/*
 					{this.props.children}
-				*/}
-				</div>
 				<Footer />
 			</div>
 		);

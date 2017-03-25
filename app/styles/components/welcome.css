@@ -1,0 +1,84 @@
+.intro{
+	/* The image used */
+    background-image: url('http://jonathonn.herokuapp.com/assets/images/001.JPG');
+
+    /* Full height */
+    height: 100%; 
+
+    /* Create the parallax scrolling effect
+    https://www.w3schools.com/howto/howto_css_parallax.asp */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    /*so children divs may be positioned absolutely*/
+    position: relative;
+}
+
+.intro:nth-child(2){
+	/*background-image: url("./02.JPG");*/
+    background-image: url('http://jonathonn.herokuapp.com/assets/images/002.jpg');
+	height: 75%;
+}
+
+.intro:nth-child(3){
+	background-image: url('http://jonathonn.herokuapp.com/assets/images/01.JPG');
+}
+
+.welcome-content{
+    position: relative;
+    z-index:0;
+    /*header has height with border of 29.33px*/
+    top: -29.33px;
+}
+
+.welcome-content .content{
+    font-family: "Helvetica", 'Helvetica Neue', Arial, sans-serif;
+    text-align: center;
+    font-size:25px;
+    color: rgba(250, 250, 250, 0.9);
+    font-weight:600;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+/*not working!
+.welcome-content .content:nth-child(2){
+    width: 250px;
+    margin-top: -10px;
+    margin-left: -125px;
+}
+
+.welcome-content .content:nth-child(3){
+    border: 2px dotted black;
+    border-right: none;
+    border-left: none;
+}*/
+
+.welcome-c1{
+    width:400px;
+    height:30px;
+    line-height:30px;
+    margin-top: -15px;
+    margin-left: -200px;
+}
+
+#welcome-c2{
+    width:470px;
+    height:60px;
+    line-height:28px;
+    padding-top:2px;
+    margin-top: -30px;
+    margin-left: -235px;
+}
+
+.welcome-c3{
+    width:280px;
+    height:30px;
+    line-height:30px;
+    margin-top: -15px;
+    margin-left: -140px;
+    text-shadow: 0 0 2px rgba(90, 90, 90, 0.85), 0 0 7px rgba(50, 20, 50, 0.85);
+}
