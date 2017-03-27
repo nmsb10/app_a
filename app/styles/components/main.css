@@ -18,3 +18,8 @@ body, html {
 	/*height 100% necessary so parallax class can use height 100%*/
 	height:100%;
 }
+
+.fit-95{
+	width: 95%;
+	margin: 0 auto;
+}

@@ -6,7 +6,9 @@ class Main extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			dbLoaded: false
+			dbLoaded: false,
+			mainOne: 'superdog',
+			mainTwo:['cupcakes', 5]
 		};
 	}
 	render() {

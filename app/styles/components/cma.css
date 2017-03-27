@@ -1,0 +1,23 @@
+.comps-table{
+	/*https://www.w3schools.com/CSSref/pr_border-collapse.asp*/
+	border-collapse: collapse;
+}
+
+.comps-table th{
+	background-color: purple;
+	color: white;
+}
+
+.comps-table th, td{
+	padding: 5px;
+	text-align: left;
+	border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.comps-table tr:nth-child(2n){
+	background-color: rgb(245, 245, 245);
+}
+
+.td-summary-stats td{
+	background-color: rgb(225, 225, 225);
+}

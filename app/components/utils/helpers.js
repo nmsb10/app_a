@@ -9,12 +9,12 @@ var helper = {
 		console.log('tsvcontnets!', tsvContents);
 		return axios.post('/load/tsv', tsvContents);
 	},
-	//function to get saved articles
-	getArticles: function(){
-		return axios.get('/api');
+	//function to get the addresses already input to the db
+	getDbAddresses: function(){
+		return axios.get('/api/find/addresses');
 	},
-	deleteArticle: function(article, deleteCode){
-		return axios.delete('/api', {article: article});
+	deleteAddresses: function(){
+		return axios.post('/api/delete/addresses');
 	}
 };
 

@@ -7,6 +7,7 @@ var mongoose = require("mongoose");
 // Require the Models Schemas: Type and Property
 var Type = require("./models/Type.js");
 var Property = require("./models/Property.js");
+var LoadedAddresses = require("./models/LoadedAddresses.js");
 
 // Create Instance of Express
 var app = express();
@@ -28,7 +29,10 @@ app.use(express.static("./public"));
 // MongoDB Configuration configuration
 // database configuration with mongoose using the mongodb database
 // selected database name: 20170321project_three
+//http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
+mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost/20170321project_three");
+
 //CHANGE TO ACTUAL HEROKU MONGOOSE FOR THIS APPmongoose.connect('mongodb://heroku_r1w606z5:8nvt5hgu5afgmg73da40o9g8hg@ds119750.mlab.com:19750/heroku_r1w606z5');
 
 //save the mongoose connection to db
@@ -59,23 +63,104 @@ db.once("open", function() {
 
 //route to send a POST request to save properties to the database!
 app.post('/load/tsv', function(request, response){
-	console.log('in server.js: received data to put in mongoose models:',request.body);
+	//first add this condo address to LoadedAddresses
+	//re = random entry
+	var re = Math.floor(Math.random()*request.body.length);
+	var address = request.body[re]['Street #'] + ' '+ compassPoint(request.body[re].CP) + ' ' + toTitleCase(request.body[re]['Str Name']) + ' ' + suffix(request.body[re].Sfx);
+	//Capitalize First Letter
+	function cfl(word) {
+		console.log('street name:',word);
+		console.log(typeof word);
+		word.toLowerCase();
+		//account for if street name has multiple words
+		var words = word.split(' ');
+		console.log('words', words);
+		var streetName = [];
+		for(var i = 0; i<words.length; i++){
+			streetName.push(words[i].charAt(0).toUpperCase() + words[i].slice(1));
+		}
+		console.log('total street name after transformation', streetName);
+		return streetName.join(' ');
+	}
+	function toTitleCase(str)//http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+	{
+		return str.replace(/([^\W_]+[^\s-]*) */g, function(txt)
+		{
+			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+		});
+	}
+	//d = direction
+	function compassPoint(d){
+		switch(d){
+			case 'N':
+				return 'North';
+			case 'E':
+				return 'East';
+			case 'W':
+				return 'West';
+			case 'S':
+				return 'South';
+			default:
+				return d;
+		}
+	}
+	function suffix(s){
+		switch(s.toLowerCase()){
+			case 'ave':
+				return 'Avenue';
+			case 'st':
+				return 'Street';
+			case 'pl':
+				return 'Place';
+			case 'dr':
+				return 'Drive';
+			default:
+				return s;
+		}
+	}
+	LoadedAddresses.create({
+		Address: address
+	}, function(error){
+		if(error){
+			console.log('error adding to loaded addresses model: ',error);
+		}
+	});
+	//then add all the contents of the array to Property (create one property for each object in the array, add this to Type: AT)
 });
 
-//route to send POST requests to conduct a search
+//route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
-	response.json(request.body);
+	console.log('/search route in server.js: request.body', request.body);
+	var thing = {
+		propertyOne: 'ice cream',
+		property2: 'caramel crunchy stuff',
+		prop3: 'way beyond'
+	};
+	response.json(thing);
+	//response.json(request.body);
 });
 
-// //route to send DELETE requests to delete an article (received from helpers.js)
-// //app.delete('/api', function(request, response){
-// app.post('/delete/article', function(request, response){
-// 	Article.remove({_id:request.body.article}, function(error){
-// 		if(error){
-// 			console.log(error);
-// 		}
-// 	});
-// });
+// This is the route we will send GET requests to retrieve any addresses loaded
+// We will call this route the moment our page gets rendered
+app.get('/api/find/addresses', function(request, response) {
+	LoadedAddresses.find({}).exec(function(error, doc){
+		if(error){
+			console.log('/api/find/addresses error: ',error);
+		}else{
+			response.send(doc);
+		}
+	});
+});
+
+//route to send DELETE requests to delete the saved addresses (received from helpers.js)
+//app.delete('/api', function(request, response){
+app.post('/api/delete/addresses', function(request, response){
+	LoadedAddresses.remove({}, function(error){
+		if(error){
+			console.log('/api/delete/addresses error:',error);
+		}
+	});
+});
 
 // Main "/" Route. This will redirect the user to the rendered React application
 app.get('/', function(req, res) {
@@ -86,13 +171,8 @@ app.get('/', function(req, res) {
 // routes for tsv files
 
 app.get('/tsv/:fileName', function(req, res){
-	var file = req.params.fileName;
-	res.sendFile(__dirname + '/tsv_files/' + file);
+	res.sendFile(__dirname + '/tsv_files/' + req.params.fileName);
 });
-
-/*app.get('/tsvTwo', function(req, res){
-	res.sendFile(__dirname + '/tsv_files/800michigan.TSV');
-});*/
 
 // ======================================================
 // Listener

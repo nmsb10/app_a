@@ -21,9 +21,6 @@ var TypeSchema = new Schema({
 var Type = mongoose.model("Type", TypeSchema);
 module.exports = Type;
 
-//http://blogs.wfmt.com/pianoforte/2014/10/03/yiming-zhang-piano/
-//http://blogs.wfmt.com/pianoforte/2013/05/03/david-kalhous/
-
 //http://mongoosejs.com/docs/populate.html
 //http://mongoosejs.com/docs/schematypes.html
 //http://stackoverflow.com/questions/36348369/how-to-structure-mongoose-schema-within-a-schema

@@ -14,5 +14,7 @@ const router = (
 		</Route>
 	</Router>
 );
+//http://stackoverflow.com/questions/30871070/react-router-pass-props-on-routes-to-child-components
+//http://stackoverflow.com/questions/27864720/react-router-pass-props-to-handler-component
 
 export { router };
