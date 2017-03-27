@@ -63,10 +63,19 @@ db.once("open", function() {
 
 //route to send a POST request to save properties to the database!
 app.post('/load/tsv', function(request, response){
-	//first add this condo address to LoadedAddresses
 	//re = random entry
 	var re = Math.floor(Math.random()*request.body.length);
-	var address = request.body[re]['Street #'] + ' '+ compassPoint(request.body[re].CP) + ' ' + toTitleCase(request.body[re]['Str Name']) + ' ' + suffix(request.body[re].Sfx);
+	//first add this condo address to LoadedAddresses
+	if(request.body[re].TYP==='AT'){
+		var address = request.body[re]['Street #'] + ' '+ compassPoint(request.body[re].CP) + ' ' + toTitleCase(request.body[re]['Str Name']) + ' ' + suffix(request.body[re].Sfx);
+		LoadedAddresses.create({
+			Address: address
+		}, function(error){
+			if(error){
+				console.log('error adding to loaded addresses model: ',error);
+			}
+		});
+	}
 	//Capitalize First Letter
 	function cfl(word) {
 		console.log('street name:',word);
@@ -118,14 +127,22 @@ app.post('/load/tsv', function(request, response){
 				return s;
 		}
 	}
-	LoadedAddresses.create({
-		Address: address
-	}, function(error){
-		if(error){
-			console.log('error adding to loaded addresses model: ',error);
-		}
-	});
 	//then add all the contents of the array to Property (create one property for each object in the array, add this to Type: AT)
+	//change certain inputs:
+	var rb = request.body[15];
+	console.log('changing strings to integers:', rb['# Stories'] + ' ' + parseInt(rb['# Stories']) + ' ' + typeof rb['Orig List Pr'] + ' ' + typeof parseInt(rb['Orig List Pr']));
+	//(must account for if no string present ie '', then don't parseInt): parseInt: orig list pr, search price, sold pr, list price, mt, lmt, (parseFloat with 2 decimal places) taxes, (parseFloat) as/asc dues, (parseFloat) mafAmount, (parseFloat) special service area fee, ASF, total SF, Main SF, Aprx total fin SF, # rms, Beds, All Beds, bsmt beds, # Full Baths, # Half Baths, interior fireplaces, garagespaces, parking spaces
+	//change dates to YYYYMMDD
+	//http://stackoverflow.com/questions/21291392/how-do-i-format-a-datetime-string-in-javascript-from-using-slashes-to-using-hype
+	var dateStr = rb['List Date'];
+	var testdate = new Date(dateStr);
+	var curr_date = testdate.getDate();
+var curr_month = testdate.getMonth();
+curr_month++;  //We add +1 because Jan is indexed at 0 instead of 1
+var curr_year = testdate.getFullYear();
+console.log('here\'s the re-formatted date:', curr_year + "-" + curr_month + "-" + curr_date);
+var date2test = new Date(dateStr).toISOString().substr(0, 10).replace(/\-+/g, '');
+console.log('iso string date test', date2test + ' ' + typeof date2test + ' '+ typeof parseInt(date2test));
 });
 
 //route to send POST requests to conduct a property search

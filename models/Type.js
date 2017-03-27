@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var TypeSchema = new Schema({
 	//http://stackoverflow.com/questions/8737082/mongoose-schema-within-schema
-	//ARRAY OR OBJECT???
+	//http://mongoosejs.com/docs/populate.html
 	de: [{
 		// Store ObjectIds in the array
 		type: Schema.Types.ObjectId,
@@ -11,9 +11,7 @@ var TypeSchema = new Schema({
 		ref: "Property"
 	}],
 	at: {
-		// Store ObjectIds in the array
 		type: Schema.Types.ObjectId,
-		// The ObjectIds will refer to the ids in the Property model
 		ref: "Property"
 	}
 });

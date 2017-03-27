@@ -2,106 +2,341 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var PropertySchema = new Schema({
-	TYP: {//'AT' or 'DE'
+	_propertyType : {
+		type: Number,
+		ref: 'Type'
+	},
+	typ: {// TYP: 'AT' or 'DE'
 		type: String
 	},
-	Street_Number: {//Street #
+	compassPoint: {// CP: 'E',
 		type: String
 	},
-	Str_Name: {
+	strNumber: {// Street #': '159',
 		type: String
 	},
-	Unit: {//Unit #
+	strName: {//'Str Name': 'Walton',
 		type: String
 	},
-	Zip: {
+	sfx: {//Sfx: 'PL',
 		type: String
 	},
-	MLS_Number: {
+	unit: {//'Unit #': '15A',
 		type: String
 	},
-	PIN: {
+	city: {//City: 'Chicago',
 		type: String
 	},
-	Stat: {//CLSD ACTV
+	state: {//State: 'Illinois',
 		type: String
 	},
-	Sold_Pr: {
+	Zip: {//Zip: '60611',
+		type: String
+	},  
+	area: {//Area: '8008',
 		type: String
 	},
-	List_Price:{
+	county: {//County: 'Cook',
 		type: String
 	},
-	Orig_List_Pr: {
+	subdiv: {//Subdivision: '',
 		type: String
 	},
-	Off_Mkt_Dt:{
+	gschDist: {//'GS Dist': '299',
 		type: String
 	},
-	Contract_Date:{
+	hsDist: {//'HS Dist': '299',
 		type: String
 	},
-	Closed_Date:{
+	totalUnits: {//'Tot # Units': '102',
 		type: String
 	},
-	MT:{//market time
+	typeDEAT: {//'Type DE/AT': 'Condo, High Rise (7+ Stories), Vintage',
 		type: String
 	},
-	Remarks: {
+	stories: {//'# Stories': '37',
 		type: String
 	},
-	ASF: {//approximate square feet
+	yrBlt: {//'Yr Blt': '1929',
 		type: String
 	},
-	Num_Rms: {//# Rms
+	mlsNum: {//'MLS #': '08933387',
 		type: String
 	},
-	All_Beds: {
+	status: {//Stat: 'CLSD',
 		type: String
 	},
-	Baths_Full: {//#_Full_Baths
+	contingency: {//Contingency: '',
 		type: String
 	},
-	Baths_Half: {//#_Half_Baths
+	olp: {//'Orig List Pr': '2525000',
+		type: Number
+	},
+	searchPrice: {//'LP/SP': '2350000',
+		type: Number
+	},
+	sp: {//'Sold Pr': '2350000',
+		type: Number
+	},
+	lp: {//'List Price': '2525000',
+		type: Number
+	},
+	fin: {//FIN: 'Conventional',
 		type: String
 	},
-	Exposure:{//could be "N (North), E (East), W (West)"
+	distressed: {//'Short Sale/Foreclosed/Court Approved': 'N/A',
 		type: String
 	},
-	As_Asc_Dues:{
-		type: Date
-	},
-	Taxes:{
-		type: Date
-	},
-	Flr_MB:{//Mast Bd Flr
+	splp: {//'SP:LP': '93%',
 		type: String
 	},
-	Flr_BR2:{//2nd_Bdr_Flr
+	spolp: {//'SP:OLP': '93%',
 		type: String
 	},
-	Flr_BR3:{//3rd_Bdr_Flr
+	mt: {//MT: '176',
+		type: Number
+	},
+	lmt: {//LMT: '49',
+		type: Number
+	},
+	PIN: {//PIN: '17032130201031',
 		type: String
 	},
-	Flr_BR4:{//4th_Bdr_Flr
+	multiPIN: {//'Mult PINs': '',
 		type: String
 	},
-	Flr_Kit:{//Kit Flr
+	addTaxInfo: {//'Addl Tax Info': '',
 		type: String
 	},
-	Flr_Lr:{//Liv Rm Flr
+	commonPerctg: {//'% Common': '',
 		type: String
 	},
-	Flr_Din:{//Din Flr
+	propTax:{//Taxes: '8997.54',
+		type: Number
+	},
+	taxExemps:{//'Tax Exemps': 'None',
 		type: String
 	},
-	Flr_Fam:{//Fam Rm Flr
+	taxYear:{//'Tax Year': '2013',
 		type: String
 	},
-	Garage_Spaces:{//#GSp
+	asmDues:{//'As/Asc Dues': '2609',
 		type: String
 	},
-	Prk_Inc:{//Is Parking Included In Price?
+	maf:{//MAF: 'No',
+		type: String
+	},
+	mafAmount:{//'Master Association Fee($)': '',
+		type: String
+	},
+	spAssess:{//'Spec Assess': 'No',
+		type: String
+	},
+	ssa:{//'Special Service Area': 'No',
+		type: String
+	},
+	ssaFee:{//'Special Service Area Fee': '',
+		type: Number
+	},
+	unitFl:{//'Unit Fl No': '15',
+		type: String
+	},
+	model:{//Model: '',
+		type: String
+	},
+	asf:{//ASF: '2832',
+		type: Number
+	},
+	sfSource:{//'SF Source': 'Estimated',
+		type: String
+	},
+	totalSF:{//'Total SF': '',
+		type: Number
+	},
+	mainSF:{//'Main SF': '',
+		type: String
+	},
+	aprxTFSF:{//'Aprx Total Fin SF': '',
+		type: String
+	}, 
+	exposure:{//Exposure: 'N (North), E (East), W (West), City, Lake/Water',
+		type: String
+	},
+	rms:{//'# Rms': '6',
+		type: Number
+	},
+	bds:{//Beds: '3',
+		type: Number
+	},
+	allBeds:{//'All Beds': '3',
+		type: Number
+	},
+	bsmtBeds:{//'Bsmt. Beds': '0',
+		type: Number
+	},
+	bathF:{//'# Full Baths': '3',
+		type: Number
+	},
+	bathH:{//'# Half Baths': '1',
+		type: Number
+	},
+	bathsTotal:{//Baths: '3.1',
+		type: String
+	},
+	fpInt:{//'# Interior Fireplaces': '',
+		type: Number
+	},
+	garageSpaces:{//'#GSp': '2',
+		type: Number
+	},
+	garageType:{//'Garage Type': 'Attached',
+		type: String
+	},
+	bsmt:{//Bsmt: 'None',
+		type: String
+	},
+	bsmtDesc:{//'Basement Description': 'None',
+		type: String
+	},
+	remarks:{//Remarks: 'Gorgeous home at the Palmolive w/outstanding lake...
+		type: String
+	},
+	agentRemarks:{//'Agent Remarks': 'Floor plans under additional information',
+		type: String
+	},
+	numParkingSpaces:{//'# Parking Spaces': '',
+		type: Number
+	},
+	acDesc:{//Air: 'Central Air',
+		type: String
+	},
+	heatDesc:{//'Heat/Fuel': 'Forced Air, Hot Water/Steam',
+		type: String
+	},
+	aag:{//AAG: '',
+		type: String
+	},
+	ipf:{//'Interior Property Features': 'Hardwood Floors, Laundry Hook-Up in Unit',
+		type: String
+	},
+	parkingIncluded:{//'Is Parking Included in Price?': 'Yes',
+		type: String
+	},
+	appliances:{//Appliances: 'Oven/Range, Microwave, Dishwasher, Refrigerator, High End Refrigerator, Washer, Dryer',
+		type: String
+	},
+	amenities:{//Amen: '',
+		type: String
+	},
+	commonAA:{//'Com Ar Amen': 'Bike Room/Bike Trails, Door Person, Elevator,...
+		type: String
+	},
+	assesInc:{//'Asses Incl': 'Heat, Air Conditioning, Water, Gas, ...
+		type: String
+	},
+	managementCo:{//'Management Company': 'Draper & Kramer',
+		type: String
+	},
+	managementContactName:{//'Management Contact Name': 'Lynn Stephens',
+		type: String
+	},
+	managementPhone:{//'Management Phone': '(312) 255-0159',
+		type: String
+	},
+	oop:{//'% Own Occ': '',
+		type: String
+	},
+	rentable:{//'Can Owner Rent': '',
+		type: String
+	},
+	parkingFee:{//'Parking Fee/Lease $': '',
+		type: String
+	},
+	bd2Flr:{//'2nd Bdr Flr': 'Hardwood',
+		type: String
+	},
+	bd3Flr:{//'3rd Bdr Flr': 'Hardwood',
+		type: String
+	},
+	bd4Flr:{//'4th Bdr Flr': '',
+		type: String
+	},
+	deededGarageCost:{//'Deeded Garage Cost': '',
+		type: String
+	},
+	deededParkingCost:{//'Deeded Parking Cost': '',
+		type: String
+	},
+	dinFlr:{//'Din Flr': 'Hardwood',
+		type: String
+	},
+	equip:{//Equipment: '',
+		type: String
+	},
+	famRmFlr:{//'Fam Rm Flr': '',
+		type: String
+	},
+	kitFlr:{//'Kit Flr': '',
+		type: String
+	},
+	lrFlr:{//'Liv Rm Flr': 'Hardwood',
+		type: String
+	},
+	mbdBa:{//'Mast Bd Bth': 'Full',
+		type: String
+	},
+	mbdFlr:{//'Mast Bd Flr': 'Hardwood',
+		type: String
+	},
+	bd2Sz:{//'2nd Bdr Sz': '19X13',
+		type: Array
+	},
+	bd3Sz:{//'3rd Bdr Sz': '15X14',
+		type: Array
+	},
+	bd4Sz:{//'4th Bdr Sz': '',
+		type: Array
+	},
+	mbdSz:{//'Mast Br Sz': '19X15',
+		type: Array
+	},
+	lrSz:{//'Liv Rm Sz': '32X13',
+		type: Array
+	},
+	kitSz:{//'Kit Sz': '13X10',
+		type: Array
+	},
+	frSz:{//'Fam Rm Sz': '',
+		type: Array
+	}, 
+	drSz:{//'Din Sz': '17X11',
+		type: Array
+	},
+	addRms:{//'Additional Rooms': 'Foyer',
+		type: String
+	},
+	baAmen:{//'Bth Amen': 'Whirlpool, Separate Shower, Double Sink',
+		type: String
+	},
+	drDesc:{//'Din Rm': 'Separate',
+		type: String
+	},
+	extPropFeat:{//'Exterior Property Features': '',
+		type: String
+	},
+	listDate:{//'List Date': '05/26/2015',
+		type: Number
+	},
+	contractDate:{//'Contract Date': '07/13/2015',
+		type: Number
+	},
+	offMktDate:{//'Off Mkt Dt': '07/13/2015', (eg for temp status or else contract date)
+		type: Number
+	},
+	clsdDate:{//'Closed Date': '08/11/2015',
+		type: Number
+	},
+	acreage:{//Acreage: '' },
 		type: String
 	},
 	createdDate:{
