@@ -319,10 +319,10 @@ app.post('/search', function(request, response){
 	// });
 	Property.find({
 		strNumber: rb.streetNumber,
-		//strName: rb.streetName.toLowerCase(),
+		strName: rb.streetName,
 		status: 'CLSD'
 	}).limit(9)
-	.select('typ strNumber compassPoint strName sfx unit mlsNum status olp lp sp fin listDate contractDate clsdDate propTax')
+	.select('typ strNumber compassPoint strName sfx unit mlsNum status olp lp sp fin listDate contractDate clsdDate propTax asmDues')
 	.sort({
 		clsdDate: -1
 	}).exec(function(error, doc){

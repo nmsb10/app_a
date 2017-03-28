@@ -24,6 +24,7 @@ class Cma extends React.Component {
 		const cma = this.props.cmar;
 		return(
 			<div className = '' >
+			{/*
 				<div className=''>
 					{this.props.cmar.map(function(elem, i) {
 						return (
@@ -38,9 +39,10 @@ class Cma extends React.Component {
 								</span>
 							</div>
 						);
-					{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY	*/}
+					{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY	
 					},this)}
 				</div>
+			*/}
 				<table className = 'comps-table'>
 					<tbody>
 						<tr>
@@ -57,11 +59,11 @@ class Cma extends React.Component {
 						<tr>
 							<td>address</td>
 							<td>{this.props.res.sp.streetNumber} {this.props.res.sp.streetName}{this.props.res.sp.unitNumber !== '' && <span>, Unit {this.props.res.sp.unitNumber}</span>}</td>
-							<td>{cma[0].strNumber} {cma[0].compassPoint} {cma[0].strName} {cma[0].sfx}{cma[0].unitNumber !== '' && <span>, Unit {cma[0].unitNumber}</span>}</td>
+							<td>{cma[0].strNumber} {cma[0].compassPoint} {cma[0].strName} {cma[0].sfx}{cma[0].unit !== '' && <span>, Unit {cma[0].unit}</span>}</td>
 							<td></td>
-							<td>{cma[1].strNumber} {cma[1].compassPoint} {cma[1].strName} {cma[1].sfx}{cma[1].unitNumber !== '' && <span>, Unit {cma[1].unitNumber}</span>}</td>
+							<td>{cma[1].strNumber} {cma[1].compassPoint} {cma[1].strName} {cma[1].sfx}{cma[1].unit !== '' && <span>, Unit {cma[1].unit}</span>}</td>
 							<td></td>
-							<td>{cma[2].strNumber} {cma[2].compassPoint} {cma[2].strName} {cma[2].sfx}{cma[2].unitNumber !== '' && <span>, Unit {cma[2].unitNumber}</span>}</td>
+							<td>{cma[2].strNumber} {cma[2].compassPoint} {cma[2].strName} {cma[2].sfx}{cma[2].unit !== '' && <span>, Unit {cma[2].unit}</span>}</td>
 							<td></td>
 						</tr>
 						<tr>
@@ -118,11 +120,11 @@ class Cma extends React.Component {
 							<td>SP/OLP | SP/LP</td>
 							<td></td>
 							<td>comp1 details</td>
-							<td>adjustment</td>
+							<td></td>
 							<td>comp2 details</td>
-							<td>adjustment</td>
+							<td></td>
 							<td>comp3 details</td>
-							<td>adjustment</td>
+							<td></td>
 						</tr>
 						<tr>
 							<td>financing type</td>
@@ -197,22 +199,22 @@ class Cma extends React.Component {
 						<tr>
 							<td>property taxes</td>
 							<td>${this.withCommas(this.props.res.sp.taxes)}</td>
-							<td>comp1 details</td>
-							<td>adjustment</td>
-							<td>comp2 details</td>
-							<td>adjustment</td>
-							<td>comp3 details</td>
-							<td>adjustment</td>
+							<td>{cma[0].propTax}</td>
+							<td></td>
+							<td>{cma[1].propTax}</td>
+							<td></td>
+							<td>{cma[2].propTax}</td>
+							<td></td>
 						</tr>
 						<tr>
 							<td>assessments</td>
 							<td>${this.withCommas(this.props.res.sp.asm)}</td>
-							<td>comp1 details</td>
-							<td>adjustment</td>
-							<td>comp2 details</td>
-							<td>adjustment</td>
-							<td>comp3 details</td>
-							<td>adjustment</td>
+							<td>{cma[0].asmDues}</td>
+							<td></td>
+							<td>{cma[1].asmDues}</td>
+							<td></td>
+							<td>{cma[2].asmDues}</td>
+							<td></td>
 						</tr>
 						<tr>
 							<td># rooms</td>

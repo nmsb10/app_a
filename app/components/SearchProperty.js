@@ -27,7 +27,9 @@ class SearchProperty extends React.Component {
 					fin:'',
 					listDate:'',
 					contractDate:'',
-					clsdDate:''
+					clsdDate:'',
+					propTax:'',
+					asmDues:''
 				},
 				{
 					typ:'',
@@ -44,7 +46,9 @@ class SearchProperty extends React.Component {
 					fin:'',
 					listDate:'',
 					contractDate:'',
-					clsdDate:''
+					clsdDate:'',
+					propTax:'',
+					asmDues:''
 				},
 				{
 					typ:'',
@@ -61,7 +65,9 @@ class SearchProperty extends React.Component {
 					fin:'',
 					listDate:'',
 					contractDate:'',
-					clsdDate:''
+					clsdDate:'',
+					propTax:'',
+					asmDues:''
 				},
 			],
 			cmaResultsObj: {
