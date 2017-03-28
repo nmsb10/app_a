@@ -37,7 +37,6 @@ class SearchForm extends React.Component {
 	}
 	// componentWillUnmount is called right before you eg navigate to a different route / a different component
 	componentWillUnmount(){
-		console.log('searchform component unmounted');
 	}
 	render(){
 		return(

@@ -16,8 +16,8 @@ var TypeSchema = new Schema({
 	}
 });
 
-var Type = mongoose.model("Type", TypeSchema);
-module.exports = Type;
+var PropertyType = mongoose.model("PropertyType", TypeSchema);
+module.exports = PropertyType;
 
 //http://mongoosejs.com/docs/populate.html
 //http://mongoosejs.com/docs/schematypes.html

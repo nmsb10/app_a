@@ -11,9 +11,13 @@ class SearchProperty extends React.Component {
 	initializeState(){
 		this.setState({
 			loadedDB: false,
-			tsvFiles: ['159ewalton.TSV', '800nmichigan.TSV', '161echicago.TSV', '474nlsd.TSV'],
+			good2tsvFiles: ['159ewalton.TSV', '161echicago.TSV', '175edelaware.TSV', '400erandolph.TSV'],
+			good1tsvFiles: ['800nmichigan.TSV', '840nlsd.TSV', '950nmichigan.TSV','222epearson.TSV','401nwabash.TSV'],
+			BADtsvFiles:[ '250epearson.TSV', '1000nlsd.TSV'],
+			good3tsvFiles: ['474nlsd.TSV', '505nlsd.TSV','1720mapleevanston.TSV', '807davisevanston.TSV', '655wirvingpark.TSV'],
 			addressesLoaded:[],
 			cmaResults:[],
+			TestProperties:[],
 			cmaResultsObj: {
 				//sp = subject property	
 				sp: {
@@ -35,10 +39,11 @@ class SearchProperty extends React.Component {
 	// componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
 	componentWillMount(){
 		this.initializeState();
-		console.log('props:', this.props);
 	}
 	componentDidMount(){
+		console.log('SearchProperty.js did mount!');
 		this.getAddresses();
+		this.getTestProperties();
 	}
 	loadDB(){
 		//http://stackoverflow.com/questions/16177037/how-to-extract-information-in-a-tsv-file-and-save-it-in-an-array-in-javascript
@@ -88,7 +93,6 @@ class SearchProperty extends React.Component {
 		if(error){
 			console.log(error);
 		}else{
-			console.log(results);
 			//results is an array of arrays
 			results.forEach(function(item){
 				return axios.post('/load/tsv', item);
@@ -96,10 +100,21 @@ class SearchProperty extends React.Component {
 		}
 	}
 	getAddresses(){
+		console.log('getAddresses function in searchproperty.js function called');
 		helper.getDbAddresses().then(function(response){
 			if(response !== this.state.addressesLoaded){
 				this.setState({
 					addressesLoaded: response.data
+				});
+			}
+		}.bind(this));
+	}
+	getTestProperties(){
+		console.log('getTestProperites in searchproperty.js function called');
+		helper.getTestProperties().then(function(response){
+			if(response !== this.state.TestProperties){
+				this.setState({
+					TestProperties: response.data
 				});
 			}
 		}.bind(this));
@@ -134,8 +149,12 @@ class SearchProperty extends React.Component {
 		}
 		const deleteAllAddresses = (event) => {
 			event.preventDefault();
-			helper.deleteAddresses();
+			helper.deleteModelContents('loadedAd');
 			this.getAddresses();
+		}
+		const deleteAllProperties = (event) => {
+			event.preventDefault();
+			helper.deleteModelContents('allProperties');
 		}
 		return(
 			<div className = 'fit-95 searchPropertyComponent' >
@@ -144,12 +163,20 @@ class SearchProperty extends React.Component {
 					updateCmaSp = {(input) => this.updateCmaSpFields(input)}
 					defaultPropertyType = {'AT'}
 				/>
+			{/*
 				<form role="form" onSubmit={deleteAllAddresses}>
 					<div className="">
 						<input type="hidden" data-articleid='' name=""/>
 					</div>
 					<button type="submit" className="btn-admin">delete addresses</button>
 				</form>
+				<form role="form" onSubmit={deleteAllProperties}>
+					<div className="">
+						<input type="hidden" data-articleid='' name=""/>
+					</div>
+					<button type="submit" className="btn-admin">delete PROPERTIES</button>
+				</form>
+			*/}
 				<Cma res = {this.state.cmaResultsObj}/>
 				{/*This panel will hold the resulting addresses input to the database already
 				Address and createdDate*/}
@@ -163,12 +190,35 @@ class SearchProperty extends React.Component {
 					{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY*/}
 					},this)}
 				</div>
+				<br/>
+				<br/>
+{/*
+				<div className="">
+					{this.state.TestProperties.map(function(elem, i) {
+						return (
+							<div key = {i} className = ''>
+								<span>{i + 1} mls {elem.mlsNum}<br/>
+								property type: {elem.typ}<br/>
+								compass point: {elem.compassPoint}<br/>
+								street number: {elem.strNumber}<br/>
+								PIN: {elem.PIN}<br/>
+								property tax: {elem.propTax}<br/>
+								closed date: {elem.clsdDate}
+								</span>
+							</div>
+						);
+					{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY	
+					},this)}
+				</div>
+		*/}
+		{/*
 				<form role="form" onSubmit={handleLoadDBTSV}>
 					<div className="">
 						<input type="hidden" data-articleid='' name=""/>
 					</div>
 					<button type="submit" className="btn-admin">load database</button>
 				</form>
+		*/}
 			</div>
 		);
 	}

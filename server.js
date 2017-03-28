@@ -5,7 +5,7 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 
 // Require the Models Schemas: Type and Property
-var Type = require("./models/Type.js");
+var PropertyType = require("./models/Type.js");
 var Property = require("./models/Property.js");
 var LoadedAddresses = require("./models/LoadedAddresses.js");
 
@@ -19,8 +19,8 @@ var PORT = process.env.PORT || 3000;
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 //app.use(bodyParser.json({ type: "application/vnd.api+json"}));
-app.use(bodyParser.json({limit: '5mb'}));
-app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 
 //make the public folder a static directory
 app.use(express.static("./public"));
@@ -49,34 +49,9 @@ db.once("open", function() {
 // ======================================================
 //routes:
 
-// This is the route we will send GET requests to retrieve any saved articles
-// We will call this route the moment our page gets rendered
-// app.get("/api", function(request, response) {
-// 	Article.find({}).exec(function(error, doc){
-// 		if(error){
-// 			console.log(error);
-// 		}else{
-// 			response.send(doc);
-// 		}
-// 	});
-// });
-
-//route to send a POST request to save properties to the database!
-app.post('/load/tsv', function(request, response){
-	//re = random entry
-	var re = Math.floor(Math.random()*request.body.length);
-	//first add this condo address to LoadedAddresses
-	if(request.body[re].TYP==='AT'){
-		var address = request.body[re]['Street #'] + ' '+ compassPoint(request.body[re].CP) + ' ' + toTitleCase(request.body[re]['Str Name']) + ' ' + suffix(request.body[re].Sfx);
-		LoadedAddresses.create({
-			Address: address
-		}, function(error){
-			if(error){
-				console.log('error adding to loaded addresses model: ',error);
-			}
-		});
-	}
-	//Capitalize First Letter
+//route to send a POST request to save properties data to the database!
+app.post('/load/tsv', function(request, response){	
+	//function to Capitalize First Letter
 	function cfl(word) {
 		console.log('street name:',word);
 		console.log(typeof word);
@@ -123,38 +98,247 @@ app.post('/load/tsv', function(request, response){
 				return 'Place';
 			case 'dr':
 				return 'Drive';
+			case 'rd':
+				return 'Road';
 			default:
 				return s;
 		}
 	}
-	//then add all the contents of the array to Property (create one property for each object in the array, add this to Type: AT)
-	//change certain inputs:
-	var rb = request.body[15];
-	console.log('changing strings to integers:', rb['# Stories'] + ' ' + parseInt(rb['# Stories']) + ' ' + typeof rb['Orig List Pr'] + ' ' + typeof parseInt(rb['Orig List Pr']));
-	//(must account for if no string present ie '', then don't parseInt): parseInt: orig list pr, search price, sold pr, list price, mt, lmt, (parseFloat with 2 decimal places) taxes, (parseFloat) as/asc dues, (parseFloat) mafAmount, (parseFloat) special service area fee, ASF, total SF, Main SF, Aprx total fin SF, # rms, Beds, All Beds, bsmt beds, # Full Baths, # Half Baths, interior fireplaces, garagespaces, parking spaces
-	//change dates to YYYYMMDD
+	//add all the contents of the array to Property (create one property for each object in the array, add this to Type: AT)
+	//first check if MLS number already exists, if not, add property
+	//https://docs.mongodb.com/v3.2/reference/method/db.collection.findOneAndUpdate/
+	var rb = request.body;
+	for(var i = 0; i < rb.length; i++){
+		//http://stackoverflow.com/questions/40346534/mongoose-create-document-if-doesnt-exist
+		//http://stackoverflow.com/questions/33305623/mongoose-create-document-if-not-exists-otherwise-update-return-document-in
+		// Property.findOneAndUpdate(
+		// 	{mlsNum: rbo[i]['MLS #']},
+		// 	{$setOnInsert:
+		// 		{
+		// 			typ: rbo[i].TYP,
+		// 			compassPoint: rbo[i].CP,
+		// 			strNumber: rbo[i]['Street #'],
+		// 			PIN: rbo[i].PIN,
+		// 			propTax: parseFloat(rbo[i].Taxes).toFixed(2)
+		// 		}
+		// 	},
+		// 	{
+		// 		new: true,// return new doc if one is upserted
+		// 		upsert: true//insert the document if it does not exist
+		// 	}
+		// );
+
+		if(rb[i].TYP==='AT'){
+			Property.create({
+				typ: rb[i].TYP,
+				strNumber: rb[i]['Street #'],
+				compassPoint: rb[i].CP,
+				strName: rb[i]['Str Name'],
+				sfx: rb[i].Sfx,
+				unit: rb[i]['Unit #'],
+				city: rb[i].City,
+				state: rb[i].State,
+				zip: rb[i].Zip,
+				area: rb[i].Area,
+				county: rb[i].County,
+				subdiv: rb[i].Subdivision,
+				gschDist: rb[i]['GS Dist'],
+				hsDist: rb[i]['HS Dist'],
+				totalUnits: rb[i]['Tot # Units'],
+				typeDEAT: rb[i]['Type DE/AT'],
+				//(must account for if no string present ie '', then don't parseInt)
+				stories: isNaN(parseInt(rb[i]['# Stories'])) ? 0 : parseInt(rb[i]['# Stories']),
+				yrBlt: rb[i]['Yr Blt'],
+				mlsNum: rb[i]['MLS #'],
+				status: rb[i].Stat,
+				contingency: rb[i].Contingency,
+				olp: parseInt(rb[i]['Orig List Pr']),
+				searchPrice: parseInt(rb[i]['LP/SP']),
+				sp: isNaN(parseInt(rb[i]['Sold Pr'])) ? rb[i]['Sold Pr'] : parseInt(rb[i]['Sold Pr']),
+				lp: parseInt(rb[i]['List Price']),
+				fin: rb[i].FIN,
+				distressed: rb[i]['Short Sale/Foreclosed/Court Approved'],
+				splp: rb[i]['SP:LP'],
+				spolp: rb[i]['SP:OLP'],
+				mt: parseInt(rb[i].MT),
+				lmt: parseInt(rb[i].LMT),
+				PIN: rb[i].PIN,
+				multiPIN: rb[i]['Mult PINs'],
+				addTaxInfo: rb[i]['Addl Tax Info'],
+				commonPerctg: rb[i]['% Common'],
+				propTax: isNaN(prepDollars(parseFloat(rb[i].Taxes))) ? rb[i].Taxes : prepDollars(parseFloat(rb[i].Taxes)).toFixed(2),
+				taxExemps: rb[i]['Tax Exemps'],
+				taxYear: rb[i]['Tax Year'],
+				asmDues: isNaN(parseFloat(rb[i]['As/Asc Dues'])) ? rb[i]['As/Asc Dues'] : parseFloat(rb[i]['As/Asc Dues']).toFixed(2),
+				maf: rb[i].MAF,
+				mafAmount: isNaN(parseFloat(rb[i]['Master Association Fee($)'])) ? rb[i]['Master Association Fee($)'] : parseFloat(rb[i]['Master Association Fee($)']).toFixed(2),
+				spAssess: rb[i]['Spec Assess'],
+				ssa: rb[i]['Special Service Area'],
+				ssaFee: isNaN(parseFloat(rb[i]['Special Service Area Fee'])) ? rb[i]['Special Service Area Fee'] : parseFloat(rb[i]['Special Service Area Fee']).toFixed(2),
+				unitFl: rb[i]['Unit Fl No'],
+				model: rb[i].Model,
+				asf: isNaN(parseInt(rb[i].ASF)) ? rb[i].ASF : parseInt(rb[i].ASF),
+				sfSource: rb[i]['SF Source'],
+				totalSF: isNaN(parseInt(rb[i]['Total SF'])) ? rb[i]['Total SF'] : parseInt(rb[i]['Total SF']),
+				mainSF: isNaN(parseInt(rb[i]['Main SF'])) ? rb[i]['Main SF'] : parseInt(rb[i]['Main SF']),
+				aprxTFSF: isNaN(parseInt(rb[i]['Aprx Total Fin SF'])) ? rb[i]['Aprx Total Fin SF'] : parseInt(rb[i]['Aprx Total Fin SF']),
+				exposure: rb[i].Exposure,
+				rms: parseInt(rb[i]['# Rms']),
+				bds: isNaN(parseInt(rb[i].Beds)) ? rb[i].Beds : parseInt(rb[i].Beds),
+				allBeds: isNaN(parseInt(rb[i]['All Beds'])) ? rb[i]['All Beds'] : parseInt(rb[i]['All Beds']),
+				bsmtBeds: isNaN(parseInt(rb[i]['Bsmt. Beds'])) ? rb[i]['Bsmt. Beds'] : parseInt(rb[i]['Bsmt. Beds']),
+				bathF: parseInt(rb[i]['# Full Baths']),
+				bathH: isNaN(parseInt(rb[i]['# Half Baths'])) ? rb[i]['# Half Baths'] : parseInt(rb[i]['# Half Baths']),
+				bathsTotal: rb[i].Baths,
+				fpInt: isNaN(parseInt(rb[i]['# Interior Fireplaces'])) ? rb[i]['# Interior Fireplaces'] : parseInt(rb[i]['# Interior Fireplaces']),
+				garageSpaces: isNaN(parseInt(rb[i]['#GSp'])) ? rb[i]['#GSp'] : parseInt(rb[i]['#GSp']),
+				garageType: rb[i]['Garage Type'],
+				bsmt: rb[i].Bsmt,
+				bsmtDesc: rb[i]['Basement Description'],
+				remarks: rb[i].Remarks,
+				agentRemarks: rb[i]['Agent Remarks'],
+				numParkingSpaces: isNaN(parseInt(rb[i]['# Parking Spaces'])) ? 5555 : parseInt(rb[i]['# Parking Spaces']),
+				acDesc: rb[i].Air,
+				heatDesc: rb[i]['Heat/Fuel'],
+				aag: rb[i].AAG,
+				ipf: rb[i]['Interior Property Features'],
+				parkingIncluded: rb[i]['Is Parking Included in Price?'],
+				appliances: rb[i].Appliances,
+				amenities: rb[i].Amen,
+				commonAA: rb[i]['Com Ar Amen'],
+				assesInc: rb[i]['Asses Incl'],
+				managementCo: rb[i]['Management Company'],
+				managementContactName: rb[i]['Management Contact Name'],
+				managementPhone: rb[i]['Management Phone'],
+				oop: rb[i]['% Own Occ'],
+				rentable: rb[i]['Can Owner Rent'],
+				parkingFee:isNaN(parseInt(rb[i]['Parking Fee/Lease $'])) ? 7777 : parseInt(rb[i]['Parking Fee/Lease $']),
+				bd2Flr: rb[i]['2nd Bdr Flr'],
+				bd3Flr: rb[i]['3rd Bdr Flr'],
+				bd4Flr: rb[i]['4th Bdr Flr'],
+				deededGarageCost: isNaN(parseInt(rb[i]['Deeded Garage Cost'])) ? rb[i]['Deeded Garage Cost'] : parseInt(rb[i]['Deeded Garage Cost']),
+				deededParkingCost: isNaN(parseInt(rb[i]['Deeded Parking Cost'])) ? rb[i]['Deeded Parking Cost'] : parseInt(rb[i]['Deeded Parking Cost']),
+				dinFlr: rb[i]['Din Flr'],
+				equip: rb[i].Equipment,
+				famRmFlr: rb[i]['Fam Rm Flr'],
+				kitFlr: rb[i]['Kit Flr'],
+				lrFlr: rb[i]['Liv Rm Flr'],
+				mbdBa: rb[i]['Mast Bd Bth'],
+				mbdFlr: rb[i]['Mast Bd Flr'],
+				bd2Sz: rmDimConv(rb[i]['2nd Bdr Sz']),
+				bd3Sz: rmDimConv(rb[i]['3rd Bdr Sz']),
+				bd4Sz: rmDimConv(rb[i]['4th Bdr Sz']),
+				mbdSz: rmDimConv(rb[i]['Mast Br Sz']),
+				lrSz: rmDimConv(rb[i]['Liv Rm Sz']),
+				kitSz: rmDimConv(rb[i]['Kit Sz']),
+				frSz: rmDimConv(rb[i]['Fam Rm Sz']),
+				drSz: rmDimConv(rb[i]['Din Sz']),
+				addRms: rb[i]['Additional Rooms'],
+				baAmen: rb[i]['Bth Amen'],
+				drDesc: rb[i]['Din Rm'],
+				extPropFeat: rb[i]['Exterior Property Features'],
+				listDate: dateConv(rb[i]['List Date']),
+				contractDate: dateConv(rb[i]['Contract Date']),
+				offMktDate: dateConv(rb[i]['Off Mkt Dt']),
+				clsdDate: dateConv(rb[i]['Closed Date']),
+				acreage: rb[i].Acreage
+			});
+			//if index is randomly selected 11, add this condo address to LoadedAddresses
+			if(i===11){
+				var address = rb[11]['Street #'] + ' '+ compassPoint(rb[11].CP) + ' ' + toTitleCase(rb[11]['Str Name']) + ' ' + suffix(rb[11].Sfx);
+				console.log('address added:',address);
+				LoadedAddresses.create({
+					Address: address
+				});
+			}
+		}
+	}
+
+	//convert dollar amounts in case entry includes $ or ,
+	function prepDollars(str){
+		if(typeof str === 'string'){
+			return str.replace(/\$+/g, '').replace(/\,+/g, '');
+		}else{
+			//in the event str is a number, just return str because cannot use replace method on a number
+			return str;
+		}
+	}
+
+	//room dimension conversion from string 00X00 to array [00,00]
+	function rmDimConv(str){
+		if(str !== ''){
+			var dimAr = [];
+			for(var j = 0; j<str.length; j++){
+				if(str[j]==='X'){
+					dimAr.push(str.substr(0, j), str.slice(j+1));
+					return dimAr;
+				}
+			}
+		}else{
+			return str;
+		}
+	}
+
+	//convert date from 'MM/DD/YYYY' to integer YYYYMMDD
 	//http://stackoverflow.com/questions/21291392/how-do-i-format-a-datetime-string-in-javascript-from-using-slashes-to-using-hype
-	var dateStr = rb['List Date'];
-	var testdate = new Date(dateStr);
-	var curr_date = testdate.getDate();
-var curr_month = testdate.getMonth();
-curr_month++;  //We add +1 because Jan is indexed at 0 instead of 1
-var curr_year = testdate.getFullYear();
-console.log('here\'s the re-formatted date:', curr_year + "-" + curr_month + "-" + curr_date);
-var date2test = new Date(dateStr).toISOString().substr(0, 10).replace(/\-+/g, '');
-console.log('iso string date test', date2test + ' ' + typeof date2test + ' '+ typeof parseInt(date2test));
+	function dateConv(dStr){
+		// var convDate = new Date(dStr);
+		// if(dStr !== ''){
+		// 	var foo = parseInt(convDate.toISOString().substr(0, 10).replace(/\-+/g, ''));
+		// 	console.log('date:', foo);
+		// 	return foo;
+		// }else{
+		// 	return dStr;
+		// }
+		if(dStr!==''){
+			//substr value includes the values in start index and includes how many additional characters noted
+			var redo = dStr.substr(6, 4) + dStr.substr(0, 2) + dStr.substr(3,2);
+			return isNaN(parseInt(redo))? '':parseInt(redo);
+		}else{
+			return dStr;
+		}
+	}
 });
 
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
-	var thing = {
-		propertyOne: 'ice cream',
-		property2: 'caramel crunchy stuff',
-		prop3: 'way beyond'
-	};
-	response.json(thing);
-	//response.json(request.body);
+	var rb = request.body;
+	// Property.find({
+	// 	strNumber: rb.streetNumber,
+	// 	strName: rb.streetName
+	// 	// unit: { $gt: rb.unitNumber},
+	// 	// status: 'CLSD'
+	// }).limit(15)
+	// .sort('-clsdDate')
+	// .select('sp olp fin')
+	// .exec(function (err, results) {
+	// 	if (err) return handleError(err);
+	// 	console.log(results);
+	// 	response.send(results);
+	// });
+	Property.find({
+		strNumber: rb.streetNumber,
+		status: 'CLSD'
+	}).limit(15)
+	.select('clsdDate sp olp fin')
+	.sort({
+		clsdDate: -1
+	}).exec(function(error, doc){
+		if(error){
+			console.log('/api/find/test/properties error: ',error);
+		}else{
+			response.send(doc);
+		}
+	});
+
+
+	// var thing = {
+	// 	propertyOne: 'ice cream',
+	// 	property2: 'caramel crunchy stuff',
+	// 	prop3: 'way beyond'
+	// };
+	// response.json(thing);
 });
 
 // This is the route we will send GET requests to retrieve any addresses loaded
@@ -169,14 +353,39 @@ app.get('/api/find/addresses', function(request, response) {
 	});
 });
 
-//route to send DELETE requests to delete the saved addresses (received from helpers.js)
-//app.delete('/api', function(request, response){
-app.post('/api/delete/addresses', function(request, response){
-	LoadedAddresses.remove({}, function(error){
+app.get('/api/testproperties', function(request, response) {
+	Property.find({}).exec(function(error, doc){
 		if(error){
-			console.log('/api/delete/addresses error:',error);
+			console.log('/api/find/test/properties error: ',error);
+		}else{
+			response.send(doc);
 		}
 	});
+});
+
+//route to send requests to delete the saved addresses or properties (received from helpers.js)
+app.get('/api/delete/:what', function(request, response){
+	var selection = request.params.what;
+	switch(selection){
+		case 'loadedAd':
+			LoadedAddresses.remove({}, function(error){
+				if(error){
+					console.log('/api/delete/loadedAddresses error:',error);
+				}
+			});
+			break;
+		case 'allProperties':
+			Property.remove({}, function(error){
+				if(error){
+					console.log('/api/delete/allProperties error:', error);
+				}
+			});
+			break;
+		default:
+			console.log('unknown thing requested for deletion server.js:', selection);
+			break;
+	}
+	
 });
 
 // Main "/" Route. This will redirect the user to the rendered React application
@@ -186,7 +395,7 @@ app.get('/', function(req, res) {
 
 // ======================================================
 // routes for tsv files
-
+//this get request received from SearchProperty.js in loadDB function
 app.get('/tsv/:fileName', function(req, res){
 	res.sendFile(__dirname + '/tsv_files/' + req.params.fileName);
 });

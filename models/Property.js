@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var PropertySchema = new Schema({
-	_propertyType : {
-		type: Number,
-		ref: 'Type'
-	},
+	// _propertyType : {
+	// 	type: Number,
+	// 	ref: 'PropertyType'
+	// },
 	typ: {// TYP: 'AT' or 'DE'
 		type: String
 	},
@@ -30,7 +30,7 @@ var PropertySchema = new Schema({
 	state: {//State: 'Illinois',
 		type: String
 	},
-	Zip: {//Zip: '60611',
+	zip: {//Zip: '60611',
 		type: String
 	},  
 	area: {//Area: '8008',
@@ -55,7 +55,7 @@ var PropertySchema = new Schema({
 		type: String
 	},
 	stories: {//'# Stories': '37',
-		type: String
+		type: Number
 	},
 	yrBlt: {//'Yr Blt': '1929',
 		type: String
@@ -111,8 +111,8 @@ var PropertySchema = new Schema({
 	commonPerctg: {//'% Common': '',
 		type: String
 	},
-	propTax:{//Taxes: '8997.54',
-		type: Number
+	propTax:{//Taxes: '8997.54' || 'NEW' || 'EXEMPT'
+		type: Schema.Types.Mixed
 	},
 	taxExemps:{//'Tax Exemps': 'None',
 		type: String
@@ -121,13 +121,13 @@ var PropertySchema = new Schema({
 		type: String
 	},
 	asmDues:{//'As/Asc Dues': '2609',
-		type: String
+		type: Number
 	},
 	maf:{//MAF: 'No',
 		type: String
 	},
 	mafAmount:{//'Master Association Fee($)': '',
-		type: String
+		type: Number
 	},
 	spAssess:{//'Spec Assess': 'No',
 		type: String
@@ -154,10 +154,10 @@ var PropertySchema = new Schema({
 		type: Number
 	},
 	mainSF:{//'Main SF': '',
-		type: String
+		type: Number
 	},
 	aprxTFSF:{//'Aprx Total Fin SF': '',
-		type: String
+		type: Number
 	}, 
 	exposure:{//Exposure: 'N (North), E (East), W (West), City, Lake/Water',
 		type: String
@@ -250,7 +250,7 @@ var PropertySchema = new Schema({
 		type: String
 	},
 	parkingFee:{//'Parking Fee/Lease $': '',
-		type: String
+		type: Number
 	},
 	bd2Flr:{//'2nd Bdr Flr': 'Hardwood',
 		type: String
@@ -262,10 +262,10 @@ var PropertySchema = new Schema({
 		type: String
 	},
 	deededGarageCost:{//'Deeded Garage Cost': '',
-		type: String
+		type: Number
 	},
 	deededParkingCost:{//'Deeded Parking Cost': '',
-		type: String
+		type: Number
 	},
 	dinFlr:{//'Din Flr': 'Hardwood',
 		type: String

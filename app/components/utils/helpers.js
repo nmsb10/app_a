@@ -11,10 +11,16 @@ var helper = {
 	},
 	//function to get the addresses already input to the db
 	getDbAddresses: function(){
+		console.log('getting the getDbAddresses heolpers.js');
 		return axios.get('/api/find/addresses');
 	},
-	deleteAddresses: function(){
-		return axios.post('/api/delete/addresses');
+	//function to get the properties already input to the db
+	getTestProperties: function(){
+		console.log('getting the test properties heolpers.js');
+		return axios.get('/api/testproperties');
+	},
+	deleteModelContents: function(deleteWhat){//function called in SearchProperty.js in component render function
+		return axios.get('/api/delete/'+ deleteWhat);
 	}
 };
 
