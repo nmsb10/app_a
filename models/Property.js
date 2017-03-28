@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+//should add validation!
+//http://mongoosejs.com/docs/validation.html
 var PropertySchema = new Schema({
 	// _propertyType : {
 	// 	type: Number,
