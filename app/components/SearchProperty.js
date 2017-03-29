@@ -241,8 +241,6 @@ getAddresses(){
 	//data request methods
 	searchProperty(propertyObj){		
 		axios.post('/search', propertyObj).then(function(response){
-			console.log('entire response received:', response);
-			console.log('response received in SearchProperty.js!', response.data);
 			//after receiving the database data (an array of objects),
 			//create the finalArray to send for mapping on cma results
 			//here we are giving each of the first 3 properties arrays the
@@ -265,12 +263,12 @@ getAddresses(){
 			];
 			//cmat (cma material) represents the array of properties objects received from the database
 			var cmat = response.data[0];
+			//response.data[1] is the array of adjustments calculated by the server
 			for(var k = 0; k< newKeys.length; k++){
 				cmat[0][newKeys[k]] = "foo";
 				cmat[1][newKeys[k]] = 'bar';
 				cmat[2][newKeys[k]] = 'baz';
 			}
-			console.log('first response.data',cmat[0]);
 			for(var i = 0; i<this.state.catArr.length; i++){
 				//table line array
 				var tla = [];
@@ -278,9 +276,9 @@ getAddresses(){
 					tla[0] = this.state.catArr[i];
 					tla[1] = this.state.subjectProperty[this.state.catarrlegend[i]];
 					// tla[2] = '<a href = https://www.atproperties.com/' + response.data[0][this.state.catarrlegend[i]] + ' target = "_blank">' + response.data[0][this.state.catarrlegend[i]] +'</a>';
-					tla[2] = 'bar';
+					tla[2] = cmat[0][this.state.catarrlegend[i]];
 					tla[3] = cmat[1][this.state.catarrlegend[i]];
-					tla[4] = cmat[2][this.state.catarrlegend[i]];
+					tla[4] = 'bar';
 					finalArray.push(tla);
 				}else{
 					tla[0] = this.state.catArr[i];
@@ -299,7 +297,6 @@ getAddresses(){
 				this.setState({
 					bestCMA: finalArray
 				});
-				console.log('best cma :',this.state.bestCMA);
 			}else{
 				console.log('less than 3 CMA results received!');
 			}
