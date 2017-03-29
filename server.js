@@ -35,6 +35,7 @@ mongoose.Promise = global.Promise;
 //for herokuL
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
+//3increase bodyparser limits?
 mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
