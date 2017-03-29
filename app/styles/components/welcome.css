@@ -1,6 +1,6 @@
 .intro{
 	/* The image used */
-    background-image: url('http://jonathonn.herokuapp.com/assets/images/001.JPG');
+    background-image: url('https://jonathonn.herokuapp.com/assets/images/001.JPG');
 
     /* Full height */
     height: 100%; 
@@ -18,12 +18,12 @@
 
 .intro:nth-child(2){
 	/*background-image: url("./02.JPG");*/
-    background-image: url('http://jonathonn.herokuapp.com/assets/images/002.jpg');
+    background-image: url('https://jonathonn.herokuapp.com/assets/images/002.jpg');
 	height: 75%;
 }
 
 .intro:nth-child(3){
-	background-image: url('http://jonathonn.herokuapp.com/assets/images/01.JPG');
+	background-image: url('https://jonathonn.herokuapp.com/assets/images/01.JPG');
 }
 
 .welcome-content{
