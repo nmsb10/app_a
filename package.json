@@ -8,7 +8,7 @@
     "start": "node server",
     "dev": "webpack & node server",
     "build": "webpack",
-    "bundlerun": "webpack && node server.js",
+    "bundlerun": "webpack && node server.js"
   },
   "repository": {
     "type": "git",
