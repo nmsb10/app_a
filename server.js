@@ -19,8 +19,8 @@ var PORT = process.env.PORT || 3000;
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 //app.use(bodyParser.json({ type: "application/vnd.api+json"}));
-app.use(bodyParser.json({limit: '10mb'}));
-app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 //make the public folder a static directory
 app.use(express.static("./public"));
