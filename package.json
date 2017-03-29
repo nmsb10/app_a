@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server",
+    "dev": "webpack & node server",
+    "build": "webpack",
     "bundlerun": "webpack && node server.js"
   },
   "repository": {
@@ -36,5 +39,8 @@
     "css-loader": "^0.27.3",
     "style-loader": "^0.14.1",
     "webpack": "^1.13.1"
+  },
+  "engines": {
+    "node": "7.2.1"
   }
 }
