@@ -4,7 +4,7 @@ class Cma extends React.Component {
 	//set initial state
 	initializeState(){
 		this.setState({
-			res: this.props.res.sp,
+			res: this.props.res.sp
 		});
 	}
 	//lifecycle methods
@@ -56,16 +56,43 @@ class Cma extends React.Component {
 							<th>comp3 adjustments</th>
 						</tr>
 						<tr></tr>
+				
+						{this.props.cma.map(function(elem, i){
+							return (
+								<tr key = {i}>
+								{/*
+									{elem.map(function(inside){
+										return (
+											<td>{inside}</td>
+										);
+										
+										})
+									}
+								*/}
+
+									<td>{elem[0]}</td>
+									<td>{elem[1]}</td>
+									<td>{elem[2]}</td>
+									<td></td>
+									<td>{elem[3]}</td>
+									<td></td>
+									<td>{elem[4]}</td>
+									<td></td>
+								</tr>
+							);
+						}, this)}
+						{/*
 						<tr>
-							<td>address</td>
+							<td>{cma[0].cat}</td>
 							<td>{this.props.res.sp.streetNumber} {this.props.res.sp.streetName}{this.props.res.sp.unitNumber !== '' && <span>, Unit {this.props.res.sp.unitNumber}</span>}</td>
-							<td>{cma[0].strNumber} {cma[0].compassPoint} {cma[0].strName} {cma[0].sfx}{cma[0].unit !== '' && <span>, Unit {cma[0].unit}</span>}</td>
+							<td>{cma[2].strNumber} {cma[0].compassPoint} {cma[0].strName} {cma[0].sfx}{cma[0].unit !== '' && <span>, Unit {cma[0].unit}</span>}</td>
 							<td></td>
-							<td>{cma[1].strNumber} {cma[1].compassPoint} {cma[1].strName} {cma[1].sfx}{cma[1].unit !== '' && <span>, Unit {cma[1].unit}</span>}</td>
+							<td>{cma[3].strNumber} {cma[1].compassPoint} {cma[1].strName} {cma[1].sfx}{cma[1].unit !== '' && <span>, Unit {cma[1].unit}</span>}</td>
 							<td></td>
-							<td>{cma[2].strNumber} {cma[2].compassPoint} {cma[2].strName} {cma[2].sfx}{cma[2].unit !== '' && <span>, Unit {cma[2].unit}</span>}</td>
+							<td>{cma[4].strNumber} {cma[2].compassPoint} {cma[2].strName} {cma[2].sfx}{cma[2].unit !== '' && <span>, Unit {cma[2].unit}</span>}</td>
 							<td></td>
 						</tr>
+				
 						<tr>
 							<td>mls #</td>
 							<td></td>
@@ -99,7 +126,7 @@ class Cma extends React.Component {
 						<tr>
 							<td>list price</td>
 							<td></td>
-							<td>{/* ${this.withCommas({cma[0].lp})} */}</td>
+							<td></td>
 							<td></td>
 							<td>$commaFunc({cma[1].lp})</td>
 							<td></td>
@@ -376,6 +403,7 @@ class Cma extends React.Component {
 							<td>comp3 details</td>
 							<td>adjustment</td>
 						</tr>
+					*/}
 					</tbody>
 				</table>
 			</div>

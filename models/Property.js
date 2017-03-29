@@ -344,7 +344,7 @@ var PropertySchema = new Schema({
 	createdDate:{
 	    type: Date,
 	    default: Date.now
-	},
+	}
 });
 
 var Property = mongoose.model("Property", PropertySchema);

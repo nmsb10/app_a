@@ -18,25 +18,51 @@ class TsvButtons extends React.Component {
 	componentWillMount(){
 		this.initializeState();
 	}
-	loadDB(){
+	loadDB(fileName){
 		//http://stackoverflow.com/questions/16177037/how-to-extract-information-in-a-tsv-file-and-save-it-in-an-array-in-javascript
 		//https://github.com/d3/d3-request
 		//http://learnjsdata.com/read_data.html
 		//nb: The d3.tsv method makes an AJAX request for data.
 		//http://learnjsdata.com/read_data.html
-		if(!this.state.loadedDB){
-			this.setState({
-				loadedDB: true
-			});			
-			var q = d3.queue();
-			for(var i = 0; i < this.state.tsvFiles.length; i++) {
-				q.defer(d3.tsv,'/tsv/'+ this.state.tsvFiles[i]);
-			}
-			// q.await(this.analyze);
-			q.awaitAll(this.sendAllTsv);
-		}else{
-			console.log('loaded the tsv files already DURING THIS TSVBUTTONS COMPONENT MOUNT');
+		switch(fileName){
+			case 't1':	
+				var q = d3.queue();
+				for(var i = 0; i < this.state.good1tsvFiles.length; i++) {
+					q.defer(d3.tsv,'/tsv/'+ this.state.good1tsvFiles[i]);
+				}
+				q.awaitAll(this.sendAllTsv);
+				break;
+			case 't2':
+				var e = d3.queue();
+				for(var j = 0; j < this.state.good2tsvFiles.length; j++) {
+					e.defer(d3.tsv,'/tsv/'+ this.state.good2tsvFiles[j]);
+				}
+				e.awaitAll(this.sendAllTsv);
+				break;
+			case 't3':
+				var f = d3.queue();
+				for(var h = 0; h < this.state.good3tsvFiles.length; h++) {
+					f.defer(d3.tsv,'/tsv/'+ this.state.good3tsvFiles[h]);
+				}
+				f.awaitAll(this.sendAllTsv);
+				break;
+			default:
+				console.log('file requested not found.');
+				break;
 		}
+		// if(!this.state.loadedDB){
+		// 	this.setState({
+		// 		loadedDB: true
+		// 	});			
+		// 	var q = d3.queue();
+		// 	for(var i = 0; i < this.state.tsvFiles.length; i++) {
+		// 		q.defer(d3.tsv,'/tsv/'+ this.state.tsvFiles[i]);
+		// 	}
+		// 	// q.await(this.analyze);
+		// 	q.awaitAll(this.sendAllTsv);
+		// }else{
+		// 	console.log('loaded the tsv files already DURING THIS TSVBUTTONS COMPONENT MOUNT');
+		// }
 	}
 	sendAllTsv(error, results){
 		if(error){
@@ -78,7 +104,8 @@ class TsvButtons extends React.Component {
 	render(){
 		const handleLoadDBTSV = (event) => {
 			event.preventDefault();
-			this.loadDB();
+			console.log(event.target.kale.dataset.articleid);
+			this.loadDB(event.target.kale.dataset.articleid);
 		}
 		const deleteAllAddresses = (event) => {
 			event.preventDefault();
@@ -105,9 +132,21 @@ class TsvButtons extends React.Component {
 				</form>
 				<form role="form" onSubmit={handleLoadDBTSV}>
 					<div className="">
-						<input type="hidden" data-articleid='' name=""/>
+						<input type="hidden" data-articleid='t1' name="kale"/>
 					</div>
-					<button type="submit" className="btn-admin">load database</button>
+					<button type="submit" className="btn-admin">load database 1</button>
+				</form>
+				<form role="form" onSubmit={handleLoadDBTSV}>
+					<div className="">
+						<input type="hidden" data-articleid='t2' name="kale"/>
+					</div>
+					<button type="submit" className="btn-admin">load database 2</button>
+				</form>
+				<form role="form" onSubmit={handleLoadDBTSV}>
+					<div className="">
+						<input type="hidden" data-articleid='t3' name="kale"/>
+					</div>
+					<button type="submit" className="btn-admin">load database 3</button>
 				</form>
 			</div>
 		);

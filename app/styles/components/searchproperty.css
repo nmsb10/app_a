@@ -7,5 +7,24 @@
 }
 
 .searchPropertyComponent{
-	margin-bottom:50px;
+	margin-bottom: 50px;
+	font-family: "Helvetica", 'Helvetica Neue', Arial, sans-serif;
+}
+
+.top-statistics{
+	font-size: 0;
+}
+
+.ts-third{
+	display: inline-block;
+	width: 32%;
+	min-width: 210px;
+	border:2px solid black;
+	box-sizing: border-box;
+	vertical-align: top;
+	min-height:150px;
+}
+
+.ts-third:nth-child(2){
+	margin: 0 2%;
 }

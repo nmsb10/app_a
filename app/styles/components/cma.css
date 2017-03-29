@@ -1,6 +1,9 @@
 .comps-table{
 	/*https://www.w3schools.com/CSSref/pr_border-collapse.asp*/
 	border-collapse: collapse;
+	/*table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word;*/
 }
 
 .comps-table th{
@@ -20,4 +23,8 @@
 
 .td-summary-stats td{
 	background-color: rgb(225, 225, 225);
+}
+
+.cma-line-2 td{
+	background-color: lime;
 }

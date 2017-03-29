@@ -9,6 +9,10 @@ var helper = {
 		console.log('tsvcontnets!', tsvContents);
 		return axios.post('/load/tsv', tsvContents);
 	},
+	//function to get the addresses already input to the db
+	getDbAddresses: function(){
+		return axios.get('/api/find/addresses');
+	},
 	deleteModelContents: function(deleteWhat){//function called in SearchProperty.js in component render function
 		return axios.get('/api/delete/'+ deleteWhat);
 	}

@@ -132,7 +132,7 @@ app.post('/load/tsv', function(request, response){
 			Property.create({
 				typ: rb[i].TYP,
 				strNumber: rb[i]['Street #'],
-				compassPoint: rb[i].CP,
+				compassPoint: rb[i].CP.toLowerCase(),
 				strName: rb[i]['Str Name'].toLowerCase(),
 				sfx: rb[i].Sfx.toLowerCase(),
 				unit: rb[i]['Unit #'],
@@ -255,9 +255,10 @@ app.post('/load/tsv', function(request, response){
 	}
 
 	//convert dollar amounts in case entry includes $ or ,
+	//^\d selects all non-digit values; then the replace method replaces those values with ''
 	function prepDollars(str){
 		if(typeof str === 'string'){
-			return str.replace(/\$+/g, '').replace(/\,+/g, '');
+			return str.replace(/([^\d])+/g, '');
 		}else{
 			//in the event str is a number, just return str because cannot use replace method on a number
 			return str;
@@ -303,43 +304,38 @@ app.post('/load/tsv', function(request, response){
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
-	var rb = request.body;
-	// Property.find({
-	// 	strNumber: rb.streetNumber,
-	// 	strName: rb.streetName
-	// 	// unit: { $gt: rb.unitNumber},
-	// 	// status: 'CLSD'
-	// }).limit(15)
-	// .sort('-clsdDate')
-	// .select('sp olp fin')
-	// .exec(function (err, results) {
-	// 	if (err) return handleError(err);
-	// 	console.log(results);
-	// 	response.send(results);
-	// });
+	var rb = request.body;	
 	Property.find({
 		strNumber: rb.streetNumber,
-		strName: rb.streetName,
+		strName: rb.streetName.toLowerCase(),
+		//unit: { $gt: rb.unitNumber},
 		status: 'CLSD'
 	}).limit(9)
-	.select('typ strNumber compassPoint strName sfx unit mlsNum status olp lp sp fin listDate contractDate clsdDate propTax asmDues')
+	.select('strNumber typ mlsNum status clsdDate ' +
+		'sp lp olp fin distressed contractDate listDate ' +
+		'mt propTax asmDues rms bds bathF bathH asf exposure PIN')
 	.sort({
 		clsdDate: -1
 	}).exec(function(error, doc){
 		if(error){
 			console.log('/api/find/test/properties error: ',error);
 		}else{
-			response.send(doc);
+			//analyze the properties here.
+			//add keys and values for adjustments to each of the objects in doc.
+			//keys to add and calculate:
+			//then sort the results according to ranking
+			//send doc
+			var analysisArray = [
+			{one: 'thing', food: 'cupcake', number: 992},
+			{one: 'secund', food: 'kale', number: 30},
+			];
+			var resultsWithAnalysis = [];
+			resultsWithAnalysis.push(doc, analysisArray);
+
+			response.send(resultsWithAnalysis);
+			//response.json(doc);
 		}
 	});
-
-
-	// var thing = {
-	// 	propertyOne: 'ice cream',
-	// 	property2: 'caramel crunchy stuff',
-	// 	prop3: 'way beyond'
-	// };
-	// response.json(thing);
 });
 
 // This is the route we will send GET requests to retrieve any addresses loaded

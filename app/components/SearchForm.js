@@ -40,7 +40,7 @@ class SearchForm extends React.Component {
 	}
 	render(){
 		return(
-			<div>
+			<div className = 'ts-third search-form-1'>
 				<span>enter your property details</span>
 				<form onSubmit = {(event) => this.handleSubmit(event)}>
 					{/*
