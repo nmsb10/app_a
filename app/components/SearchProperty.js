@@ -338,9 +338,9 @@ getAddresses(){
 					{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY*/}
 					},this)}
 				</div>
-			
+			{/*	
 				<TsvButtons loadedAddresses = {this.state.addressesLoaded} getAddresses = {this.getAddresses}/>
-		{/*	*/}
+		*/}
 			
 			</div>
 		);
