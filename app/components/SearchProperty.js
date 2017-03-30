@@ -245,7 +245,7 @@ class SearchProperty extends React.Component {
 				//ie create full address, add commas and $ to prices, taxes, assessments
 				this.setState({
 					bestCMA: finalArray,
-					noResultsMes:'',
+					noResultsMes:'success! take a look at your results below.',
 					buildStats: bstats,
 					buildInfo: binfo
 				});

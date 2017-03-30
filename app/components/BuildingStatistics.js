@@ -17,7 +17,66 @@ class BuildingStatistics extends React.Component {
 				<div className = 'panel-inside'>
 					<div className = 'header'>building statistics
 					</div>
-					<div className = 'content'>content content content adsflkaflk a 
+					<div className = 'content'>
+						<table className = 'building-stats-table'>
+							<tbody>
+								<tr>
+									<th></th>
+									<th>24 - 12</th>
+									<th>12 - 0</th>
+									<th>% change</th>
+								</tr>
+								<tr></tr>
+								<tr>
+									<td># units sold</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>median SP</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>mean SP</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>mean (SP / ASF)</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>mean MT</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>mean LMT</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>mean SP / LP</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>mean SP / OLP</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
