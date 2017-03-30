@@ -142,9 +142,7 @@ class SearchProperty extends React.Component {
 			buildStats:{
 
 			},
-			buildInfo:{
-
-			}
+			buildInfo:{}
 		};
 		this.updateCmaSpFields = this.updateCmaSpFields.bind(this);
 		this.updateSPFields = this.updateSPFields.bind(this);
@@ -251,7 +249,7 @@ class SearchProperty extends React.Component {
 				});
 			}else{
 				this.setState({
-					noResultsMes: 'no results found. please try again.',
+					noResultsMes: 'no results found. please consult broker or try again.',
 					bestCMA: [],
 					buildStats: bstats,
 					buildInfo: binfo

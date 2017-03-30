@@ -306,19 +306,64 @@ app.post('/load/tsv', function(request, response){
 	}
 });
 
+//=======================
+//FUNCTIONS FOR CONDUCTING A PROPERTY SEARCH
+function randomEntry(array){
+	return Math.floor(Math.random()*array.length);
+}
+
+var gSArrLength = 0;
+var gsCount = 0;
+function getSomething(array, key){
+	var selected = randomEntry(array);
+	if(array[selected][key] !== '' && array[selected][key] !== undefined){
+		return array[selected][key];
+	}else if(gsCount===gSArrLength){
+		return array[randomEntry(array)][key];
+	}else{
+		gsCount ++;
+		getSomething(array, key);
+	}
+}
+
+function getSomethingBetter(array, key){
+	var maxLengthEntry = '';
+	for(var i = 0; i<array.length; i++){
+		if(array[i][key] !== '' && array[i][key] !== undefined){
+			if(array[i][key].length > maxLengthEntry){
+				maxLengthEntry = array[i][key];
+			}
+		}
+	}
+	return maxLengthEntry;
+}
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
-	var rb = request.body;	
+	var rb = request.body;
+	var tier = rb.unit.slice(-2);
+	var possibleUnits = [];
+	for(var i = 1; i<100; i++){
+		var unitNumber = i + tier;
+		possibleUnits.push(unitNumber);
+	}
+	var d = new Date();
+	var currentDate = d.toISOString().slice(0,10).replace(/([^\d])+/g, '');
+	var twoYearsPrior = parseInt([parseInt(currentDate.slice(0, 4))-2, currentDate.slice(4)].join(''));
+	var oneYearPrior = parseInt([parseInt(currentDate.slice(0, 4))-1, currentDate.slice(4)].join(''));
 	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
+		typ: rb.typ,
 		strNumber: rb.strNumber,
 		strName: rb.strName.toLowerCase(),
-		//unit: { $gt: rb.unitNumber},
-		status: { $in: ['CLSD', 'PEND']}
-	}).limit(9)
-	.select('strNumber typ mlsNum status clsdDate ' +
+		status: { $in: ['CLSD', 'PEND']},
+		// unit: { $in: possibleUnits},
+		clsdDate: {$gte: twoYearsPrior}
+	})
+	// .limit(9)
+	.select('typ strNumber strName sfx unit totalUnits mlsNum status clsdDate ' +
 		'sp lp olp fin distressed contractDate listDate ' +
-		'mt propTax asmDues rms bds bathF bathH asf exposure PIN')
+		'mt propTax asmDues rms bds bathF bathH asf exposure PIN ' +
+		'commonAA assesInc')
 	.sort({
 		clsdDate: -1
 	}).exec(function(error, doc){
@@ -341,13 +386,74 @@ app.post('/search', function(request, response){
 			//then sort the results according to ranking
 
 			//create building analysis (statistics, info):
-			var statistics = {one: 'thing', food: 'cupcake', number: 992};
-			var info = {one: 'secund', food: 'kale', number: 30};
-			var allResults = [];
-			allResults.push(doc, ranking, adjustments, statistics, info);
-			console.log('all results from server.js', allResults);
-			response.send(allResults);
-			//response.json(doc);
+			var unitsSold1 = 0;
+			for(var j = 0; j<doc.length; j++){
+				if(doc[j].clsdDate>oneYearPrior){
+					unitsSold1 ++;
+				}
+			}
+			var statistics = {
+				unitsSold2412: doc.length - unitsSold1,
+				unitsSold1200: unitsSold1, 
+				medSP2: 0,
+				medSP1: 0,
+				meanSP2: 0,
+				meanSP1: 0,
+				meanSPASF2: 320.05,
+				meanSPASF1: 345.77,
+				meanMT2: 55,
+				meanMT1: 47,
+				meanLMT2: 75,
+				meanLMT1: 60,
+				meanSPLP2: '97.65%',
+				meanSPLP1: '98.23%',
+				meanSPOLP2: '89.66%',
+				meanSPOLP1: '93.48%'
+			};
+			gSArrLength = doc.length;
+			//reset the gsCount
+			gsCount = 0;
+			var info = {
+				units: getSomethingBetter(doc, 'totalUnits'),
+				buildingAmen: getSomethingBetter(doc, 'amenities'),
+				commonAmen: getSomethingBetter(doc, 'commonAA'),
+				assessInc: getSomethingBetter(doc, 'assesInc')
+			};
+
+			//BEGIN TEST QUERY WITHIN QUERY
+			Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
+				typ: rb.typ,
+				strNumber: rb.strNumber,
+				strName: rb.strName.toLowerCase(),
+				//unit: { $gt: rb.unitNumber},
+				status: { $in: ['CLSD', 'PEND']},
+				unit: { $in: possibleUnits},
+				clsdDate: {$gte: twoYearsPrior},
+			})
+			.select('strNumber strName sfx unit typ mlsNum status clsdDate ' +
+				'sp lp olp fin distressed contractDate listDate ' +
+				'mt propTax asmDues rms bds bathF bathH asf exposure PIN')
+			.sort({
+				clsdDate: -1
+			}).exec(function(error, cmaMatches){
+				if(error){
+					console.log('/api/find/test/properties error: ',error);
+				}else{
+					var allResults = [];
+					allResults.push(doc, cmaMatches, ranking, adjustments, statistics, info);
+					console.log('all results from server.js', allResults);
+					response.send(allResults);
+				}
+			});
+			//END TEST QITHIN QUERY
+
+
+			//ORIGINAL ENDING BEFORE TEST QUERY:
+			// var allResults = [];
+			// allResults.push(doc, ranking, adjustments, statistics, info);
+			// console.log('all results from server.js', allResults);
+			// response.send(allResults);
+			// //response.json(doc);
 		}
 	});
 });
