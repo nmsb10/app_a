@@ -1,3 +1,9 @@
 .search-form-1{
 	font-size:15px;
 }
+
+.no-results-mes{
+	color: purple;
+	font-weight: 600;
+	font-style: italic;
+}

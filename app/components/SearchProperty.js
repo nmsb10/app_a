@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {SearchForm} from './SearchForm';
+import {BuildingStatistics} from './BuildingStatistics';
+import {BuildingInfo} from './BuildingInfo';
 import {Cma} from './Cma';
 import {TsvButtons} from './TsvButtons';
 import * as axios from 'axios';
@@ -7,69 +9,9 @@ import * as axios from 'axios';
 var helper = require('./utils/helpers.js');
 
 class SearchProperty extends React.Component {
-	//set initial state
-	initializeState(){
-		this.setState({
-			addressesLoaded:[],
-			cmaResults:[
-				{
-					typ:'',
-					strNumber:'',
-					compassPoint:'',
-					strName:'',
-					sfx:'',
-					unit:'',
-					mlsNum:'',
-					status:'',
-					olp:'',
-					lp:'',
-					sp:'',
-					fin:'',
-					listDate:'',
-					contractDate:'',
-					clsdDate:'',
-					propTax:'',
-					asmDues:''
-				},
-				{
-					typ:'',
-					strNumber:'',
-					compassPoint:'',
-					streetName:'',
-					sfx:'',
-					unit:'',
-					mlsNum:'',
-					status:'',
-					olp:'',
-					lp:'',
-					sp:'',
-					fin:'',
-					listDate:'',
-					contractDate:'',
-					clsdDate:'',
-					propTax:'',
-					asmDues:''
-				},
-				{
-					typ:'',
-					strNumber:'',
-					compassPoint:'',
-					streetName:'',
-					sfx:'',
-					unit:'',
-					mlsNum:'',
-					status:'',
-					olp:'',
-					lp:'',
-					sp:'',
-					fin:'',
-					listDate:'',
-					contractDate:'',
-					clsdDate:'',
-					propTax:'',
-					asmDues:''
-				},
-			],
+	constructor(props) {
+		super(props);
+		this.state = {
 			cmaResultsObj: {
 				//sp = subject property	
 				sp: {
@@ -87,6 +29,7 @@ class SearchProperty extends React.Component {
 			},
 			subjectProperty: {
 				strNumber:'',
+				strName:'',
 				address:'',
 				typ:'',
 				mlsNum: '',
@@ -103,6 +46,7 @@ class SearchProperty extends React.Component {
 				listDate:'',
 				mt:'',
 				propTax:'$0',
+				asf:'',
 				asmDues:0,
 				rms:0,
 				bds:0,
@@ -193,16 +137,24 @@ class SearchProperty extends React.Component {
 				'adjSPtoASF',
 				'adjustedSalePrice'
 			],
-			bestCMA:[]
-		});
+			bestCMA:[],
+			noResultsMes:'',
+			buildStats:{
+
+			},
+			buildInfo:{
+
+			}
+		};
+		this.updateCmaSpFields = this.updateCmaSpFields.bind(this);
+		this.updateSPFields = this.updateSPFields.bind(this);
+		this.searchProperty = this.searchProperty.bind(this);
 	}
 	//lifecycle methods
 	// componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
 	componentWillMount(){
-		this.initializeState();
 	}
 	componentDidMount(){
-		this.getAddresses();
 	}	
 	redirectToSearch(){
 		//'search' is the Route path from routes.js
@@ -210,38 +162,33 @@ class SearchProperty extends React.Component {
 	}
 	updateCmaSpFields(input){
 		let {cmaResultsObj} = this.state;
+		//when you want to update an object from this.state
 		let newObjCopy = Object.assign({}, cmaResultsObj, {sp: input});
 		this.setState({
 			cmaResultsObj: newObjCopy
 		});
 	}
-	//getAddresses = function to get all addresses input to the database
-	// getAddresses(){
-	// 	console.log('getAddresses function in searchproperty.js function called');
-	// 	axios.get('/api/find/addresses').then(function(response){
-	// 		if(response !== this.state.addressesLoaded){
-	// 			this.setState({
-	// 				addressesLoaded: response.data
-	// 			});
-	// 		}
-	// 	}.bind(this));
-	// }
-
-getAddresses(){
-		helper.getDbAddresses().then(function(response){
-			if(response !== this.state.addressesLoaded){
-				this.setState({
-					addressesLoaded: response.data
-				});
-			}
-		}.bind(this));
+	updateSPFields(input){
+		// let newState = {};
+		// newState[event.target.id] = event.target.value;
+		//this.setState(newState);
+		console.log(input);
 	}
-
-
 	//data request methods
-	searchProperty(propertyObj){		
+	searchProperty(propertyObj){
+		//set the subject property array data to what the user submitted
+		let {
+			subjectProperty,
+			catArr,
+			catarrlegend
+		} = this.state;
+		//merging into an empty object, this.state.subjectProperty, and the propertyObject from the search!
+		let spObjectCopy = Object.assign({}, subjectProperty, propertyObj);
+		this.setState({
+			subjectProperty: spObjectCopy
+		});
 		axios.post('/search', propertyObj).then(function(response){
-			//after receiving the database data (an array of objects),
+			//after receiving the database data (an array of three arrays),
 			//create the finalArray to send for mapping on cma results
 			//here we are giving each of the first 3 properties arrays the
 			//newKeys key values,
@@ -263,42 +210,52 @@ getAddresses(){
 			];
 			//cmat (cma material) represents the array of properties objects received from the database
 			var cmat = response.data[0];
-			//response.data[1] is the array of adjustments calculated by the server
-			for(var k = 0; k< newKeys.length; k++){
-				cmat[0][newKeys[k]] = "foo";
-				cmat[1][newKeys[k]] = 'bar';
-				cmat[2][newKeys[k]] = 'baz';
-			}
-			for(var i = 0; i<this.state.catArr.length; i++){
-				//table line array
-				var tla = [];
-				if(i===2){
-					tla[0] = this.state.catArr[i];
-					tla[1] = this.state.subjectProperty[this.state.catarrlegend[i]];
-					// tla[2] = '<a href = https://www.atproperties.com/' + response.data[0][this.state.catarrlegend[i]] + ' target = "_blank">' + response.data[0][this.state.catarrlegend[i]] +'</a>';
-					tla[2] = cmat[0][this.state.catarrlegend[i]];
-					tla[3] = cmat[1][this.state.catarrlegend[i]];
-					tla[4] = 'bar';
-					finalArray.push(tla);
-				}else{
-					tla[0] = this.state.catArr[i];
-					tla[1] = this.state.subjectProperty[this.state.catarrlegend[i]];
-					tla[2] = cmat[0][this.state.catarrlegend[i]];
-					tla[3] = cmat[1][this.state.catarrlegend[i]];
-					tla[4] = cmat[2][this.state.catarrlegend[i]];
-					finalArray.push(tla);
+			var ranking = response.data[1];
+			var adjustments = response.data[2];
+			var bstats = response.data[3];
+			var binfo = response.data[4];
+			if(cmat.length > 2){
+				var fbb = ['foo', 'bar', 'baz'];
+				for(var k = 0; k< newKeys.length; k++){
+					cmat[0][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
+					cmat[1][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
+					cmat[2][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
 				}
-				
-			}
-			//now manipulate certain values here:
-			//manipulate values here
-			//ie create full address, add commas and $ to prices, taxes, assessments
-			if(cmat.length>2){
+				for(var i = 0; i<catArr.length; i++){
+					//table line array (table row)
+					var tla = [];
+					if(i===2){
+						tla[0] = catArr[i];
+						tla[1] = this.state.subjectProperty[catarrlegend[i]];
+						// tla[2] = '<a href = https://www.atproperties.com/' + response.data[0][this.state.catarrlegend[i]] + ' target = "_blank">' + response.data[0][this.state.catarrlegend[i]] +'</a>';
+						tla[2] = cmat[0][catarrlegend[i]];
+						tla[3] = cmat[1][catarrlegend[i]];
+						tla[4] = 'tada!test';
+						finalArray.push(tla);
+					}else{
+						tla[0] = catArr[i];
+						tla[1] = this.state.subjectProperty[catarrlegend[i]];
+						tla[2] = cmat[0][catarrlegend[i]];
+						tla[3] = cmat[1][catarrlegend[i]];
+						tla[4] = cmat[2][catarrlegend[i]];
+						finalArray.push(tla);
+					}
+				}
+				//manipulate values here
+				//ie create full address, add commas and $ to prices, taxes, assessments
 				this.setState({
-					bestCMA: finalArray
+					bestCMA: finalArray,
+					noResultsMes:'',
+					buildStats: bstats,
+					buildInfo: binfo
 				});
 			}else{
-				console.log('less than 3 CMA results received!');
+				this.setState({
+					noResultsMes: 'no results found. please try again.',
+					bestCMA: [],
+					buildStats: bstats,
+					buildInfo: binfo
+				});
 			}
 		}.bind(this));
 		// .then(() => {
@@ -309,35 +266,34 @@ getAddresses(){
 		// });
 	}
 	render(){
+		let {
+			noResultsMes,
+			cmaResultsObj,
+			bestCMA,
+			buildStats,
+			buildInfo
+		} = this.state;
 		return(
 			<div className = 'fit-95 searchPropertyComponent' >
+				<div>welcome. username placeholder.</div>
 				<div className = 'top-statistics'>
 					<SearchForm 
 						searchPlease = {(submission) => this.searchProperty(submission)}
 						updateCmaSp = {(input) => this.updateCmaSpFields(input)}
+						updateSpFields = {(input) => this.updateSpFields(input)}
 						defaultPropertyType = {'AT'}
+						noResultsMessage = {noResultsMes}
 					/>
-					<div className = 'ts-third'>
-					</div>
-					<div className = 'ts-third'>
-					</div>
+					<BuildingStatistics stat = {buildStats}/>
+					<BuildingInfo info = {buildInfo}/>
 				</div>
-				<Cma res = {this.state.cmaResultsObj} cmar = {this.state.cmaResults} cma = {this.state.bestCMA}/>
-				{/*This panel will hold the resulting addresses input to the database already
-				Address and createdDate*/}
-				<div className="">
-					{this.state.addressesLoaded.map(function(elem, i) {
-						return (
-							<div key = {i} className = ''>
-								<span>{elem.Address} added on {elem.createdDate}</span>
-							</div>
-						);
-					{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY*/}
-					},this)}
-				</div>
-			{/*	
+				<Cma 
+					res = {cmaResultsObj} 
+					cma = {bestCMA}
+				/>
+				{/*	
 				<TsvButtons loadedAddresses = {this.state.addressesLoaded} getAddresses = {this.getAddresses}/>
-		*/}
+				*/}
 			
 			</div>
 		);

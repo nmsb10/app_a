@@ -17,14 +17,24 @@
 
 .ts-third{
 	display: inline-block;
+	font-size: 13px;
 	width: 32%;
 	min-width: 210px;
 	border:2px solid black;
 	box-sizing: border-box;
 	vertical-align: top;
 	min-height:150px;
+	margin-right: 2%;
 }
 
-.ts-third:nth-child(2){
-	margin: 0 2%;
+.ts-third:nth-child(3){
+	margin-right: 0;
+}
+
+.ts-third .header{
+	font-size: 15px;
+}
+
+.ts-third .content{
+	font-size: 20px;
 }

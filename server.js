@@ -31,12 +31,12 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for herokuL
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
 //3increase bodyparser limits?
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -308,11 +308,11 @@ app.post('/load/tsv', function(request, response){
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
 	var rb = request.body;	
-	Property.find({
-		strNumber: rb.streetNumber,
-		strName: rb.streetName.toLowerCase(),
+	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
+		strNumber: rb.strNumber,
+		strName: rb.strName.toLowerCase(),
 		//unit: { $gt: rb.unitNumber},
-		status: 'CLSD'
+		status: { $in: ['CLSD', 'PEND']}
 	}).limit(9)
 	.select('strNumber typ mlsNum status clsdDate ' +
 		'sp lp olp fin distressed contractDate listDate ' +
@@ -324,18 +324,27 @@ app.post('/search', function(request, response){
 			console.log('/api/find/test/properties error: ',error);
 		}else{
 			//analyze the properties here.
+			var ranking = [];
+			//1. search for same tier within prior 12 months
+			//if less than 3 results, search for units with similar square feet (within 5 - 10% of subject)
+			//may want to calculate which tiers have similar square feet (and account for entries where sqft is 0)
+			//still if less than 3 results, search for sales with similar assessments / taxes
+
+			//1.5 parse through remarks to create "updated score" for the comparables
+			//2. once 3+ results found, rank (according to close date, number of differences, etc)
+
 			//add keys and values for adjustments to each of the objects in doc.
+			var adjustments = [];
 			//keys to add and calculate:
 			//then sort the results according to ranking
-			//send doc
-			var analysisArray = [
-			{one: 'thing', food: 'cupcake', number: 992},
-			{one: 'secund', food: 'kale', number: 30},
-			];
-			var resultsWithAnalysis = [];
-			resultsWithAnalysis.push(doc, analysisArray);
 
-			response.send(resultsWithAnalysis);
+			//create building analysis (statistics, info):
+			var statistics = {one: 'thing', food: 'cupcake', number: 992};
+			var info = {one: 'secund', food: 'kale', number: 30};
+			var allResults = [];
+			allResults.push(doc, ranking, adjustments, statistics, info);
+			console.log('all results from server.js', allResults);
+			response.send(allResults);
 			//response.json(doc);
 		}
 	});
@@ -389,6 +398,14 @@ app.get('/', function(req, res) {
 app.get('/tsv/:fileName', function(req, res){
 	res.sendFile(__dirname + '/tsv_files/' + req.params.fileName);
 });
+
+// ======================================================
+// future considerations
+// start timer on log-in (mark log-in time)
+// note when browser closed or when user logs out
+// difference is time spent active on the site? how to measure this?
+// what if multiple tabs open in the user's browser? how to 
+// measure active time on my site only?
 
 // ======================================================
 // Listener

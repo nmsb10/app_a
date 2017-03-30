@@ -7,7 +7,7 @@ class Main extends React.Component {
 		super(props);
 		this.state = {
 			dbLoaded: false,
-			mainOne: 'superdog',
+			mainOne: 'pineapple',
 			mainTwo:['cupcakes', 5]
 		};
 	}

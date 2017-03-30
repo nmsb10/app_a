@@ -21,6 +21,9 @@ class Welcome extends React.Component {
 					<div className = 'content welcome-c3'>thank you for visiting!
 					</div>
 				</div>
+			{/*
+				home buying guide, insider's property notes, detailed checklists, testimonials
+			*/}
 			</div>
 		);
 	}

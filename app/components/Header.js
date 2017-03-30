@@ -17,6 +17,11 @@ class Header extends React.Component {
 						search property
 						</Link>
 					</li>
+					<li className = 'h-li'>
+						<Link to='properties_available' activeClassName = 'active'>
+						searchable addresses
+						</Link>
+					</li>
 				</ul>
 				
 			</header>
