@@ -53,7 +53,6 @@ class SearchForm extends React.Component {
 		} = this.state;
 		return(
 			<div className = 'ts-third search-form-1'>
-				<span className = 'no-results-mes'>{this.props.noResultsMessage}</span>
 				<form onSubmit = {(event) => this.handleSubmit(event)}>
 					{/*
 					when a label has attribute 'for' this makes the input with which it is associated clickable
@@ -65,7 +64,6 @@ class SearchForm extends React.Component {
 					as a result, need to have onChange = {(event) => this.updateInput(event)}
 					the first `(event) =>` is passed into the function from the input element
 					*/}
-					<div className = 'sf-header'>enter your property details</div>
 					<div className = 'sf-content'>
 						<div className = 'form-group'>
 							<label htmlFor = 'typ'>property type:</label>
@@ -160,15 +158,14 @@ class SearchForm extends React.Component {
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
 						</div>
-					</div>
-					<div className = 'sf-submit-button'>
 						<button
 							type="submit"
 							className=''
 							id="runSearch"
 							>
 							get answers
-						</button>
+						</button>	
+						<span className = 'no-results-mes'>{this.props.noResultsMessage}</span>
 					</div>
 				</form>
 			</div>

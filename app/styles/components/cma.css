@@ -7,7 +7,6 @@
 }
 
 .comps-table th{
-	background-color: purple;
 	color: white;
 }
 
@@ -15,6 +14,10 @@
 	padding: 5px;
 	text-align: left;
 	border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.comps-table tr:first-child{
+	background-color: rgba(58, 58, 58, 1);
 }
 
 .comps-table tr:nth-child(2n){

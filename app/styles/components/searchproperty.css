@@ -13,6 +13,7 @@
 
 .top-statistics{
 	font-size: 0;
+	margin-bottom:35px;
 }
 
 .ts-third{
@@ -20,21 +21,73 @@
 	font-size: 13px;
 	width: 32%;
 	min-width: 210px;
-	border:2px solid black;
 	box-sizing: border-box;
 	vertical-align: top;
-	min-height:150px;
 	margin-right: 2%;
+	border-radius: 5px;
+	color: black;
+	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
 }
 
 .ts-third:nth-child(3){
 	margin-right: 0;
 }
 
-.ts-third .header{
-	font-size: 15px;
+.ts-third:hover{
+	background-color: rgba(95, 10, 95, 1);
+}
+
+.ts-third:first-child:hover{
+	background-color: rgba(250, 250, 250, 1);
+}
+
+.ts-third .panel-inside{
+	width: 96%;
+	margin: 0 auto;
+	border-radius: 5px;
+	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
 }
 
 .ts-third .content{
-	font-size: 20px;
+	background-color:rgba(251, 251, 251, 1);
+	font-size: 17px;
+	margin-bottom: 8px;
+	border-radius: 3px;
+	text-align: justify;
+	padding: 3px;
+	border: 1px solid rgb(213, 213, 213);
+	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
+}
+
+.ts-third:hover .content{
+	background-color: rgba(245, 245, 245, 1);
+}
+
+.ts-third .header{
+	font-size: 15px;
+	padding: 5px 3px 3px;
+	-webkit-transition: all 0.75s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.75s ease 0s;
+	transition: all 0.75s ease 0s;
+}
+
+.ts-third:hover .header{
+	color: rgba(255, 255, 255, 1);
+}
+
+.user-nav{
+	background: rgb(71, 71, 71);
+    color: white;
+    padding: 3px;
+    font-style: italic;
+    display: inline-block;
+    border-radius: 3px;
+    margin: 5px 0;
+    padding-right: 50px;
 }

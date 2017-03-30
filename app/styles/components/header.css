@@ -47,6 +47,10 @@ header ul{
 	cursor: default;
 }
 
+.h-li:active{
+	box-shadow: 0 0 8px 0 rgba(0,0,0,0.5) inset;
+}
+
 .h-li a{
 	font-family: "Helvetica", 'Helvetica Neue', Arial, sans-serif;
 	color: #f2f2f2;

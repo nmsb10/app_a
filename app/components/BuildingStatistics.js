@@ -13,10 +13,12 @@ class BuildingStatistics extends React.Component {
 	render(){
 		let {stat} = this.props;
 		return(
-			<div className = 'ts-third' >
-				<div className = 'header'>building statistics
-				</div>
-				<div className = 'content'>content content content adsflkaflk a 
+			<div className = 'ts-third'>
+				<div className = 'panel-inside'>
+					<div className = 'header'>building statistics
+					</div>
+					<div className = 'content'>content content content adsflkaflk a 
+					</div>
 				</div>
 			</div>
 		);

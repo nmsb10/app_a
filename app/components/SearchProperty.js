@@ -275,7 +275,7 @@ class SearchProperty extends React.Component {
 		} = this.state;
 		return(
 			<div className = 'fit-95 searchPropertyComponent' >
-				<div>welcome. username placeholder.</div>
+				<div className = 'user-nav'>welcome! username placeholder.</div>
 				<div className = 'top-statistics'>
 					<SearchForm 
 						searchPlease = {(submission) => this.searchProperty(submission)}
