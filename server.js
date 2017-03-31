@@ -525,8 +525,15 @@ app.post('/search', function(request, response){
 			stats.meanSPOLPChange = findPerc(stats.meanSPOLP2, stats.meanSPOLP1);
 
 			//BEGIN QUERY WITHIN QUERY FOR COMPARABLES ANALYSIS
-			var tier = rb.unit.slice(-2);
+			var tier = '';
 			var possibleUnits = [];
+			if(isNaN(parseInt(rb.unit.slice(-2)))){
+				tier = rb.unit.slice(-2).toUpperCase();
+			}else if(isNaN(parseInt(rb.unit.slice(-1)))){
+				tier = rb.unit.slice(-1).toUpperCase();
+			}else{
+				tier = rb.unit.slice(-2);
+			}
 			for(var i = 1; i<100; i++){
 				var unitNumber = i + tier;
 				possibleUnits.push(unitNumber);

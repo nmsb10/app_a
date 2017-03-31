@@ -74,7 +74,7 @@ class SearchProperty extends React.Component {
 				'mls #',
 				'status',
 				'closed date',
-				'appreciating / declining / stable market factor adjustment',
+				'appreciating / declining market adjustment',
 				'sold price',
 				'list price',
 				'original list price',
@@ -102,7 +102,7 @@ class SearchProperty extends React.Component {
 				'SP / ASF',
 				'Adjusted SP / ASF',
 				'Adjusted Sale Price',
-				'Confidence'
+				'Confidence Score'
 			],
 			//catarrlegend has the key value (for the individual properties) at the same index for the categories to go in the cma table
 			catarrlegend: [
@@ -179,9 +179,7 @@ class SearchProperty extends React.Component {
 			},
 			bestCMA:[],
 			noResultsMes:'',
-			buildStats:{
-
-			},
+			buildStats:{},
 			buildInfo:{}
 		};
 		this.updateSPFields = this.updateSPFields.bind(this);
@@ -240,14 +238,12 @@ class SearchProperty extends React.Component {
 			//then currently setting those key values to foo, bar, baz
 			var finalArray = [];
 			var newKeys = [
-				'splpRatios',
 				'adjUpdates',
 				'adjMechanicals',
 				'adjHW',
 				'adjPremLoc',
 				'netAdjustments',
 				'netAdjustmentsPerc',
-				'SPtoASF',
 				'adjSPtoASF',
 				'adjustedSalePrice'
 			];
@@ -311,6 +307,16 @@ class SearchProperty extends React.Component {
 						tla[6] = '$' + this.withCommas(cmat[2][catarrlegend[i]].toString());
 						tla[7] = '';
 						finalArray.push(tla);
+					}else if(i === 9){//sp/olp | sp/lp
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = ((100*cmat[0].sp)/cmat[0].olp).toFixed(2) + '% | ' + ((100*cmat[0].sp)/cmat[0].lp).toFixed(2) + '%';
+						tla[3] = '';
+						tla[4] = ((100*cmat[1].sp)/cmat[1].olp).toFixed(2) + '% | ' + ((100*cmat[1].sp)/cmat[1].lp).toFixed(2) + '%';
+						tla[5] = '';
+						tla[6] = ((100*cmat[2].sp)/cmat[2].olp).toFixed(2) + '% | ' + ((100*cmat[2].sp)/cmat[2].lp).toFixed(2) + '%';
+						tla[7] = '';
+						finalArray.push(tla);
 					}else if(i === 15 || i === 16){//property taxes, assessments
 						tla[0] = catArr[i];
 						tla[1] = '$' + this.withCommas(subjectProperty[catarrlegend[i]].toString());
@@ -329,6 +335,16 @@ class SearchProperty extends React.Component {
 						tla[4] = cmat[1][catarrlegend[i]] + ' | ' + cmat[1].sfSource;
 						tla[5] = '';
 						tla[6] = cmat[2][catarrlegend[i]] + ' | ' + cmat[2].sfSource;
+						tla[7] = '';
+						finalArray.push(tla);
+					}else if(i===30){//sp/asf
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '$' + (cmat[0].sp / cmat[0].asf).toFixed(0) + '/sqft';
+						tla[3] = '';
+						tla[4] = '$' + (cmat[1].sp / cmat[1].asf).toFixed(0) + '/sqft';
+						tla[5] = '';
+						tla[6] = '$' + (cmat[2].sp / cmat[2].asf).toFixed(0) + '/sqft';
 						tla[7] = '';
 						finalArray.push(tla);
 					}else{
