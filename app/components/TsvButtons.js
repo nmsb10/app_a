@@ -9,14 +9,14 @@ class TsvButtons extends React.Component {
 			loadedDB: false,
 			aaagood2tsvFiles: ['159ewalton.TSV', '161echicago.TSV', '175edelaware.TSV', '400erandolph.TSV'],
 			aaagood1tsvFiles: ['800nmichigan.TSV', '840nlsd.TSV', '950nmichigan.TSV','222epearson.TSV','401nwabash.TSV'],
-			BADtsvFiles:[ '250epearson.TSV', '1000nlsd.TSV', '1235sprairie.TSV'],
+			BADtsvFiles:[ '250epearson.TSV', '1000nlsd.TSV', '1235sprairie.TSV', '1211sprairie.TSV'],
 			aaagood3tsvFiles: ['474nlsd.TSV', '505nlsd.TSV','1720mapleevanston.TSV', '807davisevanston.TSV', '655wirvingpark.TSV'],
 			aaagood4tsvFiles: ['180epearson.TSV', '545ndearborn.TSV'],
-			bbbgood1tsvFiles:['1201sprairie.TSV', '1211sprairie.TSV'],
+			bbbgood1tsvFiles:['1201sprairie.TSV'],
 			bbbgood2tsvFiles: ['1212nlasalle.TSV', '1250nlasalle.TSV'],
 			bbbgood3tsvFiles:['1255nsandburg.TSV', '1355nsandburg.TSV','1360nsandburg.TSV'],
-			good1tsvFiles:['1455nsandburg.TSV', '1460nsandburg.TSV'],
-			good2tsvFiles:['1560nsandburg.TSV'],
+			bbbgood4tsvFiles:['1455nsandburg.TSV', '1460nsandburg.TSV'],
+			bbbgood5tsvFiles:['1560nsandburg.TSV'],
 		});
 	}
 	//lifecycle methods
