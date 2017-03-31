@@ -19,6 +19,11 @@ class BuildingInfo extends React.Component {
 					</div>
 					<div className = 'content'>
 						<div className = 'info-div'>
+							<span className = 'title'>common name:</span>
+							<br/>
+							<span className = 'info-span'>{info.name}</span>
+						</div>
+						<div className = 'info-div'>
 							<span className = 'title'>total number of units:</span>
 							<br/>
 							<span className = 'info-span'>{info.units}</span>

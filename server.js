@@ -348,6 +348,43 @@ function calculateMedian(array){
 	}
 }
 
+function commonName(num, name){
+	switch(num+name){
+		case '800michigan':
+			return 'Park Tower';
+		case '505lake shore':
+			return 'Lake Point Tower';
+		case '1720maple':
+			return 'Optima Views Evanston';
+		case '807davis':
+			return 'The Residences of Sherman Plaza Evanston';
+		case '655irving park':
+			return 'Park Place Tower';
+		case '159walton':
+			return 'Palmolive Building Landmark';
+		case '161chicago':
+			return 'Olympia Centre';
+		case '175delaware':
+			return '(john hancock residences)';
+		case '400randolph':
+			return 'Outer Drive East';
+		case '840lake shore':
+			return 'The Residences on Lake Shore Park';
+		case '950michigan':
+			return 'One Magnificent Mile';
+		case '222pearson':
+			return 'Pearson on the Park';
+		case '401wabash':
+			return 'Trump Tower Chicago';
+		case '180pearson':
+			return 'Water Tower Residences';
+		case '545dearborn':
+			return 'Grand Plaza';
+		default:
+			return '';
+	}
+}
+
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
@@ -383,6 +420,7 @@ app.post('/search', function(request, response){
 				}
 			}
 			var info = {
+				name: commonName(rb.strNumber,rb.strName.toLowerCase()),
 				units: getSomethingBetter(doc, 'totalUnits'),
 				commonAmen: getSomethingBetter(doc, 'commonAA'),
 				assessInc: getSomethingBetter(doc, 'assesInc'),
