@@ -31,14 +31,14 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
 //3increase bodyparser limits?
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -323,6 +323,17 @@ function getSomethingBetter(array, key){
 	}
 	return maxLengthEntry;
 }
+
+function getLargestNumber(array, key){
+	var highest = 0;
+	for(var i = 0; i<array.length; i++){
+		if(array[i][key]>=highest){
+			highest = array[i][key];
+		}
+	}
+	return highest;
+}
+
 function findPerc(far, close){
 	return parseFloat(100*(close - far)/far).toFixed(2);
 }
@@ -425,7 +436,7 @@ app.post('/search', function(request, response){
 		clsdDate: {$gte: twoYearsPrior}
 	})
 	.select('clsdDate totalUnits commonAA assesInc amenities ' +
-		'sp asf mt lmt lp olp')
+		'sp asf mt lmt lp olp stories')
 	.sort({
 		clsdDate: -1
 	}).exec(function(error, doc){
@@ -477,6 +488,7 @@ app.post('/search', function(request, response){
 				units: getSomethingBetter(doc, 'totalUnits'),
 				commonAmen: getSomethingBetter(doc, 'commonAA'),
 				assessInc: getSomethingBetter(doc, 'assesInc'),
+				stories: getLargestNumber(doc, 'stories'),
 				buildingAmen: getSomethingBetter(doc, 'amenities')
 			};
 			var stats = {

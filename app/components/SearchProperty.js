@@ -253,6 +253,10 @@ class SearchProperty extends React.Component {
 			var adjustments = response.data[3];
 			var bstats = response.data[4];
 			var binfo = response.data[5];
+			function monthsDifference(todayMonth, todayYear, beforeMonth, beforeYear){
+				var dif = (todayMonth - beforeMonth + (12 * (todayYear -beforeYear)));
+				return dif <=0 ? 0: dif;
+			}
 			if(cmat.length > 1){
 				if(cmat.length===2){
 					cmat.push(fillerObject);
@@ -288,14 +292,16 @@ class SearchProperty extends React.Component {
 						tla[7] = '';
 						finalArray.push(tla);
 					}else if(i===5){//appreciating / declining market factor adjustment
+						var monthlyChange = (bstats.medspChange/12).toFixed(2);
+						var today = new Date();
 						tla[0] = catArr[i];
 						tla[1] = '';
-						tla[2] = '';
-						tla[3] = 'calculation';
-						tla[4] = '';
-						tla[5] = 'calculation';
-						tla[6] = '';
-						tla[7] = 'calculation';
+						tla[2] = monthlyChange + '%';
+						tla[3] = '$' + Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[0].clsdDate.toString().substr(4,2)), parseInt(cmat[0].clsdDate.toString().substr(0,4))) * cmat[0].sp).toFixed(0))*100;
+						tla[4] = monthlyChange + '%';
+						tla[5] = '$' + Math.floor(((monthlyChange * 0.01 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[1].clsdDate.toString().substr(4,2)), parseInt(cmat[1].clsdDate.toString().substr(0,4))) * cmat[1].sp).toFixed(0))/100)*100;
+						tla[6] = monthlyChange + '%';
+						tla[7] = '$' + Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[2].clsdDate.toString().substr(4,2)), parseInt(cmat[2].clsdDate.toString().substr(0,4))) * cmat[2].sp).toFixed(0))*100;
 						finalArray.push(tla);
 					}else if(i===6 || i===7 || i===8){//asp, lp, olp
 						tla[0] = catArr[i];
