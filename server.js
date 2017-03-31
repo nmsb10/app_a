@@ -31,14 +31,14 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/20170321project_three");
+//mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
 //3increase bodyparser limits?
 //change mongoose.connect to heroku database
-//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -416,6 +416,28 @@ function commonName(num, name){
 			return 'Water Tower Residences';
 		case '545dearborn':
 			return 'Grand Plaza';
+		case '1201prairie':
+			return 'The Grant';
+		case '1211prairie':
+			return 'One Museum Park (East Residences)';
+		case '1235prairie':
+			return 'Museum Park Tower IV';
+		case '1212lasalle':
+			return 'LaSalle Private Residences';
+		case '1250lasalle':
+			return 'Gallery 1250';
+		case '1255sandburg':
+			return 'Eliot House of Sandburg Village';
+		case '1355sandburg':
+			return 'Dickinson House of Sandburg Village';
+		case '1360sandburg':
+			return 'Cummings House of Sandburg Village';
+		case '1455sandburg':
+			return 'Bryant House of Sandburg Village';
+		case '1460sandburg':
+			return 'Alcott House of Sandburg Village';
+		case '1560sandburg':
+			return 'James House of Sandburg Village';
 		default:
 			return '';
 	}
