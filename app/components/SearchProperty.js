@@ -297,7 +297,11 @@ class SearchProperty extends React.Component {
 				</div>
 				<div className ={onView === 'search'  ? 'top-statistics' : 'hidden'}>
 					<div className={failText ? 'no-results-mes-top' : 'hidden'}>
-						<span>{noResultsMes}</span>
+						<span>
+						{noResultsMes}
+						<br/>
+						please confirm "searchable addresses" lists your BuildingStatistics
+						</span>
 					</div>
 					<SearchForm 
 						searchPlease = {(submission) => this.searchProperty(submission)}
@@ -317,10 +321,9 @@ class SearchProperty extends React.Component {
 					cma = {bestCMA}
 				/>
 				</div>
-			{/*
+		
 				<TsvButtons loadedAddresses = {this.state.addressesLoaded} getAddresses = {this.getAddresses}/>
-			*/}
-			
+						
 			</div>
 		);
 	}
