@@ -6,31 +6,16 @@ import * as React from 'react';
 class SearchForm extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			typ: this.props.defaultPropertyType || '',
-			strNumber: '',
-			strName: '',
-			unit:'',
-			asf:'',
-			asmDues:'',
-			propTax:'',
-			bds: '',
-			bathF: ''
-		};
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 	}
 	//form event handlers
 	handleSubmit(event){
 		event.preventDefault();
-		this.props.searchPlease(this.state);
+		this.props.searchPlease();
 	}
 	handleInputChange(event){
-		let newState = {};
-		newState[event.target.id] = event.target.value;
-		this.setState(newState);
-		//this.props.updateCmaSp(this.state);
-		//this.props.updateSpFields(this.state);
+		this.props.updateSpFields(event);
 	}
 	//lifecycle methods
 	// componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
@@ -40,17 +25,7 @@ class SearchForm extends React.Component {
 	componentWillUnmount(){
 	}
 	render(){
-		let {
-			typ,
-			strNumber,
-			strName,
-			unit,
-			asf,
-			asmDues,
-			propTax,
-			bds,
-			bathF
-		} = this.state;
+		let {spfields} = this.props;
 		return(
 			<div className = 'search-form-1'>
 				<form onSubmit = {(event) => this.handleSubmit(event)}>
@@ -69,13 +44,13 @@ class SearchForm extends React.Component {
 							<label htmlFor = 'typ'>property type:</label>
 							{/* use value attribute to set the default select html element value*/}
 							<select
-								value = {typ}
+								value = {spfields.typ}
 								className=''
 								id="typ"
 								onChange = {(event) => this.handleInputChange(event)}
 							>
-								<option value='at'>attached (condo, townhome)</option>
-								<option value='de'>detached (single family home)</option>
+								<option value='AT'>attached (condo, townhome)</option>
+								<option value='DE'>detached (single family home)</option>
 							</select>
 						</div>
 						<div className="form-group">
@@ -83,7 +58,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="strNumber"
-								value = {strNumber}
+								value = {spfields.strNumber}
 								placeholder = 'street number'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -93,7 +68,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="strName"
-								value = {strName}
+								value = {spfields.strName}
 								placeholder = 'street name'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -103,7 +78,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="unit"
-								value = {unit}
+								value = {spfields.unit}
 								placeholder = 'unit number'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -113,7 +88,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="asf"
-								value = {asf}
+								value = {spfields.asf}
 								placeholder = 'square feet'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -123,7 +98,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="asmDues"
-								value = {asmDues}
+								value = {spfields.asmDues}
 								placeholder = 'monthly assessments'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -133,7 +108,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="propTax"
-								value = {propTax}
+								value = {spfields.propTax}
 								placeholder = 'property taxes'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -143,7 +118,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="bds"
-								value = {bds}
+								value = {spfields.bds}
 								placeholder = '# bedrooms'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
@@ -153,7 +128,7 @@ class SearchForm extends React.Component {
 							<input
 								type="text"
 								id="bathF"
-								value = {bathF}
+								value = {spfields.bathF}
 								placeholder = '# full bathrooms'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>

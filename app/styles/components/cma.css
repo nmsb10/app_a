@@ -16,6 +16,12 @@
 	border-bottom: 1px solid rgb(200, 200, 200);
 }
 
+.comps-table tr{
+	-webkit-transition: all 0.3s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.3s ease 0s;
+	transition: all 0.3s ease 0s;
+}
+
 .comps-table tr:first-child{
 	background-color: rgba(58, 58, 58, 1);
 }
@@ -24,10 +30,19 @@
 	background-color: rgb(245, 245, 245);
 }
 
+.comps-table tr:hover:not(:first-child){
+	background-color: rgba(105, 105, 105, 0.85);
+	color:white;
+}
+
 .td-summary-stats td{
 	background-color: rgb(225, 225, 225);
 }
 
 .cma-line-2 td{
 	background-color: lime;
+}
+
+.cma-table-container{
+	margin-top:15px;
 }

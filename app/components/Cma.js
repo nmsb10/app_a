@@ -38,7 +38,7 @@ class Cma extends React.Component {
 			);
 		});
 		return(
-			<div className = '' >
+			<div className = 'cma-table-container' >
 				<table className = 'comps-table'>
 					<tbody>
 						<tr>

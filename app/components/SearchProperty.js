@@ -45,8 +45,7 @@ class SearchProperty extends React.Component {
 				contractDate:'',
 				listDate:'',
 				mt:'',
-				rms:0,
-				ASFandsource:'0 | self',
+				rms:'',
 				exposure:'',
 				PIN:'',
 				adjUpdates:'',
@@ -58,7 +57,7 @@ class SearchProperty extends React.Component {
 				SPtoASF:'',
 				adjSPtoASF:'',
 				adjustedSalePrice:'',
-				typ:'',
+				typ:'AT',
 				strNumber: '',
 				strName: '',
 				unit:'',
@@ -142,6 +141,42 @@ class SearchProperty extends React.Component {
 				'adjustedSalePrice',
 				'confidence'
 			],
+			fillerObject: {
+				mlsNum: '',
+				status: '',
+				clsdDate:'',
+				marketFA:'',
+				sp:'',
+				lp:'',
+				olp:'',
+				splpRatios:'',
+				finType:'',
+				distressed:'',
+				contractDate:'',
+				listDate:'',
+				mt:'',
+				rms:'',
+				exposure:'',
+				PIN:'',
+				adjUpdates:'',
+				adjMechanicals:'',
+				adjHW:'',
+				adjPremLoc:'',
+				netAdjustments:'',
+				netAdjustmentsPerc:'',
+				SPtoASF:'',
+				adjSPtoASF:'',
+				adjustedSalePrice:'',
+				typ:'AT',
+				strNumber: '',
+				strName: '',
+				unit:'',
+				asf:'',
+				asmDues:'',
+				propTax:'',
+				bds: '',
+				bathF: ''
+			},
 			bestCMA:[],
 			noResultsMes:'',
 			buildStats:{
@@ -149,7 +184,6 @@ class SearchProperty extends React.Component {
 			},
 			buildInfo:{}
 		};
-		this.updateCmaSpFields = this.updateCmaSpFields.bind(this);
 		this.updateSPFields = this.updateSPFields.bind(this);
 		this.searchProperty = this.searchProperty.bind(this);
 	}
@@ -171,35 +205,34 @@ class SearchProperty extends React.Component {
 			cmaResultsObj: newObjCopy
 		});
 	}
-	updateSPFields(input){
-		// let newState = {};
-		// newState[event.target.id] = event.target.value;
-		//this.setState(newState);
-		console.log(input);
+	updateSPFields(event){
+		let {subjectProperty} = this.state;
+		let newState = {};
+		newState[event.target.id] = event.target.value;
+		//merging into an empty object, this.state.subjectProperty, and the newState received from the searchForm input
+		let spObjectCopy = Object.assign({}, subjectProperty, newState);
+		this.setState({
+			subjectProperty: spObjectCopy
+		});
 	}
 	//http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
 	withCommas(str) {
 		return str.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 	//data request methods
-	searchProperty(propertyObj){
+	searchProperty(){
 		//set the subject property array data to what the user submitted
 		let {
 			subjectProperty,
 			catArr,
-			catarrlegend
+			catarrlegend,
+			fillerObject
 		} = this.state;
-		//merging into an empty object, this.state.subjectProperty, and the propertyObject from the searchForm
-		let spObjectCopy = Object.assign({}, subjectProperty, propertyObj);
-		console.log(spObjectCopy);
 		this.setState({
-			subjectProperty: spObjectCopy,
 			onView: 'loading',
 			failText: null
 		});
-		console.log('subject property info', this.state.subjectProperty);
-
-		axios.post('/search', propertyObj).then(function(response){
+		axios.post('/search', subjectProperty).then(function(response){
 			//after receiving the database data (an array of three arrays),
 			//create the finalArray to send for mapping on cma results
 			//here we are giving each of the first 3 properties arrays the
@@ -225,6 +258,9 @@ class SearchProperty extends React.Component {
 			var bstats = response.data[4];
 			var binfo = response.data[5];
 			if(cmat.length > 1){
+				if(cmat.length===2){
+					cmat.push(fillerObject);
+				}
 				var fbb = ['foo', 'bar', 'baz'];
 				for(var k = 0; k< newKeys.length; k++){
 					cmat[0][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
@@ -238,11 +274,11 @@ class SearchProperty extends React.Component {
 						tla[0] = catArr[i];
 						var subjectAddressUnit = subjectProperty.unit !== '' ? ', unit ' + subjectProperty.unit : '';
 						tla[1] = subjectProperty.strNumber + ' '+ subjectProperty.strName + subjectAddressUnit;
-						tla[2] = cmat[0].strNumber + ' ' + cmat[0].strName + ', unit ' + cmat[0].unit;
+						tla[2] = cmat[0].strNumber + ' ' + cmat[0].strName + ' '+ cmat[0].sfx + ', unit ' + cmat[0].unit;
 						tla[3] = '';
-						tla[4] = cmat[1].strNumber + ' ' + cmat[1].strName + ', unit ' + cmat[1].unit;
+						tla[4] = cmat[1].strNumber + ' ' + cmat[1].strName + ' '+ cmat[1].sfx + ', unit ' + cmat[1].unit;
 						tla[5] = '';
-						tla[6] = cmat[2].strNumber + ' ' + cmat[2].strName + ', unit ' + cmat[2].unit;
+						tla[6] = cmat[2].strNumber + ' ' + cmat[2].strName + ' '+ cmat[2].sfx + ', unit ' + cmat[2].unit;
 						tla[7] = '';
 						finalArray.push(tla);
 					}else if(i===4 || i===12 || i===13){//closed date, contract date, list date
@@ -338,6 +374,7 @@ class SearchProperty extends React.Component {
 		let {
 			noResultsMes,
 			cmaResultsObj,
+			subjectProperty,
 			bestCMA,
 			buildStats,
 			buildInfo,
@@ -368,10 +405,9 @@ class SearchProperty extends React.Component {
 						</span>
 					</div>
 					<SearchForm 
-						searchPlease = {(submission) => this.searchProperty(submission)}
-						updateCmaSp = {(input) => this.updateCmaSpFields(input)}
-						updateSpFields = {(input) => this.updateSpFields(input)}
-						defaultPropertyType = {'AT'}
+						searchPlease = {(submission) => this.searchProperty()}
+						updateSpFields = {(input) => this.updateSPFields(input)}
+						spfields = {subjectProperty}
 						noResultsMessage = {noResultsMes}
 					/>
 

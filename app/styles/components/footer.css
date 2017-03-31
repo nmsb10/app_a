@@ -28,7 +28,7 @@ footer{
 }
 
 #footer-content:hover .footer-link{
-	color: rgba(125, 70, 125, 0.8);
+	color: rgba(82, 195, 29, 0.8);
 	text-shadow: 2px 2px 3px rgba(100, 100, 100, 0.8), 1px 1px 2px rgba(150, 110, 150, 0.9);
 	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
 	-moz-transition: all 0.5s ease 0s;
@@ -36,7 +36,6 @@ footer{
 }
 
 #footer-content:hover{
-	color: rgba(125, 70, 125, 0.8);
 	text-shadow: 2px 2px 3px rgba(100, 100, 100, 0.8), 1px 1px 2px rgba(150, 110, 150, 0.9);
 }
 
@@ -47,4 +46,27 @@ footer{
 
 .footer-link:hover{
 	text-decoration: underline;
+}
+
+.footer-notice{
+	position: absolute;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 5px;
+    font-family: "Helvetica", 'Helvetica Neue', Arial, sans-serif;
+    text-align: right;
+    right: 5px;
+    bottom: 3px;
+    cursor: default;
+    -webkit-transition: all 0.25s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.25s ease 0s;
+	transition: all 0.25s ease 0s;
+}
+
+.footer-notice:first-child{
+	text-align:left;
+	left:5px;
+}
+
+.footer-notice:hover{
+	color: rgba(88, 88, 88, 0.8);
 }

@@ -30,8 +30,17 @@ class Footer extends React.Component {
 	render() {
 		return (
 			<footer>
+				<div className = 'footer-notice'>
+					<span>All images the product and property of Jonathon Nagatani.
+					</span>
+				</div>
 				<div id="footer-content">
-					Copyright &copy; {this.state.year} <a className="footer-link" href="https://www.linkedin.com/in/jonathonnagatani" target="_blank" title="Jonathon on LinkedIn">Jonathon Nagatani</a>. All Rights Reserved.
+					Copyright &copy; {this.state.year}  <a className="footer-link" href="https://www.linkedin.com/in/jonathonnagatani" target="_blank" title="Jonathon on LinkedIn">Jonathon Nagatani</a>. All Rights Reserved.
+				</div>
+				<div className = 'footer-notice'>
+					<span>Property and local market data sourced from Midwest Real Estate Data, LLC (MLS). Data demed reliable but not guaranteed.
+					<br/>Equal Housing Opportunity. License available for inspection at 600 North Western Avenue, Lake Forest, Illinois 60045.
+					</span>
 				</div>
 			</footer>
 		);
