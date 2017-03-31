@@ -19,8 +19,8 @@ var PORT = process.env.PORT || 3000;
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 //app.use(bodyParser.json({ type: "application/vnd.api+json"}));
-app.use(bodyParser.json({limit: '10mb'}));
-app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
+app.use(bodyParser.json({limit: '30mb'}));
+app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
 
 //make the public folder a static directory
 app.use(express.static("./public"));
@@ -105,6 +105,8 @@ app.post('/load/tsv', function(request, response){
 				return 'Drive';
 			case 'rd':
 				return 'Road';
+			case 'ter':
+				return 'Terrace';
 			default:
 				return s;
 		}
