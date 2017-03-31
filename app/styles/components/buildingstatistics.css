@@ -1,0 +1,22 @@
+.building-stats-table{
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.building-stats-table th{
+	color: white;
+}
+
+.building-stats-table th, td{
+	padding: 5px;
+	text-align: left;
+	border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.building-stats-table tr:first-child{
+	background-color: rgba(132, 136, 132, 1);;
+}
+
+.building-stats-table tr:nth-child(2n){
+	background-color: rgb(245, 245, 245)!important;
+}

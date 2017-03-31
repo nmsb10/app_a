@@ -13,7 +13,7 @@ class BuildingInfo extends React.Component {
 	render(){
 		let {info} = this.props;
 		return(
-			<div className = 'ts-third' >
+			<div className = 'binfostats-section' >
 				<div className = 'panel-inside'>
 					<div className = 'header'>general property information
 					</div>

@@ -13,7 +13,7 @@ class SearchProperty extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			onView: 'search',//while searching, is search. otherwise loading.
+			onView: 'search',//while searching, is search. otherwise loading. after loading, if results are found, is stats to show stats
 			failText: null,
 			cmaResultsObj: {
 				//sp = subject property	
@@ -213,7 +213,7 @@ class SearchProperty extends React.Component {
 				'adjustedSalePrice'
 			];
 			//cmat (cma material) represents the array of properties objects received from the database
-			var cmat = response.data[0];
+			var cmat = response.data[1];
 			var ranking = response.data[2];
 			var adjustments = response.data[3];
 			var bstats = response.data[4];
@@ -296,7 +296,7 @@ class SearchProperty extends React.Component {
        					 <div className="loader cn-lang">loading. . .</div>
     				</div>
 				</div>
-				<div className ={onView === 'search'  ? 'top-statistics' : 'hidden'}>
+				<div className ={onView === 'search'  ? 'search-form-container' : 'hidden'}>
 					<div className={failText ? 'no-results-mes-top' : 'hidden'}>
 						<span>
 						{noResultsMes}

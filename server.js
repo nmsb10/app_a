@@ -348,6 +348,29 @@ function calculateMedian(array){
 	}
 }
 
+function quicksort(array){
+	if(array.length<2){
+		return array;
+	}
+	//pivot is the first element of the array
+	var pivot = array.shift();
+	var lessArray = [];
+	var moreArray = [];
+	for(var i = 0; i<array.length; i++){
+		if(array[i]<=pivot){
+			lessArray.push(array[i]);
+		}else{
+			moreArray.push(array[i]);
+		}
+	}
+	return quicksort(lessArray).concat(pivot,quicksort(moreArray));
+}
+
+//http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+function withCommas(x) {
+	return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function commonName(num, name){
 	switch(num+name){
 		case '800michigan':
@@ -398,14 +421,11 @@ app.post('/search', function(request, response){
 		typ: rb.typ,
 		strNumber: rb.strNumber,
 		strName: rb.strName.toLowerCase(),
-		status: { $in: ['CLSD', 'PEND']},
+		status: 'CLSD',
 		clsdDate: {$gte: twoYearsPrior}
 	})
 	.select('clsdDate totalUnits commonAA assesInc amenities ' +
-		'typ strNumber strName sfx unit totalUnits mlsNum status clsdDate ' +
-		'sp lp olp fin distressed contractDate listDate ' +
-		'mt propTax asmDues rms bds bathF bathH asf exposure PIN ' +
-		'commonAA assesInc')
+		'sp asf mt lmt lp olp')
 	.sort({
 		clsdDate: -1
 	}).exec(function(error, doc){
@@ -413,10 +433,43 @@ app.post('/search', function(request, response){
 			console.log('/search error: ', error);
 		}else{
 			//create building analysis (statistics, info):
+			//remember: 2 denotes 24 - 12 months ago
+			//1 denotes 12 - 0 months ago
 			var unitsSold1 = 0;
+			var listDataSP2 = [];
+			var listDataSP1 = [];
+			var spasfArray2 = [];
+			var spasfArray1 = [];
+			var mt2 = [];
+			var mt1 = [];
+			var lmt2 = [];
+			var lmt1 = [];
+			var splp2 = [];
+			var splp1 = [];
+			var spolp2 = [];
+			var spolp1 = [];
 			for(var j = 0; j<doc.length; j++){
 				if(doc[j].clsdDate>oneYearPrior){
 					unitsSold1 ++;
+					listDataSP1.push(doc[j].sp);
+					if(doc[j].asf !== 0 && doc[j].asf !== ''){
+						var spasf = (doc[j].sp / doc[j].asf);
+						spasfArray1.push(spasf);
+					}
+					mt1.push(doc[j].mt);
+					lmt1.push(doc[j].lmt);
+					splp1.push(100 * doc[j].sp / doc[j].lp);
+					spolp1.push(100 * doc[j].sp / doc[j].olp);
+				}else{
+					listDataSP2.push(doc[j].sp);
+					if(doc[j].asf !== 0 && doc[j].asf !== ''){
+						var spasf2 = (doc[j].sp / doc[j].asf);
+						spasfArray2.push(spasf2);
+					}
+					mt2.push(doc[j].mt);
+					lmt2.push(doc[j].lmt);
+					splp2.push(100* doc[j].sp / doc[j].lp);
+					spolp2.push(100*doc[j].sp / doc[j].olp);
 				}
 			}
 			var info = {
@@ -433,27 +486,43 @@ app.post('/search', function(request, response){
 				turnover2: 0,
 				turnover1: 0,
 				toChange:0,
-				medSP2: 0,
-				medSP1: 0,
-
-				meanSP2: 0,
-				meanSP1: 0,
-				meanSPASF2: 320.05,
-				meanSPASF1: 345.77,
-				meanMT2: 55,
-				meanMT1: 47,
-				meanLMT2: 75,
-				meanLMT1: 60,
-				meanSPLP2: '97.65%',
-				meanSPLP1: '98.23%',
-				meanSPOLP2: '89.66%',
-				meanSPOLP1: '93.48%'
+				medSP2: calculateMedian(quicksort(listDataSP2)),
+				medSP1: calculateMedian(quicksort(listDataSP1)),
+				medspChange:'',
+				meanSP2: calculateMean(listDataSP2, listDataSP2.length, 0),
+				meanSP1: calculateMean(listDataSP1, listDataSP1.length, 0),
+				meanspChange: '',
+				meanSPASF2: calculateMean(spasfArray2, spasfArray2.length, 2),
+				meanSPASF1: calculateMean(spasfArray1, spasfArray1.length, 2),
+				meanSPASFChange:'',
+				meanMT2: calculateMean(mt2, mt2.length, 0),
+				meanMT1: calculateMean(mt1, mt1.length, 0),
+				meanMTChange:'',
+				meanLMT2: calculateMean(lmt2, lmt2.length, 0),
+				meanLMT1: calculateMean(lmt1, lmt1.length, 0),
+				meanLMTChange:'',
+				meanSPLP2: calculateMean(splp2, splp2.length, 2),
+				meanSPLP1: calculateMean(splp1, splp1.length, 2),
+				meanSPLPChange: '',
+				meanSPOLP2: calculateMean(spolp2, spolp2.length, 2),
+				meanSPOLP1: calculateMean(spolp1, spolp1.length, 2),
+				meanSPOLPChange: ''
 			};
 			stats.usChange = findPerc(stats.unitsSold2412, stats.unitsSold1200);
 			stats.turnover2 = parseFloat(100 * stats.unitsSold2412 / parseInt(info.units)).toFixed(2);
 			stats.turnover1 = parseFloat(100 * stats.unitsSold1200 / parseInt(info.units)).toFixed(2);
 			stats.toChange = findPerc(stats.turnover2, stats.turnover1);
-			stats.medSP2 = '';
+			stats.medspChange = findPerc(stats.medSP2, stats.medSP1);
+			stats.medSP2 = withCommas(stats.medSP2.toString());
+			stats.medSP1 = withCommas(stats.medSP1.toString());
+			stats.meanspChange = findPerc(stats.meanSP2, stats.meanSP1);
+			stats.meanSP2 = withCommas(stats.meanSP2.toString());
+			stats.meanSP1 = withCommas(stats.meanSP1.toString());
+			stats.meanSPASFChange = findPerc(stats.meanSPASF2, stats.meanSPASF1);
+			stats.meanMTChange = findPerc(stats.meanMT2, stats.meanMT1);
+			stats.meanLMTChange = findPerc(stats.meanLMT2, stats.meanLMT1);
+			stats.meanSPLPChange = findPerc(stats.meanSPLP2, stats.meanSPLP1);
+			stats.meanSPOLPChange = findPerc(stats.meanSPOLP2, stats.meanSPOLP1);
 
 			//BEGIN TEST QUERY WITHIN QUERY
 			var tier = rb.unit.slice(-2);
@@ -462,7 +531,6 @@ app.post('/search', function(request, response){
 				var unitNumber = i + tier;
 				possibleUnits.push(unitNumber);
 			}
-
 			Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 				typ: rb.typ,
 				strNumber: rb.strNumber,
@@ -470,7 +538,7 @@ app.post('/search', function(request, response){
 				//unit: { $gt: rb.unitNumber},
 				status: { $in: ['CLSD', 'PEND']},
 				unit: { $in: possibleUnits},
-				clsdDate: {$gte: twoYearsPrior},
+				clsdDate: {$gte: oneYearPrior},
 			})
 		// .limit(9)
 			.select('strNumber strName sfx unit typ mlsNum status clsdDate ' +
@@ -498,7 +566,9 @@ app.post('/search', function(request, response){
 					//then sort the results according to ranking
 					var allResults = [];
 					allResults.push(doc, cmaMatches, ranking, adjustments, stats, info);
-					console.log('all results from server.js', allResults);
+					//allResults.push(cmaMatches, doc, ranking, adjustments, stats, info);
+					console.log('doc from server.js', doc);
+					console.log('cma matches:',cmaMatches);
 					response.send(allResults);
 				}
 			});

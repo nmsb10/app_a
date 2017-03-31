@@ -13,7 +13,7 @@ class BuildingStatistics extends React.Component {
 	render(){
 		let {stat} = this.props;
 		return(
-			<div className = 'ts-third'>
+			<div className = 'binfostats-section'>
 				<div className = 'panel-inside'>
 					<div className = 'header'>building statistics
 					</div>
@@ -22,8 +22,8 @@ class BuildingStatistics extends React.Component {
 							<tbody>
 								<tr>
 									<th></th>
-									<th>24 - 12</th>
-									<th>12 - 0</th>
+									<th>24 - 12<br/>months prior</th>
+									<th>12 - 0<br/>months prior</th>
 									<th>% change</th>
 								</tr>
 								<tr></tr>
@@ -41,45 +41,45 @@ class BuildingStatistics extends React.Component {
 								</tr>
 								<tr>
 									<td>median SP</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>${stat.medSP2}</td>
+									<td>${stat.medSP1}</td>
+									<td>{stat.medspChange}%</td>
 								</tr>
 								<tr>
 									<td>mean SP</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>${stat.meanSP2}</td>
+									<td>${stat.meanSP1}</td>
+									<td>{stat.meanspChange}%</td>
 								</tr>
 								<tr>
 									<td>mean (SP / ASF)</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>${stat.meanSPASF2}</td>
+									<td>${stat.meanSPASF1}</td>
+									<td>{stat.meanSPASFChange}%</td>
 								</tr>
 								<tr>
 									<td>mean MT</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>{stat.meanMT2} days</td>
+									<td>{stat.meanMT1} days</td>
+									<td>{stat.meanMTChange}%</td>
 								</tr>
 								<tr>
 									<td>mean LMT</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>{stat.meanLMT2} days</td>
+									<td>{stat.meanLMT1} days</td>
+									<td>{stat.meanLMTChange}%</td>
 								</tr>
 								<tr>
 									<td>mean SP / LP</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>{stat.meanSPLP2}%</td>
+									<td>{stat.meanSPLP1}%</td>
+									<td>{stat.meanSPLPChange}%</td>
 								</tr>
 								<tr>
 									<td>mean SP / OLP</td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td>{stat.meanSPOLP2}%</td>
+									<td>{stat.meanSPOLP1}%</td>
+									<td>{stat.meanSPOLPChange}%</td>
 								</tr>
 							</tbody>
 						</table>

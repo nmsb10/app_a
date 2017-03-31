@@ -11,19 +11,19 @@
 	font-family: "Helvetica", 'Helvetica Neue', Arial, sans-serif;
 }
 
-.top-statistics{
+.search-form-container{
 	font-size: 0;
 	margin-bottom:35px;
 }
 
-.ts-third{
+.binfostats-section{
 	display: inline-block;
 	font-size: 13px;
-	width: 32%;
-	min-width: 210px;
+	width: 48%;
+	min-width: 335px;
 	box-sizing: border-box;
 	vertical-align: top;
-	margin-right: 2%;
+	margin-right: 4%;
 	border-radius: 5px;
 	color: black;
 	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
@@ -31,15 +31,16 @@
 	transition: all 0.5s ease 0s;
 }
 
-.ts-third:nth-child(2){
+/*third child because binfostats-sections are the 2nd and 3rd children of their parent container (shared with the searchform component)*/
+.binfostats-section:nth-child(3){
 	margin-right: 0;
 }
 
-.ts-third:hover{
+.binfostats-section:hover{
 	background-color: rgba(95, 10, 95, 1);
 }
 
-.ts-third .panel-inside{
+.binfostats-section .panel-inside{
 	width: 96%;
 	margin: 0 auto;
 	border-radius: 5px;
@@ -48,7 +49,7 @@
 	transition: all 0.5s ease 0s;
 }
 
-.ts-third .content{
+.binfostats-section .content{
 	background-color:rgba(251, 251, 251, 1);
 	font-size: 17px;
 	margin-bottom: 8px;
@@ -61,11 +62,7 @@
 	transition: all 0.5s ease 0s;
 }
 
-.ts-third:hover .content{
-	background-color: rgba(245, 245, 245, 1);
-}
-
-.ts-third .header{
+.binfostats-section .header{
 	font-size: 15px;
 	padding: 5px 3px 3px;
 	-webkit-transition: all 0.75s ease 0s; /* For Safari 3.1 to 6.0 */
@@ -73,7 +70,7 @@
 	transition: all 0.75s ease 0s;
 }
 
-.ts-third:hover .header{
+.binfostats-section:hover .header{
 	color: rgba(255, 255, 255, 1);
 }
 
