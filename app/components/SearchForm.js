@@ -52,7 +52,7 @@ class SearchForm extends React.Component {
 			bathF
 		} = this.state;
 		return(
-			<div className = 'ts-third search-form-1'>
+			<div className = 'search-form-1'>
 				<form onSubmit = {(event) => this.handleSubmit(event)}>
 					{/*
 					when a label has attribute 'for' this makes the input with which it is associated clickable

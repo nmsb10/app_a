@@ -22,13 +22,13 @@ class BuildingInfo extends React.Component {
 							total number of units: <span className = 'info-span'>{info.units}</span>
 						</div>
 						<div className = 'info-div'>
-							building amenities: <span className = 'info-span'>{info.buildingAmen}</span>
-						</div>
-						<div className = 'info-div'>
 							common area amenities: <span className = 'info-span'>{info.commonAmen}</span>
 						</div>
 						<div className = 'info-div'>
 							assessment includes: <span className = 'info-span'>{info.assessInc}</span>
+						</div>
+						<div className = 'info-div'>
+							extra info:<span className = 'info-span'>{info.buildingAmen}</span>
 						</div>
 					</div>
 				</div>

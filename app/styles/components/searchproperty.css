@@ -31,16 +31,12 @@
 	transition: all 0.5s ease 0s;
 }
 
-.ts-third:nth-child(3){
+.ts-third:nth-child(2){
 	margin-right: 0;
 }
 
 .ts-third:hover{
 	background-color: rgba(95, 10, 95, 1);
-}
-
-.ts-third:first-child:hover{
-	background-color: rgba(250, 250, 250, 1);
 }
 
 .ts-third .panel-inside{
@@ -86,8 +82,25 @@
     color: white;
     padding: 3px;
     font-style: italic;
-    display: inline-block;
     border-radius: 3px;
-    margin: 5px 0;
-    padding-right: 50px;
+    width: 35%;
+    text-align: center;
+    margin: 10px auto;
+    display: block;
+}
+
+.back-button{
+	background: lime;
+	text-align: center;
+	cursor: pointer;
+	font-weight: 600;
+	color: white;
+	padding: 5px;
+	border-radius: 5px;
+	width: 80px;
+	display: block;
+}
+
+.hidden{
+	display: none;
 }

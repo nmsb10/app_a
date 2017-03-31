@@ -312,20 +312,6 @@ function randomEntry(array){
 	return Math.floor(Math.random()*array.length);
 }
 
-var gSArrLength = 0;
-var gsCount = 0;
-function getSomething(array, key){
-	var selected = randomEntry(array);
-	if(array[selected][key] !== '' && array[selected][key] !== undefined){
-		return array[selected][key];
-	}else if(gsCount===gSArrLength){
-		return array[randomEntry(array)][key];
-	}else{
-		gsCount ++;
-		getSomething(array, key);
-	}
-}
-
 function getSomethingBetter(array, key){
 	var maxLengthEntry = '';
 	for(var i = 0; i<array.length; i++){
@@ -337,6 +323,31 @@ function getSomethingBetter(array, key){
 	}
 	return maxLengthEntry;
 }
+function findPerc(far, close){
+	return parseFloat(100*(close - far)/far).toFixed(2) +'%';
+}
+function calculateMean(array, entries, decimalPlaces){
+	//forEach? reduce?
+	var sum = 0;
+	for(var i = 0; i<array.length; i++){
+		sum += array[i];
+	}
+	return (sum / entries).toFixed(decimalPlaces);
+}
+
+function addToArrayAsc(array, newEntry, low, high){
+	array.push(newEntry);
+	array.sort(function(a, b){return a-b;});
+}
+
+function calculateMedian(array){
+	if(array.length%2 !== 0){//odd number
+		return array[Math.floor(array.length/2)];
+	}else{
+		return (array[Math.floor(array.length/2)]+array[Math.floor(array.length/2)-1])/2;
+	}
+}
+
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
@@ -368,7 +379,7 @@ app.post('/search', function(request, response){
 		clsdDate: -1
 	}).exec(function(error, doc){
 		if(error){
-			console.log('/api/find/test/properties error: ',error);
+			console.log('/api/find/test/properties error: ', error);
 		}else{
 			//analyze the properties here.
 			var ranking = [];
@@ -392,9 +403,21 @@ app.post('/search', function(request, response){
 					unitsSold1 ++;
 				}
 			}
-			var statistics = {
+
+			var info = {
+				units: getSomethingBetter(doc, 'totalUnits'),
+				commonAmen: getSomethingBetter(doc, 'commonAA'),
+				assessInc: getSomethingBetter(doc, 'assesInc'),
+				buildingAmen: getSomethingBetter(doc, 'amenities')
+			};
+
+			var stats = {
 				unitsSold2412: doc.length - unitsSold1,
-				unitsSold1200: unitsSold1, 
+				unitsSold1200: unitsSold1,
+				usChange:'',
+				turnover2: 0,
+				turnover1: 0,
+				toChange:'',
 				medSP2: 0,
 				medSP1: 0,
 				meanSP2: 0,
@@ -410,15 +433,14 @@ app.post('/search', function(request, response){
 				meanSPOLP2: '89.66%',
 				meanSPOLP1: '93.48%'
 			};
-			gSArrLength = doc.length;
-			//reset the gsCount
-			gsCount = 0;
-			var info = {
-				units: getSomethingBetter(doc, 'totalUnits'),
-				buildingAmen: getSomethingBetter(doc, 'amenities'),
-				commonAmen: getSomethingBetter(doc, 'commonAA'),
-				assessInc: getSomethingBetter(doc, 'assesInc')
-			};
+
+			
+			stats.usChange = findPerc(stats.unitsSold2412, stats.unitsSold1200);
+			stats.turnover2 = parseFloat(100 * stats.unitsSold2412 / parseInt(info.units)).toFixed(2) + '%';
+			stats.turnover1 = parseFloat(100 * stats.unitsSold1200 / parseInt(info.units)).toFixed(2) + '%';
+			stats.toChange = findPerc(stats.turnover2, stats.turnover1);
+
+			
 
 			//BEGIN TEST QUERY WITHIN QUERY
 			Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
@@ -440,7 +462,7 @@ app.post('/search', function(request, response){
 					console.log('/api/find/test/properties error: ',error);
 				}else{
 					var allResults = [];
-					allResults.push(doc, cmaMatches, ranking, adjustments, statistics, info);
+					allResults.push(doc, cmaMatches, ranking, adjustments, stats, info);
 					console.log('all results from server.js', allResults);
 					response.send(allResults);
 				}

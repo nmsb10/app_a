@@ -12,6 +12,8 @@ class SearchProperty extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			onView: 'search',//while searching, is search. otherwise loading.
+			failText: null,
 			cmaResultsObj: {
 				//sp = subject property	
 				sp: {
@@ -183,8 +185,11 @@ class SearchProperty extends React.Component {
 		//merging into an empty object, this.state.subjectProperty, and the propertyObject from the search!
 		let spObjectCopy = Object.assign({}, subjectProperty, propertyObj);
 		this.setState({
-			subjectProperty: spObjectCopy
+			subjectProperty: spObjectCopy,
+			onView: 'loading',
+			failText: null
 		});
+
 		axios.post('/search', propertyObj).then(function(response){
 			//after receiving the database data (an array of three arrays),
 			//create the finalArray to send for mapping on cma results
@@ -208,10 +213,10 @@ class SearchProperty extends React.Component {
 			];
 			//cmat (cma material) represents the array of properties objects received from the database
 			var cmat = response.data[0];
-			var ranking = response.data[1];
-			var adjustments = response.data[2];
-			var bstats = response.data[3];
-			var binfo = response.data[4];
+			var ranking = response.data[2];
+			var adjustments = response.data[3];
+			var bstats = response.data[4];
+			var binfo = response.data[5];
 			if(cmat.length > 2){
 				var fbb = ['foo', 'bar', 'baz'];
 				for(var k = 0; k< newKeys.length; k++){
@@ -245,14 +250,17 @@ class SearchProperty extends React.Component {
 					bestCMA: finalArray,
 					noResultsMes:'success! take a look at your results below.',
 					buildStats: bstats,
-					buildInfo: binfo
+					buildInfo: binfo,
+					onView: 'stats'
 				});
 			}else{
 				this.setState({
 					noResultsMes: 'no results found. please consult broker or try again.',
 					bestCMA: [],
 					buildStats: bstats,
-					buildInfo: binfo
+					buildInfo: binfo,
+					onView: 'search',
+					failText: true
 				});
 			}
 		}.bind(this));
@@ -269,12 +277,28 @@ class SearchProperty extends React.Component {
 			cmaResultsObj,
 			bestCMA,
 			buildStats,
-			buildInfo
+			buildInfo,
+			onView,
+			failText
 		} = this.state;
+		let self = this;
+		let backClick = () => {
+			self.setState({
+				onView: 'search'
+			});
+		}
 		return(
 			<div className = 'fit-95 searchPropertyComponent' >
 				<div className = 'user-nav'>welcome! username placeholder.</div>
-				<div className = 'top-statistics'>
+				<div className={onView === 'loading' ? '' : 'hidden'}>
+				    <div id="loadbox2" >
+       					 <div className="loader cn-lang">loading. . .</div>
+    				</div>
+				</div>
+				<div className ={onView === 'search'  ? 'top-statistics' : 'hidden'}>
+					<div className={failText ? 'no-results-mes-top' : 'hidden'}>
+						<span>{noResultsMes}</span>
+					</div>
 					<SearchForm 
 						searchPlease = {(submission) => this.searchProperty(submission)}
 						updateCmaSp = {(input) => this.updateCmaSpFields(input)}
@@ -282,16 +306,20 @@ class SearchProperty extends React.Component {
 						defaultPropertyType = {'AT'}
 						noResultsMessage = {noResultsMes}
 					/>
+
+				</div>
+				<div className={onView === 'stats' ? '' : 'hidden'}>
+					<strong onClick = {backClick} className= 'back-button'>SEARCH AGAIN</strong>
 					<BuildingStatistics stat = {buildStats}/>
 					<BuildingInfo info = {buildInfo}/>
-				</div>
 				<Cma 
 					res = {cmaResultsObj} 
 					cma = {bestCMA}
 				/>
-				{/*	
+				</div>
+			{/*
 				<TsvButtons loadedAddresses = {this.state.addressesLoaded} getAddresses = {this.getAddresses}/>
-				*/}
+			*/}
 			
 			</div>
 		);
