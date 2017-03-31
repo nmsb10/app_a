@@ -31,13 +31,13 @@ class BuildingStatistics extends React.Component {
 									<td># units sold</td>
 									<td>{stat.unitsSold2412}</td>
 									<td>{stat.unitsSold1200}</td>
-									<td>{stat.usChange}</td>
+									<td>{stat.usChange}%</td>
 								</tr>
 								<tr>
 									<td>turnover %</td>
-									<td>{stat.turnover2}</td>
-									<td>{stat.turnover1}</td>
-									<td>{stat.toChange}</td>
+									<td>{stat.turnover2}%</td>
+									<td>{stat.turnover1}%</td>
+									<td>{stat.toChange}%</td>
 								</tr>
 								<tr>
 									<td>median SP</td>

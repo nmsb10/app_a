@@ -10,8 +10,8 @@ class TsvButtons extends React.Component {
 			good2tsvFiles: ['159ewalton.TSV', '161echicago.TSV', '175edelaware.TSV', '400erandolph.TSV'],
 			good1tsvFiles: ['800nmichigan.TSV', '840nlsd.TSV', '950nmichigan.TSV','222epearson.TSV','401nwabash.TSV'],
 			BADtsvFiles:[ '250epearson.TSV', '1000nlsd.TSV'],
-			REMOVETHISLABELgood3tsvFiles: ['474nlsd.TSV', '505nlsd.TSV','1720mapleevanston.TSV', '807davisevanston.TSV', '655wirvingpark.TSV'],
-			good3tsvFiles: ['180epearson.TSV', '545ndearborn.TSV']
+			good3tsvFiles: ['474nlsd.TSV', '505nlsd.TSV','1720mapleevanston.TSV', '807davisevanston.TSV', '655wirvingpark.TSV'],
+			good4tsvFiles: ['180epearson.TSV', '545ndearborn.TSV']
 		});
 	}
 	//lifecycle methods

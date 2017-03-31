@@ -31,14 +31,14 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
 //3increase bodyparser limits?
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -324,7 +324,7 @@ function getSomethingBetter(array, key){
 	return maxLengthEntry;
 }
 function findPerc(far, close){
-	return parseFloat(100*(close - far)/far).toFixed(2) +'%';
+	return parseFloat(100*(close - far)/far).toFixed(2);
 }
 function calculateMean(array, entries, decimalPlaces){
 	//forEach? reduce?
@@ -352,26 +352,20 @@ function calculateMedian(array){
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
 	var rb = request.body;
-	var tier = rb.unit.slice(-2);
-	var possibleUnits = [];
-	for(var i = 1; i<100; i++){
-		var unitNumber = i + tier;
-		possibleUnits.push(unitNumber);
-	}
 	var d = new Date();
 	var currentDate = d.toISOString().slice(0,10).replace(/([^\d])+/g, '');
 	var twoYearsPrior = parseInt([parseInt(currentDate.slice(0, 4))-2, currentDate.slice(4)].join(''));
 	var oneYearPrior = parseInt([parseInt(currentDate.slice(0, 4))-1, currentDate.slice(4)].join(''));
+	//first query for building statistics:
 	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 		typ: rb.typ,
 		strNumber: rb.strNumber,
 		strName: rb.strName.toLowerCase(),
 		status: { $in: ['CLSD', 'PEND']},
-		// unit: { $in: possibleUnits},
 		clsdDate: {$gte: twoYearsPrior}
 	})
-	// .limit(9)
-	.select('typ strNumber strName sfx unit totalUnits mlsNum status clsdDate ' +
+	.select('clsdDate totalUnits commonAA assesInc amenities ' +
+		'typ strNumber strName sfx unit totalUnits mlsNum status clsdDate ' +
 		'sp lp olp fin distressed contractDate listDate ' +
 		'mt propTax asmDues rms bds bathF bathH asf exposure PIN ' +
 		'commonAA assesInc')
@@ -379,23 +373,8 @@ app.post('/search', function(request, response){
 		clsdDate: -1
 	}).exec(function(error, doc){
 		if(error){
-			console.log('/api/find/test/properties error: ', error);
+			console.log('/search error: ', error);
 		}else{
-			//analyze the properties here.
-			var ranking = [];
-			//1. search for same tier within prior 12 months
-			//if less than 3 results, search for units with similar square feet (within 5 - 10% of subject)
-			//may want to calculate which tiers have similar square feet (and account for entries where sqft is 0)
-			//still if less than 3 results, search for sales with similar assessments / taxes
-
-			//1.5 parse through remarks to create "updated score" for the comparables
-			//2. once 3+ results found, rank (according to close date, number of differences, etc)
-
-			//add keys and values for adjustments to each of the objects in doc.
-			var adjustments = [];
-			//keys to add and calculate:
-			//then sort the results according to ranking
-
 			//create building analysis (statistics, info):
 			var unitsSold1 = 0;
 			for(var j = 0; j<doc.length; j++){
@@ -403,23 +382,22 @@ app.post('/search', function(request, response){
 					unitsSold1 ++;
 				}
 			}
-
 			var info = {
 				units: getSomethingBetter(doc, 'totalUnits'),
 				commonAmen: getSomethingBetter(doc, 'commonAA'),
 				assessInc: getSomethingBetter(doc, 'assesInc'),
 				buildingAmen: getSomethingBetter(doc, 'amenities')
 			};
-
 			var stats = {
 				unitsSold2412: doc.length - unitsSold1,
 				unitsSold1200: unitsSold1,
-				usChange:'',
+				usChange:0,
 				turnover2: 0,
 				turnover1: 0,
-				toChange:'',
+				toChange:0,
 				medSP2: 0,
 				medSP1: 0,
+
 				meanSP2: 0,
 				meanSP1: 0,
 				meanSPASF2: 320.05,
@@ -433,16 +411,20 @@ app.post('/search', function(request, response){
 				meanSPOLP2: '89.66%',
 				meanSPOLP1: '93.48%'
 			};
-
-			
 			stats.usChange = findPerc(stats.unitsSold2412, stats.unitsSold1200);
-			stats.turnover2 = parseFloat(100 * stats.unitsSold2412 / parseInt(info.units)).toFixed(2) + '%';
-			stats.turnover1 = parseFloat(100 * stats.unitsSold1200 / parseInt(info.units)).toFixed(2) + '%';
+			stats.turnover2 = parseFloat(100 * stats.unitsSold2412 / parseInt(info.units)).toFixed(2);
+			stats.turnover1 = parseFloat(100 * stats.unitsSold1200 / parseInt(info.units)).toFixed(2);
 			stats.toChange = findPerc(stats.turnover2, stats.turnover1);
-
-			
+			stats.medSP2 = '';
 
 			//BEGIN TEST QUERY WITHIN QUERY
+			var tier = rb.unit.slice(-2);
+			var possibleUnits = [];
+			for(var i = 1; i<100; i++){
+				var unitNumber = i + tier;
+				possibleUnits.push(unitNumber);
+			}
+
 			Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 				typ: rb.typ,
 				strNumber: rb.strNumber,
@@ -452,6 +434,7 @@ app.post('/search', function(request, response){
 				unit: { $in: possibleUnits},
 				clsdDate: {$gte: twoYearsPrior},
 			})
+		// .limit(9)
 			.select('strNumber strName sfx unit typ mlsNum status clsdDate ' +
 				'sp lp olp fin distressed contractDate listDate ' +
 				'mt propTax asmDues rms bds bathF bathH asf exposure PIN')
@@ -461,6 +444,20 @@ app.post('/search', function(request, response){
 				if(error){
 					console.log('/api/find/test/properties error: ',error);
 				}else{
+					//analyze the COMPARABLES properties here.
+					var ranking = [];
+					//1. search for same tier within prior 12 months
+					//if less than 3 results, search for units with similar square feet (within 5 - 10% of subject)
+					//may want to calculate which tiers have similar square feet (and account for entries where sqft is 0)
+					//still if less than 3 results, search for sales with similar assessments / taxes
+
+					//1.5 parse through remarks to create "updated score" for the comparables
+					//2. once 3+ results found, rank (according to close date, number of differences, etc)
+
+					//add keys and values for adjustments to each of the objects in doc.
+					var adjustments = [];
+					//keys to add and calculate:
+					//then sort the results according to ranking
 					var allResults = [];
 					allResults.push(doc, cmaMatches, ranking, adjustments, stats, info);
 					console.log('all results from server.js', allResults);

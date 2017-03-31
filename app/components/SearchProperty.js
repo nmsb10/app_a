@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import {SearchForm} from './SearchForm';
 import {BuildingStatistics} from './BuildingStatistics';
 import {BuildingInfo} from './BuildingInfo';
@@ -300,7 +301,8 @@ class SearchProperty extends React.Component {
 						<span>
 						{noResultsMes}
 						<br/>
-						please confirm "searchable addresses" lists your BuildingStatistics
+						please confirm <Link to='properties_available' activeClassName = 'active' className = 'no-results-pa-link'>
+						searchable addresses</Link> lists your building.
 						</span>
 					</div>
 					<SearchForm 

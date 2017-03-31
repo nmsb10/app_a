@@ -97,8 +97,27 @@
 	color: white;
 	padding: 5px;
 	border-radius: 5px;
-	width: 80px;
+	width: 150px;
 	display: block;
+	margin-bottom:10px;
+	-webkit-transition: all 0.15s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.15s ease 0s;
+	transition: all 0.15s ease 0s;
+}
+
+.back-button:hover{
+	color: white;
+	background: rgb(35, 35, 35);
+	box-shadow: 3px 3px 3px rgba(80, 80, 80, 1);
+}
+
+.no-results-pa-link{
+	text-decoration: none;
+	color: lime;
+}
+
+.no-results-pa-link:hover{
+	text-decoration: underline;
 }
 
 .hidden{

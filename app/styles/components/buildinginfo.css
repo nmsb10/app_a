@@ -1,0 +1,11 @@
+.content .info-div{
+	padding:3px 0;
+	margin-bottom:5px;
+}
+
+.content .info-div .title{
+	background: rgb(132, 136, 132);
+    border-radius: 10px;
+    padding: 2px;
+    color: white;
+}
