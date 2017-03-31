@@ -31,14 +31,14 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
 //3increase bodyparser limits?
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -432,7 +432,7 @@ app.post('/search', function(request, response){
 		if(error){
 			console.log('/search error: ', error);
 		}else{
-			//create building analysis (statistics, info):
+			//CREATE BUILDING ANALYSIS (statistics, info):
 			//remember: 2 denotes 24 - 12 months ago
 			//1 denotes 12 - 0 months ago
 			var unitsSold1 = 0;
@@ -524,7 +524,7 @@ app.post('/search', function(request, response){
 			stats.meanSPLPChange = findPerc(stats.meanSPLP2, stats.meanSPLP1);
 			stats.meanSPOLPChange = findPerc(stats.meanSPOLP2, stats.meanSPOLP1);
 
-			//BEGIN TEST QUERY WITHIN QUERY
+			//BEGIN QUERY WITHIN QUERY FOR COMPARABLES ANALYSIS
 			var tier = rb.unit.slice(-2);
 			var possibleUnits = [];
 			for(var i = 1; i<100; i++){
@@ -543,7 +543,7 @@ app.post('/search', function(request, response){
 		// .limit(9)
 			.select('strNumber strName sfx unit typ mlsNum status clsdDate ' +
 				'sp lp olp fin distressed contractDate listDate ' +
-				'mt propTax asmDues rms bds bathF bathH asf exposure PIN')
+				'mt propTax asmDues rms bds bathF bathH asf sfSource exposure PIN')
 			.sort({
 				clsdDate: -1
 			}).exec(function(error, cmaMatches){
@@ -567,20 +567,11 @@ app.post('/search', function(request, response){
 					var allResults = [];
 					allResults.push(doc, cmaMatches, ranking, adjustments, stats, info);
 					//allResults.push(cmaMatches, doc, ranking, adjustments, stats, info);
-					console.log('doc from server.js', doc);
 					console.log('cma matches:',cmaMatches);
 					response.send(allResults);
+					//response.json(doc);
 				}
 			});
-			//END TEST QITHIN QUERY
-
-
-			//ORIGINAL ENDING BEFORE TEST QUERY:
-			// var allResults = [];
-			// allResults.push(doc, ranking, adjustments, statistics, info);
-			// console.log('all results from server.js', allResults);
-			// response.send(allResults);
-			// //response.json(doc);
 		}
 	});
 });

@@ -12,8 +12,9 @@ var helper = require('./utils/helpers.js');
 class SearchProperty extends React.Component {
 	constructor(props) {
 		super(props);
+		this.withCommas = this.withCommas.bind(this);
 		this.state = {
-			onView: 'search',//while searching, is search. otherwise loading. after loading, if results are found, is stats to show stats
+			onView: 'search',//while searching on search form, is 'search'. otherwise 'loading'. after loading, if results are found, is 'stats' to show stats
 			failText: null,
 			cmaResultsObj: {
 				//sp = subject property	
@@ -31,10 +32,6 @@ class SearchProperty extends React.Component {
 				comps: []
 			},
 			subjectProperty: {
-				strNumber:'',
-				strName:'',
-				address:'',
-				typ:'',
 				mlsNum: '',
 				status: '',
 				clsdDate:'',
@@ -48,13 +45,7 @@ class SearchProperty extends React.Component {
 				contractDate:'',
 				listDate:'',
 				mt:'',
-				propTax:'$0',
-				asf:'',
-				asmDues:0,
 				rms:0,
-				bds:0,
-				bathF:0,
-				bathH:0,
 				ASFandsource:'0 | self',
 				exposure:'',
 				PIN:'',
@@ -66,7 +57,16 @@ class SearchProperty extends React.Component {
 				netAdjustmentsPerc:'',
 				SPtoASF:'',
 				adjSPtoASF:'',
-				adjustedSalePrice:''
+				adjustedSalePrice:'',
+				typ:'',
+				strNumber: '',
+				strName: '',
+				unit:'',
+				asf:'',
+				asmDues:'',
+				propTax:'',
+				bds: '',
+				bathF: ''
 			},
 			//categories array:
 			catArr: [//!if you change anything here, must make same change to catarrlegent!!
@@ -102,7 +102,8 @@ class SearchProperty extends React.Component {
 				'Net Adjustments %',
 				'SP / ASF',
 				'Adjusted SP / ASF',
-				'Adjusted Sale Price'
+				'Adjusted Sale Price',
+				'Confidence'
 			],
 			//catarrlegend has the key value (for the individual properties) at the same index for the categories to go in the cma table
 			catarrlegend: [
@@ -127,7 +128,7 @@ class SearchProperty extends React.Component {
 				'bds',
 				'bathF',
 				'bathH',
-				'ASFandsource',
+				'asf',
 				'exposure',
 				'PIN',
 				'adjUpdates',
@@ -138,7 +139,8 @@ class SearchProperty extends React.Component {
 				'netAdjustmentsPerc',
 				'SPtoASF',
 				'adjSPtoASF',
-				'adjustedSalePrice'
+				'adjustedSalePrice',
+				'confidence'
 			],
 			bestCMA:[],
 			noResultsMes:'',
@@ -175,6 +177,10 @@ class SearchProperty extends React.Component {
 		//this.setState(newState);
 		console.log(input);
 	}
+	//http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+	withCommas(str) {
+		return str.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
 	//data request methods
 	searchProperty(propertyObj){
 		//set the subject property array data to what the user submitted
@@ -183,13 +189,15 @@ class SearchProperty extends React.Component {
 			catArr,
 			catarrlegend
 		} = this.state;
-		//merging into an empty object, this.state.subjectProperty, and the propertyObject from the search!
+		//merging into an empty object, this.state.subjectProperty, and the propertyObject from the searchForm
 		let spObjectCopy = Object.assign({}, subjectProperty, propertyObj);
+		console.log(spObjectCopy);
 		this.setState({
 			subjectProperty: spObjectCopy,
 			onView: 'loading',
 			failText: null
 		});
+		console.log('subject property info', this.state.subjectProperty);
 
 		axios.post('/search', propertyObj).then(function(response){
 			//after receiving the database data (an array of three arrays),
@@ -199,9 +207,7 @@ class SearchProperty extends React.Component {
 			//then currently setting those key values to foo, bar, baz
 			var finalArray = [];
 			var newKeys = [
-				'marketFA',
 				'splpRatios',
-				'ASFandsource',
 				'adjUpdates',
 				'adjMechanicals',
 				'adjHW',
@@ -218,7 +224,7 @@ class SearchProperty extends React.Component {
 			var adjustments = response.data[3];
 			var bstats = response.data[4];
 			var binfo = response.data[5];
-			if(cmat.length > 2){
+			if(cmat.length > 1){
 				var fbb = ['foo', 'bar', 'baz'];
 				for(var k = 0; k< newKeys.length; k++){
 					cmat[0][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
@@ -228,20 +234,76 @@ class SearchProperty extends React.Component {
 				for(var i = 0; i<catArr.length; i++){
 					//table line array (table row)
 					var tla = [];
-					if(i===2){
+					if(i===0){
 						tla[0] = catArr[i];
-						tla[1] = this.state.subjectProperty[catarrlegend[i]];
-						// tla[2] = '<a href = https://www.atproperties.com/' + response.data[0][this.state.catarrlegend[i]] + ' target = "_blank">' + response.data[0][this.state.catarrlegend[i]] +'</a>';
-						tla[2] = cmat[0][catarrlegend[i]];
-						tla[3] = cmat[1][catarrlegend[i]];
-						tla[4] = 'tada!test';
+						var subjectAddressUnit = subjectProperty.unit !== '' ? ', unit ' + subjectProperty.unit : '';
+						tla[1] = subjectProperty.strNumber + ' '+ subjectProperty.strName + subjectAddressUnit;
+						tla[2] = cmat[0].strNumber + ' ' + cmat[0].strName + ', unit ' + cmat[0].unit;
+						tla[3] = '';
+						tla[4] = cmat[1].strNumber + ' ' + cmat[1].strName + ', unit ' + cmat[1].unit;
+						tla[5] = '';
+						tla[6] = cmat[2].strNumber + ' ' + cmat[2].strName + ', unit ' + cmat[2].unit;
+						tla[7] = '';
+						finalArray.push(tla);
+					}else if(i===4 || i===12 || i===13){//closed date, contract date, list date
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = cmat[0][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[0][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[0][catarrlegend[i]].toString().substr(0,4);
+						tla[3] = '';
+						tla[4] = cmat[1][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[1][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[1][catarrlegend[i]].toString().substr(0,4);
+						tla[5] = '';
+						tla[6] = cmat[2][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[2][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[2][catarrlegend[i]].toString().substr(0,4);
+						tla[7] = '';
+						finalArray.push(tla);
+					}else if(i===5){//appreciating / declining market factor adjustment
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '';
+						tla[3] = 'calculation';
+						tla[4] = '';
+						tla[5] = 'calculation';
+						tla[6] = '';
+						tla[7] = 'calculation';
+						finalArray.push(tla);
+					}else if(i===6 || i===7 || i===8){//asp, lp, olp
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '$' + this.withCommas(cmat[0][catarrlegend[i]].toString());
+						tla[3] = '';
+						tla[4] = '$' + this.withCommas(cmat[1][catarrlegend[i]].toString());
+						tla[5] = '';
+						tla[6] = '$' + this.withCommas(cmat[2][catarrlegend[i]].toString());
+						tla[7] = '';
+						finalArray.push(tla);
+					}else if(i === 15 || i === 16){//property taxes, assessments
+						tla[0] = catArr[i];
+						tla[1] = '$' + this.withCommas(subjectProperty[catarrlegend[i]].toString());
+						tla[2] = '$' + this.withCommas(cmat[0][catarrlegend[i]].toString());
+						tla[3] = '';
+						tla[4] = '$' + this.withCommas(cmat[1][catarrlegend[i]].toString());
+						tla[5] = '';
+						tla[6] = '$' + this.withCommas(cmat[2][catarrlegend[i]].toString());
+						tla[7] = '';
+						finalArray.push(tla);
+					}else if(i===21){//asf | source
+						tla[0] = catArr[i];
+						tla[1] = subjectProperty[catarrlegend[i]] + ' | self';
+						tla[2] = cmat[0][catarrlegend[i]] + ' | ' + cmat[0].sfSource;
+						tla[3] = '';
+						tla[4] = cmat[1][catarrlegend[i]] + ' | ' + cmat[1].sfSource;
+						tla[5] = '';
+						tla[6] = cmat[2][catarrlegend[i]] + ' | ' + cmat[2].sfSource;
+						tla[7] = '';
 						finalArray.push(tla);
 					}else{
 						tla[0] = catArr[i];
-						tla[1] = this.state.subjectProperty[catarrlegend[i]];
+						tla[1] = subjectProperty[catarrlegend[i]];
 						tla[2] = cmat[0][catarrlegend[i]];
-						tla[3] = cmat[1][catarrlegend[i]];
-						tla[4] = cmat[2][catarrlegend[i]];
+						tla[3] = '';
+						tla[4] = cmat[1][catarrlegend[i]];
+						tla[5] = '';
+						tla[6] = cmat[2][catarrlegend[i]];
+						tla[7] = '';
 						finalArray.push(tla);
 					}
 				}
@@ -256,7 +318,7 @@ class SearchProperty extends React.Component {
 				});
 			}else{
 				this.setState({
-					noResultsMes: 'no results found. please consult broker or try again.',
+					noResultsMes: 'insufficient or low quality results found. please consult broker or try again.',
 					bestCMA: [],
 					buildStats: bstats,
 					buildInfo: binfo,
@@ -293,7 +355,7 @@ class SearchProperty extends React.Component {
 				<div className = 'user-nav'>welcome! username placeholder.</div>
 				<div className={onView === 'loading' ? '' : 'hidden'}>
 				    <div id="loadbox2" >
-       					 <div className="loader cn-lang">loading. . .</div>
+       					 <div className="loader cn-lang">analyzing. . .</div>
     				</div>
 				</div>
 				<div className ={onView === 'search'  ? 'search-form-container' : 'hidden'}>
