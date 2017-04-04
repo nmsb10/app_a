@@ -443,6 +443,15 @@ function commonName(num, name){
 	}
 }
 
+function monthsDifference(todayMonth, todayYear, beforeMonth, beforeYear){
+	var dif = (todayMonth - beforeMonth + (12 * (todayYear -beforeYear)));
+	return dif <=0 ? 0: dif;
+}
+//getSum necessary when totaling adjustments
+function getSum(total, num) {
+	return total + num;
+}
+
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
@@ -589,7 +598,7 @@ app.post('/search', function(request, response){
 				'mt propTax asmDues rms bds bathF bathH asf sfSource exposure PIN')
 			.sort({
 				clsdDate: -1
-			}).exec(function(error, cmaMatches){
+			}).exec(function(error, cmat){//formerly cmaMatches; cmat = cma material
 				if(error){
 					console.log('/api/find/test/properties error: ',error);
 				}else{
@@ -602,15 +611,305 @@ app.post('/search', function(request, response){
 
 					//1.5 parse through remarks to create "updated score" for the comparables
 					//2. once 3+ results found, rank (according to close date, number of differences, etc)
+					//NB: this rank could be simply, the less adjustments made, the closer the comp??
 
 					//add keys and values for adjustments to each of the objects in doc.
 					var adjustments = [[],[],[]];
 					//keys to add and calculate:
 					//then sort the results according to ranking
 					var allResults = [];
-					allResults.push(doc, cmaMatches, ranking, adjustments, stats, info);
+
+					//after receiving the database data (an array of three arrays),
+					//create the finalArray to send for mapping on cma results
+					//here we are giving each of the first 3 properties arrays the
+					//newKeys key values,
+					//then currently setting those key values to foo, bar, baz
+					var finalArray = [];
+					var newKeys = [
+						'adjUpdates',
+						'adjMechanicals',
+						'adjHW',
+						'adjPremLoc',
+					];
+
+					//categories array:
+					//!if you change anything here, must make same change to catarrlegent!!
+					var catArr = [
+						'address',
+						'property type',
+						'mls #',
+						'status',
+						'closed date',
+						'appreciating / declining market adjustment',
+						'sold price',
+						'list price',
+						'original list price',
+						'sp/olp | sp/lp',
+						'financing type',
+						'distressed?',
+						'contract date',
+						'list date',
+						'market time',
+						'property taxes',
+						'assessments',
+						'# rooms',
+						'# bedrooms',
+						'# full bathrooms',
+						'# half bathrooms',
+						'ASF & source',
+						'exposure(s)',
+						'PIN(s)',
+						'updates adjustment',
+						'mechanicals adjustment',
+						'hw floors adjustment',
+						'premium location adjustment',
+						'Net Adjustments',
+						'Net Adjustments %',
+						'SP / ASF',
+						'Adjusted SP / ASF',
+						'Adjusted Sale Price',
+						'Confidence Score'
+					];
+
+					//catarrlegend has the key value (for the individual properties) at the same index for the categories to go in the cma table
+					var catarrlegend = [
+						'strNumber',
+						'typ',
+						'mlsNum',
+						'status',
+						'clsdDate',
+						'marketFA',
+						'sp',
+						'lp',
+						'olp',
+						'splpRatios',
+						'fin',
+						'distressed',
+						'contractDate',
+						'listDate',
+						'mt',
+						'propTax',
+						'asmDues',
+						'rms',
+						'bds',
+						'bathF',
+						'bathH',
+						'asf',
+						'exposure',
+						'PIN',
+						'adjUpdates',
+						'adjMechanicals',
+						'adjHW',
+						'adjPremLoc',
+						'netAdjustments',
+						'netAdjustmentsPerc',
+						'SPtoASF',
+						'adjSPtoASF',
+						'adjustedSalePrice',
+						'confidence'
+					];
+
+					var fillerObject = {
+						mlsNum: '',
+						status: '',
+						clsdDate:'',
+						marketFA:'',
+						sp:'',
+						lp:'',
+						olp:'',
+						splpRatios:'',
+						finType:'',
+						distressed:'',
+						contractDate:'',
+						listDate:'',
+						mt:'',
+						rms:'',
+						exposure:'',
+						PIN:'',
+						adjUpdates:'',
+						adjMechanicals:'',
+						adjHW:'',
+						adjPremLoc:'',
+						netAdjustments:'',
+						netAdjustmentsPerc:'',
+						SPtoASF:'',
+						adjSPtoASF:'',
+						adjustedSalePrice:'',
+						typ:'AT',
+						strNumber: '',
+						strName: '',
+						unit:'',
+						asf:'',
+						asmDues:'',
+						propTax:'',
+						bds: '',
+						bathF: ''
+					};
+					
+					//manipulate values here
+					//ie create full address, add commas and $ to prices, taxes, assessments
+					var compsSelected = false;
+					if(cmat.length > 1){
+						if(cmat.length===2){
+							cmat.push(fillerObject);
+						}
+						compsSelected = true;
+						var fbb = ['foo', 'bar', 'baz'];
+						for(var k = 0; k< newKeys.length; k++){
+							cmat[0][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
+							cmat[1][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
+							cmat[2][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
+						}
+						for(var i = 0; i<catArr.length; i++){
+							//table line array (table row)
+							var tla = [];
+							if(i===0){
+								tla[0] = catArr[i];
+								var subjectAddressUnit = rb.unit !== '' ? ', unit ' + rb.unit : '';
+								tla[1] = rb.strNumber + ' '+ rb.strName + subjectAddressUnit;
+								tla[2] = cmat[0].strNumber + ' ' + cmat[0].strName + ' '+ cmat[0].sfx + ', unit ' + cmat[0].unit;
+								tla[3] = '';
+								tla[4] = cmat[1].strNumber + ' ' + cmat[1].strName + ' '+ cmat[1].sfx + ', unit ' + cmat[1].unit;
+								tla[5] = '';
+								tla[6] = cmat[2].strNumber + ' ' + cmat[2].strName + ' '+ cmat[2].sfx + ', unit ' + cmat[2].unit;
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i===4 || i===12 || i===13){//closed date, contract date, list date
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = cmat[0][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[0][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[0][catarrlegend[i]].toString().substr(0,4);
+								tla[3] = '';
+								tla[4] = cmat[1][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[1][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[1][catarrlegend[i]].toString().substr(0,4);
+								tla[5] = '';
+								tla[6] = cmat[2][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[2][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[2][catarrlegend[i]].toString().substr(0,4);
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i===5){//appreciating / declining market factor adjustment
+								var monthlyChange = (stats.medspChange/12).toFixed(2);
+								var today = new Date();
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = monthlyChange + '%';
+								var comp1adj = Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[0].clsdDate.toString().substr(4,2)), parseInt(cmat[0].clsdDate.toString().substr(0,4))) * cmat[0].sp).toFixed(0))*100;
+								tla[3] = '$' + comp1adj;
+								tla[4] = monthlyChange + '%';
+								var comp2adj = Math.floor(((monthlyChange * 0.01 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[1].clsdDate.toString().substr(4,2)), parseInt(cmat[1].clsdDate.toString().substr(0,4))) * cmat[1].sp).toFixed(0))/100)*100;
+								tla[5] = '$' + comp2adj;
+								tla[6] = monthlyChange + '%';
+								var comp3adj = Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[2].clsdDate.toString().substr(4,2)), parseInt(cmat[2].clsdDate.toString().substr(0,4))) * cmat[2].sp).toFixed(0))*100;
+								tla[7] = '$' + comp3adj;
+								adjustments[0].push(comp1adj);
+								adjustments[1].push(comp2adj);
+								adjustments[2].push(comp3adj);
+								finalArray.push(tla);
+							}else if(i===6 || i===7 || i===8){//asp, lp, olp
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = '$' + withCommas(cmat[0][catarrlegend[i]].toString());
+								tla[3] = '';
+								tla[4] = '$' + withCommas(cmat[1][catarrlegend[i]].toString());
+								tla[5] = '';
+								tla[6] = '$' + withCommas(cmat[2][catarrlegend[i]].toString());
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i === 9){//sp/olp | sp/lp
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = ((100*cmat[0].sp)/cmat[0].olp).toFixed(2) + '% | ' + ((100*cmat[0].sp)/cmat[0].lp).toFixed(2) + '%';
+								tla[3] = '';
+								tla[4] = ((100*cmat[1].sp)/cmat[1].olp).toFixed(2) + '% | ' + ((100*cmat[1].sp)/cmat[1].lp).toFixed(2) + '%';
+								tla[5] = '';
+								tla[6] = ((100*cmat[2].sp)/cmat[2].olp).toFixed(2) + '% | ' + ((100*cmat[2].sp)/cmat[2].lp).toFixed(2) + '%';
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i === 15 || i === 16){//property taxes, assessments
+								tla[0] = catArr[i];
+								tla[1] = '$' + withCommas(rb[catarrlegend[i]].toString());
+								tla[2] = '$' + withCommas(cmat[0][catarrlegend[i]].toString());
+								tla[3] = '';
+								tla[4] = '$' + withCommas(cmat[1][catarrlegend[i]].toString());
+								tla[5] = '';
+								tla[6] = '$' + withCommas(cmat[2][catarrlegend[i]].toString());
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i===21){//asf | source
+								tla[0] = catArr[i];
+								tla[1] = rb[catarrlegend[i]] + ' | self';
+								tla[2] = cmat[0][catarrlegend[i]] + ' | ' + cmat[0].sfSource;
+								tla[3] = '';
+								tla[4] = cmat[1][catarrlegend[i]] + ' | ' + cmat[1].sfSource;
+								tla[5] = '';
+								tla[6] = cmat[2][catarrlegend[i]] + ' | ' + cmat[2].sfSource;
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i===28){//net Adjustments
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = '';
+								tla[3] = '$' + withCommas(adjustments[0].reduce(getSum).toString());
+								tla[4] = '';
+								tla[5] = '$' + withCommas(adjustments[1].reduce(getSum).toString());
+								tla[6] = '';
+								tla[7] = '$' + withCommas(adjustments[2].reduce(getSum).toString());
+								finalArray.push(tla);
+							}else if(i===29){//Net Adjustments Percentage
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = '';
+								tla[3] = parseFloat(100* adjustments[0].reduce(getSum) / cmat[0].sp).toFixed(2) + '%';
+								tla[4] = '';
+								tla[5] = parseFloat(100* adjustments[1].reduce(getSum) / cmat[1].sp).toFixed(2) + '%';
+								tla[6] = '';
+								tla[7] = parseFloat(100* adjustments[2].reduce(getSum) / cmat[2].sp).toFixed(2) + '%';
+								finalArray.push(tla);
+							}else if(i===30){//sp/asf
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = '$' + (cmat[0].sp / cmat[0].asf).toFixed(0) + '/sqft';
+								tla[3] = '';
+								tla[4] = '$' + (cmat[1].sp / cmat[1].asf).toFixed(0) + '/sqft';
+								tla[5] = '';
+								tla[6] = '$' + (cmat[2].sp / cmat[2].asf).toFixed(0) + '/sqft';
+								tla[7] = '';
+								finalArray.push(tla);
+							}else if(i===31){// Adjusted sp/asf
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = '';
+								tla[3] = '$' + ((cmat[0].sp - adjustments[0].reduce(getSum)) / cmat[0].asf).toFixed(0) + '/sqft';
+								tla[4] = '';
+								tla[5] = '$' + ((cmat[1].sp - adjustments[1].reduce(getSum)) / cmat[1].asf).toFixed(0) + '/sqft';
+								tla[6] = '';
+								tla[7] = '$' + ((cmat[2].sp - adjustments[2].reduce(getSum)) / cmat[2].asf).toFixed(0) + '/sqft';
+								finalArray.push(tla);
+							}else if(i===32){// Adjusted sp
+								tla[0] = catArr[i];
+								tla[1] = '';
+								tla[2] = '';
+								tla[3] = '$' + withCommas((cmat[0].sp - adjustments[0].reduce(getSum)).toFixed(0).toString());
+								tla[4] = '';
+								tla[5] = '$' + withCommas((cmat[1].sp - adjustments[1].reduce(getSum)).toString());
+								tla[6] = '';
+								tla[7] = '$' + withCommas((cmat[2].sp - adjustments[2].reduce(getSum)).toString());
+								finalArray.push(tla);
+							}else{
+								tla[0] = catArr[i];
+								tla[1] = rb[catarrlegend[i]];
+								tla[2] = cmat[0][catarrlegend[i]];
+								tla[3] = '';
+								tla[4] = cmat[1][catarrlegend[i]];
+								tla[5] = '';
+								tla[6] = cmat[2][catarrlegend[i]];
+								tla[7] = '';
+								finalArray.push(tla);
+							}
+						}
+					}
+
+					allResults.push(finalArray, stats, info, compsSelected);
 					//allResults.push(cmaMatches, doc, ranking, adjustments, stats, info);
-					console.log('cma matches:',cmaMatches);
+					console.log('cma matches:',cmat);
+					console.log('all results:', allResults);
 					response.send(allResults);
 					//response.json(doc);
 				}

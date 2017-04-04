@@ -12,7 +12,6 @@ var helper = require('./utils/helpers.js');
 class SearchProperty extends React.Component {
 	constructor(props) {
 		super(props);
-		this.withCommas = this.withCommas.bind(this);
 		this.state = {
 			onView: 'search',//while searching on search form, is 'search'. otherwise 'loading'. after loading, if results are found, is 'stats' to show stats
 			failText: null,
@@ -32,116 +31,6 @@ class SearchProperty extends React.Component {
 				comps: []
 			},
 			subjectProperty: {
-				mlsNum: '',
-				status: '',
-				clsdDate:'',
-				marketFA:'',
-				sp:'',
-				lp:'',
-				olp:'',
-				splpRatios:'',
-				finType:'',
-				distressed:'',
-				contractDate:'',
-				listDate:'',
-				mt:'',
-				rms:'',
-				exposure:'',
-				PIN:'',
-				adjUpdates:'',
-				adjMechanicals:'',
-				adjHW:'',
-				adjPremLoc:'',
-				netAdjustments:'',
-				netAdjustmentsPerc:'',
-				SPtoASF:'',
-				adjSPtoASF:'',
-				adjustedSalePrice:'',
-				typ:'AT',
-				strNumber: '',
-				strName: '',
-				unit:'',
-				asf:'',
-				asmDues:'',
-				propTax:'',
-				bds: '',
-				bathF: ''
-			},
-			//categories array:
-			catArr: [//!if you change anything here, must make same change to catarrlegent!!
-				'address',
-				'property type',
-				'mls #',
-				'status',
-				'closed date',
-				'appreciating / declining market adjustment',
-				'sold price',
-				'list price',
-				'original list price',
-				'sp/olp | sp/lp',
-				'financing type',
-				'distressed?',
-				'contract date',
-				'list date',
-				'market time',
-				'property taxes',
-				'assessments',
-				'# rooms',
-				'# bedrooms',
-				'# full bathrooms',
-				'# half bathrooms',
-				'ASF & source',
-				'exposure(s)',
-				'PIN(s)',
-				'updates adjustment',
-				'mechanicals adjustment',
-				'hw floors adjustment',
-				'premium location adjustment',
-				'Net Adjustments',
-				'Net Adjustments %',
-				'SP / ASF',
-				'Adjusted SP / ASF',
-				'Adjusted Sale Price',
-				'Confidence Score'
-			],
-			//catarrlegend has the key value (for the individual properties) at the same index for the categories to go in the cma table
-			catarrlegend: [
-				'strNumber',
-				'typ',
-				'mlsNum',
-				'status',
-				'clsdDate',
-				'marketFA',
-				'sp',
-				'lp',
-				'olp',
-				'splpRatios',
-				'fin',
-				'distressed',
-				'contractDate',
-				'listDate',
-				'mt',
-				'propTax',
-				'asmDues',
-				'rms',
-				'bds',
-				'bathF',
-				'bathH',
-				'asf',
-				'exposure',
-				'PIN',
-				'adjUpdates',
-				'adjMechanicals',
-				'adjHW',
-				'adjPremLoc',
-				'netAdjustments',
-				'netAdjustmentsPerc',
-				'SPtoASF',
-				'adjSPtoASF',
-				'adjustedSalePrice',
-				'confidence'
-			],
-			fillerObject: {
 				mlsNum: '',
 				status: '',
 				clsdDate:'',
@@ -213,10 +102,6 @@ class SearchProperty extends React.Component {
 			subjectProperty: spObjectCopy
 		});
 	}
-	//http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
-	withCommas(str) {
-		return str.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
 	//data request methods
 	searchProperty(){
 		//set the subject property array data to what the user submitted
@@ -231,190 +116,14 @@ class SearchProperty extends React.Component {
 			failText: null
 		});
 		axios.post('/search', subjectProperty).then(function(response){
-			//after receiving the database data (an array of three arrays),
-			//create the finalArray to send for mapping on cma results
-			//here we are giving each of the first 3 properties arrays the
-			//newKeys key values,
-			//then currently setting those key values to foo, bar, baz
-			var finalArray = [];
-			var newKeys = [
-				'adjUpdates',
-				'adjMechanicals',
-				'adjHW',
-				'adjPremLoc',
-			];
 			//cmat (cma material) represents the array of properties objects received from the database
-			var cmat = response.data[1];
-			var ranking = response.data[2];
-			var adjustments = response.data[3];
-			var bstats = response.data[4];
-			var binfo = response.data[5];
-			function monthsDifference(todayMonth, todayYear, beforeMonth, beforeYear){
-				var dif = (todayMonth - beforeMonth + (12 * (todayYear -beforeYear)));
-				return dif <=0 ? 0: dif;
-			}
-			//getSum necessary when totaling adjustments
-			function getSum(total, num) {
-				return total + num;
-			}
-			if(cmat.length > 1){
-				if(cmat.length===2){
-					cmat.push(fillerObject);
-				}
-				var fbb = ['foo', 'bar', 'baz'];
-				for(var k = 0; k< newKeys.length; k++){
-					cmat[0][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
-					cmat[1][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
-					cmat[2][newKeys[k]] = fbb[Math.floor(Math.random()*fbb.length)];
-				}
-				for(var i = 0; i<catArr.length; i++){
-					//table line array (table row)
-					var tla = [];
-					if(i===0){
-						tla[0] = catArr[i];
-						var subjectAddressUnit = subjectProperty.unit !== '' ? ', unit ' + subjectProperty.unit : '';
-						tla[1] = subjectProperty.strNumber + ' '+ subjectProperty.strName + subjectAddressUnit;
-						tla[2] = cmat[0].strNumber + ' ' + cmat[0].strName + ' '+ cmat[0].sfx + ', unit ' + cmat[0].unit;
-						tla[3] = '';
-						tla[4] = cmat[1].strNumber + ' ' + cmat[1].strName + ' '+ cmat[1].sfx + ', unit ' + cmat[1].unit;
-						tla[5] = '';
-						tla[6] = cmat[2].strNumber + ' ' + cmat[2].strName + ' '+ cmat[2].sfx + ', unit ' + cmat[2].unit;
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i===4 || i===12 || i===13){//closed date, contract date, list date
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = cmat[0][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[0][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[0][catarrlegend[i]].toString().substr(0,4);
-						tla[3] = '';
-						tla[4] = cmat[1][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[1][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[1][catarrlegend[i]].toString().substr(0,4);
-						tla[5] = '';
-						tla[6] = cmat[2][catarrlegend[i]].toString().substr(4,2) + '.' + cmat[2][catarrlegend[i]].toString().substr(6,2) + '.' + cmat[2][catarrlegend[i]].toString().substr(0,4);
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i===5){//appreciating / declining market factor adjustment
-						var monthlyChange = (bstats.medspChange/12).toFixed(2);
-						var today = new Date();
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = monthlyChange + '%';
-						var comp1adj = Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[0].clsdDate.toString().substr(4,2)), parseInt(cmat[0].clsdDate.toString().substr(0,4))) * cmat[0].sp).toFixed(0))*100;
-						tla[3] = '$' + comp1adj;
-						tla[4] = monthlyChange + '%';
-						var comp2adj = Math.floor(((monthlyChange * 0.01 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[1].clsdDate.toString().substr(4,2)), parseInt(cmat[1].clsdDate.toString().substr(0,4))) * cmat[1].sp).toFixed(0))/100)*100;
-						tla[5] = '$' + comp2adj;
-						tla[6] = monthlyChange + '%';
-						var comp3adj = Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[2].clsdDate.toString().substr(4,2)), parseInt(cmat[2].clsdDate.toString().substr(0,4))) * cmat[2].sp).toFixed(0))*100;
-						tla[7] = '$' + comp3adj;
-						adjustments[0].push(comp1adj);
-						adjustments[1].push(comp2adj);
-						adjustments[2].push(comp3adj);
-						finalArray.push(tla);
-					}else if(i===6 || i===7 || i===8){//asp, lp, olp
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = '$' + this.withCommas(cmat[0][catarrlegend[i]].toString());
-						tla[3] = '';
-						tla[4] = '$' + this.withCommas(cmat[1][catarrlegend[i]].toString());
-						tla[5] = '';
-						tla[6] = '$' + this.withCommas(cmat[2][catarrlegend[i]].toString());
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i === 9){//sp/olp | sp/lp
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = ((100*cmat[0].sp)/cmat[0].olp).toFixed(2) + '% | ' + ((100*cmat[0].sp)/cmat[0].lp).toFixed(2) + '%';
-						tla[3] = '';
-						tla[4] = ((100*cmat[1].sp)/cmat[1].olp).toFixed(2) + '% | ' + ((100*cmat[1].sp)/cmat[1].lp).toFixed(2) + '%';
-						tla[5] = '';
-						tla[6] = ((100*cmat[2].sp)/cmat[2].olp).toFixed(2) + '% | ' + ((100*cmat[2].sp)/cmat[2].lp).toFixed(2) + '%';
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i === 15 || i === 16){//property taxes, assessments
-						tla[0] = catArr[i];
-						tla[1] = '$' + this.withCommas(subjectProperty[catarrlegend[i]].toString());
-						tla[2] = '$' + this.withCommas(cmat[0][catarrlegend[i]].toString());
-						tla[3] = '';
-						tla[4] = '$' + this.withCommas(cmat[1][catarrlegend[i]].toString());
-						tla[5] = '';
-						tla[6] = '$' + this.withCommas(cmat[2][catarrlegend[i]].toString());
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i===21){//asf | source
-						tla[0] = catArr[i];
-						tla[1] = subjectProperty[catarrlegend[i]] + ' | self';
-						tla[2] = cmat[0][catarrlegend[i]] + ' | ' + cmat[0].sfSource;
-						tla[3] = '';
-						tla[4] = cmat[1][catarrlegend[i]] + ' | ' + cmat[1].sfSource;
-						tla[5] = '';
-						tla[6] = cmat[2][catarrlegend[i]] + ' | ' + cmat[2].sfSource;
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i===28){//net Adjustments
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = '';
-						tla[3] = '$' + adjustments[0].reduce(getSum);
-						tla[4] = '';
-						tla[5] = '$' + adjustments[1].reduce(getSum);
-						tla[6] = '';
-						tla[7] = '$' + adjustments[2].reduce(getSum);
-						finalArray.push(tla);
-					}else if(i===29){//Net Adjustments Percentage
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = '';
-						tla[3] = parseFloat(100* adjustments[0].reduce(getSum) / cmat[0].sp).toFixed(2) + '%';
-						tla[4] = '';
-						tla[5] = parseFloat(100* adjustments[1].reduce(getSum) / cmat[1].sp).toFixed(2) + '%';
-						tla[6] = '';
-						tla[7] = parseFloat(100* adjustments[2].reduce(getSum) / cmat[2].sp).toFixed(2) + '%';
-						finalArray.push(tla);
-					}else if(i===30){//sp/asf
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = '$' + (cmat[0].sp / cmat[0].asf).toFixed(0) + '/sqft';
-						tla[3] = '';
-						tla[4] = '$' + (cmat[1].sp / cmat[1].asf).toFixed(0) + '/sqft';
-						tla[5] = '';
-						tla[6] = '$' + (cmat[2].sp / cmat[2].asf).toFixed(0) + '/sqft';
-						tla[7] = '';
-						finalArray.push(tla);
-					}else if(i===31){// Adjusted sp/asf
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = '';
-						tla[3] = '$' + ((cmat[0].sp - adjustments[0].reduce(getSum)) / cmat[0].asf).toFixed(0) + '/sqft';
-						tla[4] = '';
-						tla[5] = '$' + ((cmat[1].sp - adjustments[1].reduce(getSum)) / cmat[1].asf).toFixed(0) + '/sqft';
-						tla[6] = '';
-						tla[7] = '$' + ((cmat[2].sp - adjustments[2].reduce(getSum)) / cmat[2].asf).toFixed(0) + '/sqft';
-						finalArray.push(tla);
-					}else if(i===32){// Adjusted sp
-						tla[0] = catArr[i];
-						tla[1] = '';
-						tla[2] = '';
-						tla[3] = '$' + (cmat[0].sp - adjustments[0].reduce(getSum)).toFixed(0);
-						tla[4] = '';
-						tla[5] = '$' + (cmat[1].sp - adjustments[1].reduce(getSum));
-						tla[6] = '';
-						tla[7] = '$' + (cmat[2].sp - adjustments[2].reduce(getSum));
-						finalArray.push(tla);
-					}else{
-						tla[0] = catArr[i];
-						tla[1] = subjectProperty[catarrlegend[i]];
-						tla[2] = cmat[0][catarrlegend[i]];
-						tla[3] = '';
-						tla[4] = cmat[1][catarrlegend[i]];
-						tla[5] = '';
-						tla[6] = cmat[2][catarrlegend[i]];
-						tla[7] = '';
-						finalArray.push(tla);
-					}
-				}
-				//manipulate values here
-				//ie create full address, add commas and $ to prices, taxes, assessments
+			var cmat = response.data[0];
+			var bstats = response.data[1];
+			var binfo = response.data[2];
+			var display = response.data[3];
+			if(display){
 				this.setState({
-					bestCMA: finalArray,
+					bestCMA: cmat,
 					noResultsMes:'success! take a look at your results below.',
 					buildStats: bstats,
 					buildInfo: binfo,
