@@ -63,7 +63,8 @@ var PropertySchema = new Schema({
 		type: String
 	},
 	mlsNum: {//'MLS #': '08933387',
-		type: String
+		type: String,
+		unique: true
 	},
 	status: {//Stat: 'CLSD',
 		type: String

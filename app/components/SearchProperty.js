@@ -242,10 +242,6 @@ class SearchProperty extends React.Component {
 				'adjMechanicals',
 				'adjHW',
 				'adjPremLoc',
-				'netAdjustments',
-				'netAdjustmentsPerc',
-				'adjSPtoASF',
-				'adjustedSalePrice'
 			];
 			//cmat (cma material) represents the array of properties objects received from the database
 			var cmat = response.data[1];
@@ -256,6 +252,10 @@ class SearchProperty extends React.Component {
 			function monthsDifference(todayMonth, todayYear, beforeMonth, beforeYear){
 				var dif = (todayMonth - beforeMonth + (12 * (todayYear -beforeYear)));
 				return dif <=0 ? 0: dif;
+			}
+			//getSum necessary when totaling adjustments
+			function getSum(total, num) {
+				return total + num;
 			}
 			if(cmat.length > 1){
 				if(cmat.length===2){
@@ -297,11 +297,17 @@ class SearchProperty extends React.Component {
 						tla[0] = catArr[i];
 						tla[1] = '';
 						tla[2] = monthlyChange + '%';
-						tla[3] = '$' + Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[0].clsdDate.toString().substr(4,2)), parseInt(cmat[0].clsdDate.toString().substr(0,4))) * cmat[0].sp).toFixed(0))*100;
+						var comp1adj = Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[0].clsdDate.toString().substr(4,2)), parseInt(cmat[0].clsdDate.toString().substr(0,4))) * cmat[0].sp).toFixed(0))*100;
+						tla[3] = '$' + comp1adj;
 						tla[4] = monthlyChange + '%';
-						tla[5] = '$' + Math.floor(((monthlyChange * 0.01 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[1].clsdDate.toString().substr(4,2)), parseInt(cmat[1].clsdDate.toString().substr(0,4))) * cmat[1].sp).toFixed(0))/100)*100;
+						var comp2adj = Math.floor(((monthlyChange * 0.01 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[1].clsdDate.toString().substr(4,2)), parseInt(cmat[1].clsdDate.toString().substr(0,4))) * cmat[1].sp).toFixed(0))/100)*100;
+						tla[5] = '$' + comp2adj;
 						tla[6] = monthlyChange + '%';
-						tla[7] = '$' + Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[2].clsdDate.toString().substr(4,2)), parseInt(cmat[2].clsdDate.toString().substr(0,4))) * cmat[2].sp).toFixed(0))*100;
+						var comp3adj = Math.floor((monthlyChange * 0.0001 * monthsDifference(today.getMonth(), today.getFullYear(), parseInt(cmat[2].clsdDate.toString().substr(4,2)), parseInt(cmat[2].clsdDate.toString().substr(0,4))) * cmat[2].sp).toFixed(0))*100;
+						tla[7] = '$' + comp3adj;
+						adjustments[0].push(comp1adj);
+						adjustments[1].push(comp2adj);
+						adjustments[2].push(comp3adj);
 						finalArray.push(tla);
 					}else if(i===6 || i===7 || i===8){//asp, lp, olp
 						tla[0] = catArr[i];
@@ -343,6 +349,26 @@ class SearchProperty extends React.Component {
 						tla[6] = cmat[2][catarrlegend[i]] + ' | ' + cmat[2].sfSource;
 						tla[7] = '';
 						finalArray.push(tla);
+					}else if(i===28){//net Adjustments
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '';
+						tla[3] = '$' + adjustments[0].reduce(getSum);
+						tla[4] = '';
+						tla[5] = '$' + adjustments[1].reduce(getSum);
+						tla[6] = '';
+						tla[7] = '$' + adjustments[2].reduce(getSum);
+						finalArray.push(tla);
+					}else if(i===29){//Net Adjustments Percentage
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '';
+						tla[3] = parseFloat(100* adjustments[0].reduce(getSum) / cmat[0].sp).toFixed(2) + '%';
+						tla[4] = '';
+						tla[5] = parseFloat(100* adjustments[1].reduce(getSum) / cmat[1].sp).toFixed(2) + '%';
+						tla[6] = '';
+						tla[7] = parseFloat(100* adjustments[2].reduce(getSum) / cmat[2].sp).toFixed(2) + '%';
+						finalArray.push(tla);
 					}else if(i===30){//sp/asf
 						tla[0] = catArr[i];
 						tla[1] = '';
@@ -352,6 +378,26 @@ class SearchProperty extends React.Component {
 						tla[5] = '';
 						tla[6] = '$' + (cmat[2].sp / cmat[2].asf).toFixed(0) + '/sqft';
 						tla[7] = '';
+						finalArray.push(tla);
+					}else if(i===31){// Adjusted sp/asf
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '';
+						tla[3] = '$' + ((cmat[0].sp - adjustments[0].reduce(getSum)) / cmat[0].asf).toFixed(0) + '/sqft';
+						tla[4] = '';
+						tla[5] = '$' + ((cmat[1].sp - adjustments[1].reduce(getSum)) / cmat[1].asf).toFixed(0) + '/sqft';
+						tla[6] = '';
+						tla[7] = '$' + ((cmat[2].sp - adjustments[2].reduce(getSum)) / cmat[2].asf).toFixed(0) + '/sqft';
+						finalArray.push(tla);
+					}else if(i===32){// Adjusted sp
+						tla[0] = catArr[i];
+						tla[1] = '';
+						tla[2] = '';
+						tla[3] = '$' + (cmat[0].sp - adjustments[0].reduce(getSum)).toFixed(0);
+						tla[4] = '';
+						tla[5] = '$' + (cmat[1].sp - adjustments[1].reduce(getSum));
+						tla[6] = '';
+						tla[7] = '$' + (cmat[2].sp - adjustments[2].reduce(getSum));
 						finalArray.push(tla);
 					}else{
 						tla[0] = catArr[i];
@@ -423,7 +469,7 @@ class SearchProperty extends React.Component {
 						{noResultsMes}
 						<br/>
 						please confirm <Link to='properties_available' activeClassName = 'active' className = 'no-results-pa-link'>
-						searchable addresses</Link> lists your building.
+						searchable addresses</Link> lists your building. <a className = 'no-results-pa-link' href = "https://youtu.be/QLRlnkJPajs" target = "_blank">application demonstration</a>
 						</span>
 					</div>
 					<SearchForm 
