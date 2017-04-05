@@ -876,21 +876,21 @@ app.post('/search', function(request, response){
 								tla[0] = catArr[i];
 								tla[1] = '';
 								tla[2] = '';
-								tla[3] = '$' + ((cmat[0].sp - adjustments[0].reduce(getSum)) / cmat[0].asf).toFixed(0) + '/sqft';
+								tla[3] = '$' + ((cmat[0].sp + adjustments[0].reduce(getSum)) / cmat[0].asf).toFixed(0) + '/sqft';
 								tla[4] = '';
-								tla[5] = '$' + ((cmat[1].sp - adjustments[1].reduce(getSum)) / cmat[1].asf).toFixed(0) + '/sqft';
+								tla[5] = '$' + ((cmat[1].sp + adjustments[1].reduce(getSum)) / cmat[1].asf).toFixed(0) + '/sqft';
 								tla[6] = '';
-								tla[7] = '$' + ((cmat[2].sp - adjustments[2].reduce(getSum)) / cmat[2].asf).toFixed(0) + '/sqft';
+								tla[7] = '$' + ((cmat[2].sp + adjustments[2].reduce(getSum)) / cmat[2].asf).toFixed(0) + '/sqft';
 								finalArray.push(tla);
 							}else if(i===32){// Adjusted sp
 								tla[0] = catArr[i];
 								tla[1] = '';
 								tla[2] = '';
-								tla[3] = '$' + withCommas((cmat[0].sp - adjustments[0].reduce(getSum)).toFixed(0).toString());
+								tla[3] = '$' + withCommas((cmat[0].sp + adjustments[0].reduce(getSum)).toFixed(0).toString());
 								tla[4] = '';
-								tla[5] = '$' + withCommas((cmat[1].sp - adjustments[1].reduce(getSum)).toString());
+								tla[5] = '$' + withCommas((cmat[1].sp + adjustments[1].reduce(getSum)).toString());
 								tla[6] = '';
-								tla[7] = '$' + withCommas((cmat[2].sp - adjustments[2].reduce(getSum)).toString());
+								tla[7] = '$' + withCommas((cmat[2].sp + adjustments[2].reduce(getSum)).toString());
 								finalArray.push(tla);
 							}else{
 								tla[0] = catArr[i];

@@ -120,8 +120,8 @@ class SearchProperty extends React.Component {
 			var cmat = response.data[0];
 			var bstats = response.data[1];
 			var binfo = response.data[2];
-			var display = response.data[3];
-			if(display){
+			var goodResults = response.data[3];
+			if(goodResults){
 				this.setState({
 					bestCMA: cmat,
 					noResultsMes:'success! take a look at your results below.',
