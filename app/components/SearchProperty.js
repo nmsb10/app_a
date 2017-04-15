@@ -166,7 +166,7 @@ class SearchProperty extends React.Component {
 		}
 		return(
 			<div className = 'fit-95 searchPropertyComponent' >
-				<div className = 'user-nav'>welcome! username placeholder.</div>
+				<div className = 'user-nav'>you're using the demo version today.<br/>thank you for trying!</div>
 				<div className={onView === 'loading' ? '' : 'hidden'}>
 				    <div id="loadbox2" >
        					 <div className="loader cn-lang">analyzing. . .</div>

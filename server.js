@@ -31,14 +31,14 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
 //2 remove public/bundle.js from github
 //3increase bodyparser limits?
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -461,6 +461,12 @@ app.post('/search', function(request, response){
 	var twoYearsPrior = parseInt([parseInt(currentDate.slice(0, 4))-2, currentDate.slice(4)].join(''));
 	var oneYearPrior = parseInt([parseInt(currentDate.slice(0, 4))-1, currentDate.slice(4)].join(''));
 	//first query for building statistics:
+	//=========================================
+	//added so "today" is always 20170401 - 20170408
+	var sampleToday = Math.floor((Math.random()*8+1));
+	twoYearsPrior = parseInt(''+2015040+sampleToday);
+	oneYearPrior = parseInt(''+2016040+sampleToday);
+	//=========================================
 	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 		typ: rb.typ,
 		strNumber: rb.strNumber,

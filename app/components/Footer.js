@@ -39,7 +39,7 @@ class Footer extends React.Component {
 				</div>
 				<div className = 'footer-notice'>
 					<span>Property and local market data sourced from Midwest Real Estate Data, LLC (MLS). Data demed reliable but not guaranteed.
-					<br/>Equal Housing Opportunity. License available for inspection at 600 North Western Avenue, Lake Forest, Illinois 60045.
+					<br/>Equal Housing Opportunity. License available for inspection at @properties, 600 North Western Avenue, Lake Forest, Illinois 60045.
 					</span>
 				</div>
 			</footer>
