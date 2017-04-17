@@ -17,7 +17,10 @@ class TsvButtons extends React.Component {
 			bbbgood3tsvFiles:['1255nsandburg.TSV', '1355nsandburg.TSV','1360nsandburg.TSV'],
 			bbbgood4tsvFiles:['1455nsandburg.TSV', '1460nsandburg.TSV'],
 			bbbgood5tsvFiles:['1560nsandburg.TSV'],
-			cccgood1tsvFiles: ['1211sprairie.TSV']
+			cccgood1tsvFiles: ['1211sprairie.TSV'],
+			good1tsvFiles:['235wvanburen.TSV'],
+			good2tsvFiles:['3200nlsd.TSV'],
+			good3tsvFiles:['3430nlsd.TSV', '3440nlsd.TSV']
 		});
 	}
 	//lifecycle methods
