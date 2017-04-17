@@ -198,9 +198,9 @@ class SearchProperty extends React.Component {
 					cma = {bestCMA}
 				/>
 				</div>
-		
+			{/*
 				<TsvButtons loadedAddresses = {this.state.addressesLoaded} getAddresses = {this.getAddresses}/>
-			
+			*/}
 			</div>
 		);
 	}
