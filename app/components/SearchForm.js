@@ -25,16 +25,19 @@ class SearchForm extends React.Component {
 			this.setState({
 				streetNumberMes:'please enter a number for Street Number'
 			});
+		}else if(spfields.strName===''){
+			this.setState({
+				streetNameMes:'please enter a street name'
+			});
 		}else if(spfields.unit==='' && spfields.asf===''){
 			this.setState({
 				unitMes: 'please enter a unit number, square feet, or both'
 			});
-		}else if(isNaN(parseInt(spfields.asf))){
+		}else if(spfields.asf!=='' && isNaN(parseInt(spfields.asf))){
 			this.setState({
 				asfMes: 'please enter a number for approximate square feet'
 			});
-		}
-		else{
+		}else{
 			this.props.searchPlease();
 		}
 	}
@@ -111,6 +114,7 @@ class SearchForm extends React.Component {
 								placeholder = 'street name'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
+							<div>{streetNameMes}</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor = 'unit'>unit number:</label>
