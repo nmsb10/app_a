@@ -583,16 +583,22 @@ app.post('/search', function(request, response){
 			//BEGIN QUERY WITHIN QUERY FOR COMPARABLES ANALYSIS
 			var tier = '';
 			var possibleUnits = [];
-			if(isNaN(parseInt(rb.unit.slice(-2)))){
-				tier = rb.unit.slice(-2).toUpperCase();
-			}else if(isNaN(parseInt(rb.unit.slice(-1)))){
-				tier = rb.unit.slice(-1).toUpperCase();
-			}else{
-				tier = rb.unit.slice(-2);
+			if(rb.unit !== ''){
+				if(isNaN(parseInt(rb.unit.slice(-2)))){
+					tier = rb.unit.slice(-2).toUpperCase();
+				}else if(isNaN(parseInt(rb.unit.slice(-1)))){
+					tier = rb.unit.slice(-1).toUpperCase();
+				}else{
+					tier = rb.unit.slice(-2);
+				}
+				for(var i = 1; i<100; i++){
+					var unitNumber = i + tier;
+					possibleUnits.push(unitNumber);
+				}
 			}
-			for(var i = 1; i<100; i++){
-				var unitNumber = i + tier;
-				possibleUnits.push(unitNumber);
+			var asfRange = -100;
+			if(rb.asf !== ''){
+				asfRange = parseInt(rb.asf);
 			}
 			Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 				typ: rb.typ,
@@ -603,8 +609,8 @@ app.post('/search', function(request, response){
 				$or: [{
 					unit: { $in: possibleUnits}},{
 					asf:{
-						$gte: 0.93*parseInt(rb.asf),
-						$lte:1.07*parseInt(rb.asf)
+						$gte: 0.93*asfRange,
+						$lte: 1.07*asfRange
 					}
 				}],
 				clsdDate: {$gte: oneYearPrior},
