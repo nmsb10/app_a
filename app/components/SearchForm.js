@@ -8,14 +8,46 @@ class SearchForm extends React.Component {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.clearInputValidationMessages = this.clearInputValidationMessages.bind(this);
+		this.state = {
+			streetNameMes:'',
+			streetNumberMes:'',
+			unitMes:'',
+			asfMes:''
+		};
 	}
 	//form event handlers
 	handleSubmit(event){
 		event.preventDefault();
-		this.props.searchPlease();
+		this.clearInputValidationMessages();
+		let {spfields} = this.props;
+		if(isNaN(parseInt(spfields.strNumber))){
+			this.setState({
+				streetNumberMes:'please enter a number for Street Number'
+			});
+		}else if(spfields.unit==='' && spfields.asf===''){
+			this.setState({
+				unitMes: 'please enter a unit number, square feet, or both'
+			});
+		}else if(isNaN(parseInt(spfields.asf))){
+			this.setState({
+				asfMes: 'please enter a number for approximate square feet'
+			});
+		}
+		else{
+			this.props.searchPlease();
+		}
 	}
 	handleInputChange(event){
 		this.props.updateSpFields(event);
+	}
+	clearInputValidationMessages(){
+		this.setState({
+			streetNameMes:'',
+			streetNumberMes:'',
+			unitMes:'',
+			asfMes:''
+		});
 	}
 	//lifecycle methods
 	// componentWillReceiveProps(); componentWillMount(); render(); componentDidMount()
@@ -26,6 +58,12 @@ class SearchForm extends React.Component {
 	}
 	render(){
 		let {spfields} = this.props;
+		let {
+			streetNameMes,
+			streetNumberMes,
+			unitMes,
+			asfMes
+		} = this.state;
 		return(
 			<div className = 'search-form-1'>
 				<form onSubmit = {(event) => this.handleSubmit(event)}>
@@ -62,6 +100,7 @@ class SearchForm extends React.Component {
 								placeholder = 'street number'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
+							<div>{streetNumberMes}</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor = 'strName'>street name:</label>
@@ -82,6 +121,7 @@ class SearchForm extends React.Component {
 								placeholder = 'unit number'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
+							<div>{unitMes}</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor = 'asf'>approximate square feet:</label>
@@ -92,6 +132,7 @@ class SearchForm extends React.Component {
 								placeholder = 'square feet'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
+							<div>{asfMes}</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor = 'asmDues'>monthly assessments: $</label>

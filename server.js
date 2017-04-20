@@ -31,7 +31,7 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/20170321project_three");
+//mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
@@ -39,7 +39,7 @@ mongoose.connect("mongodb://localhost/20170321project_three");
 //3increase bodyparser limits?
 //4if adding tsv files, add tsv file folder to within app_a folder
 //change mongoose.connect to heroku database
-//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -411,6 +411,10 @@ function commonName(num, name){
 			return 'One Magnificent Mile';
 		case '222pearson':
 			return 'Pearson on the Park';
+		case '3200lake shore':
+			return 'Harbor House';
+		case'235van buren':
+			return 'designed by Perkins & Will | built by CMK Companies';
 		case '401wabash':
 			return 'Trump Tower Chicago';
 		case '180pearson':
@@ -596,7 +600,13 @@ app.post('/search', function(request, response){
 				strName: rb.strName.toLowerCase(),
 				//unit: { $gt: rb.unitNumber},
 				status: { $in: ['CLSD', 'PEND']},
-				unit: { $in: possibleUnits},
+				$or: [{
+					unit: { $in: possibleUnits}},{
+					asf:{
+						$gte: 0.93*parseInt(rb.asf),
+						$lte:1.07*parseInt(rb.asf)
+					}
+				}],
 				clsdDate: {$gte: oneYearPrior},
 			})
 		// .limit(9)
@@ -604,7 +614,7 @@ app.post('/search', function(request, response){
 				'sp lp olp fin distressed contractDate listDate ' +
 				'mt propTax asmDues rms bds bathF bathH asf sfSource exposure PIN')
 			.sort({
-				clsdDate: -1
+				clsdDate: -1,
 			}).exec(function(error, cmat){//formerly cmaMatches; cmat = cma material
 				if(error){
 					console.log('/api/find/test/properties error: ',error);
@@ -915,8 +925,7 @@ app.post('/search', function(request, response){
 
 					allResults.push(finalArray, stats, info, compsSelected);
 					//allResults.push(cmaMatches, doc, ranking, adjustments, stats, info);
-					console.log('cma matches:',cmat);
-					console.log('all results:', allResults);
+					//console.log(cmat);
 					response.send(allResults);
 					//response.json(doc);
 				}
