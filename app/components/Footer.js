@@ -35,7 +35,7 @@ class Footer extends React.Component {
 					</span>
 				</div>
 				<div id="footer-content">
-					Copyright &copy; {this.state.year}  <a className="footer-link" href="https://www.linkedin.com/in/jonathonnagatani" target="_blank" title="Jonathon on LinkedIn">Jonathon Nagatani</a>. All Rights Reserved.
+					Copyright &copy; {this.state.year}  <a className="footer-link" href="https://www.linkedin.com/in/jonathonnagatani" target="_blank" title="Jonathon on LinkedIn">Jonathon Nagatani</a>. All Rights Reserved. Thank you for visiting!
 				</div>
 				<div className = 'footer-notice'>
 					<span>Property and local market data sourced from Midwest Real Estate Data, LLC (MLS). Data demed reliable but not guaranteed.

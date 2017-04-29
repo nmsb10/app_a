@@ -1,8 +1,9 @@
 #home{
 	font-family: 'Georgia', Times, "Times New Roman", serif;
 	letter-spacing: 5px;
-	padding-left: 5px;
-	padding-right: 10px;
+	display: inline-block;
+	padding: 5px;
+	cursor: default;
 }
 
 header{
@@ -11,7 +12,7 @@ header{
 	padding:0;
 	border:0;
 	margin:0;
-	border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+	/*border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);*/
 	-webkit-transition: background-color 1s, border-bottom 3s; /* For Safari 3.1 to 6.0 */
     transition: background-color 1s, border-bottom 3s;
     /*position relative so can use z-index*/
@@ -19,11 +20,19 @@ header{
     z-index:1;
 }
 
-header:hover{
-	background-color: rgba(65,65,65,0.85);
-	border-bottom: 1.5px solid rgba(48, 15, 45, 0.85);
+.head-let{
+	color: rgba(255, 255, 255, 1);
+	text-shadow: 0 0 1px rgba(35, 35, 35, 0.95);
+	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
 }
 
+.head-let:hover{
+	color: rgba(35, 35, 35, 0.9);
+	text-shadow: 0 0 2px rgba(235, 235, 235, 0.8), 0 0 3.5px rgba(190, 190, 190, 0.8);
+}
+/*
 header ul{
 	display: inline-block;
 	margin:0;
@@ -34,7 +43,7 @@ header ul{
 	display: inline-block;
 	padding: 5px;
 	border-radius: 5px;
-	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
+	-webkit-transition: all 0.5s ease 0s;
 	-moz-transition: all 0.5s ease 0s;
 	transition: all 0.5s ease 0s;
 }
@@ -59,4 +68,4 @@ header ul{
 
 .h-li:hover a{
 	color: rgb(50, 50, 50);
-}
+}*/
