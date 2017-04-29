@@ -34,7 +34,8 @@ class Welcome extends React.Component {
 			],
 			quotesArray: [],
 			shownQuotes: 0,
-			quoteDispTime: 5000,
+			//make sure this time is the same as in welcome.css
+			quoteDispTime: 21000,
 			currentQuote:'',
 			currentSource:''
 		};
@@ -119,10 +120,11 @@ class Welcome extends React.Component {
 					</div>
 				</div>
 				<div className = 'intro'>
-					<div className = 'content welcome-c3'>
-						<div className = 'one-quote'>
-							{currentSource}
+					<div className = 'welcome'>
+						<div id = 'one-test'>
 							{currentQuote===''? 'testimonials for Jonathon Nagatani...': currentQuote}
+							<br/>
+							{currentSource}
 						</div>
 					</div>
 				</div>
