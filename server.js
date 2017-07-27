@@ -457,8 +457,12 @@ function getSum(total, num) {
 	return total + num;
 }
 
-//route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
+	response.send([[],[],[],[]]);
+});
+
+//route to send POST requests to conduct a property search
+app.post('/searchREMOVEME', function(request, response){
 	console.log('/search route in server.js: request.body', request.body);
 	var rb = request.body;
 	var d = new Date();
