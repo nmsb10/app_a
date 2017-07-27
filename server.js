@@ -457,11 +457,6 @@ function getSum(total, num) {
 	return total + num;
 }
 
-// app.post('/search', function(request, response){
-// 	console.log(request.body);
-// 	response.send([[],[],[],[]]);
-// });
-
 //route to send POST requests to conduct a property search
 app.post('/search', function(request, response){
 	//console.log('/search route in server.js: request.body', request.body);
