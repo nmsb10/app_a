@@ -117,7 +117,6 @@ class SearchProperty extends React.Component {
 		});
 		axios.post('/search', subjectProperty).then(function(response){
 			//cmat (cma material) represents the array of properties objects received from the database
-			console.log('search results received from the server.');
 			var cmat = response.data[0];
 			var bstats = response.data[1];
 			var binfo = response.data[2];
