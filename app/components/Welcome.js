@@ -112,7 +112,10 @@ class Welcome extends React.Component {
 							<Link to={'login/renter'}>renter<span className="tooltiptext">guidance with finding your rental</span></Link>
 							<a>landlord<span className="tooltiptext">lease your property</span></a>
 						*/}
+					{/*important to add comments wherever possible
+					*/}
 							<Link to='avm_demo' activeClassName = 'active'>AVM demo<span className="tooltiptext">try the AVM demonstration</span></Link>
+						}
 						</nav>
 					</div>
 				</div>
