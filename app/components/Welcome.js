@@ -115,7 +115,6 @@ class Welcome extends React.Component {
 					{/*important to add comments wherever possible
 					*/}
 							<Link to='avm_demo' activeClassName = 'active'>AVM demo<span className="tooltiptext">try the AVM demonstration</span></Link>
-						}
 						</nav>
 					</div>
 				</div>
