@@ -32,7 +32,7 @@ class Welcome extends React.Component {
 					source: 'Jackie and William G.'
 				}
 			],
-			quotesArray: [],
+			selectQuoteArr: [],
 			shownQuotes: 0,
 			//make sure this time is the same as in welcome.css
 			quoteDispTime: 21000,
@@ -66,21 +66,25 @@ class Welcome extends React.Component {
 	}
 	resetDisplayQuotes(){
 		let {tests} = this.state;
-		var arr = this.generateRandomArrayOrder(tests);
+		var order = [];
+		for(var i = 0; i<tests.length; i++){
+			order.push(i);
+		}
+		var arr = this.generateRandomArrayOrder(order);
 		this.setState({
 			shownQuotes:0,
-			quotesArray: arr
+			selectQuoteArr: arr
 		});
 	}
 	showAQuote(){
 		let {
 			tests,
-			quotesArray,
+			selectQuoteArr,
 			shownQuotes
 		} = this.state;
 		this.setState({
-			currentQuote: quotesArray[shownQuotes].quote,
-			currentSource: quotesArray[shownQuotes].source
+			currentQuote: tests[selectQuoteArr[shownQuotes]].quote,
+			currentSource: tests[selectQuoteArr[shownQuotes]].source
 		});
 		if(shownQuotes < tests.length-1){
 			this.setState({
@@ -99,14 +103,16 @@ class Welcome extends React.Component {
 			<div className = 'welcome-content'>
 				<div className = 'intro'>
 					<div className = 'welcome-nav'>
-						<div>what describes you?</div>
+						<div>welcome</div>
 						<nav id = 'intro-nav'>
-							<a>buyer<span className="tooltiptext">guidance on buying a home</span></a>
+						{/*
+							<Link to = {'login/buyer'}>buyer<span className="tooltiptext">guidance on buying a home</span></Link>
 							<a>seller<span className="tooltiptext">guidance with selling your home</span></a>
 							<a>investor<span className="tooltiptext">invest in real estate</span></a>
-							<a>renter<span className="tooltiptext">guidance with finding your rental</span></a>
+							<Link to={'login/renter'}>renter<span className="tooltiptext">guidance with finding your rental</span></Link>
 							<a>landlord<span className="tooltiptext">lease your property</span></a>
-							<Link to='search' activeClassName = 'active'>AVM demo<span className="tooltiptext">try the AVM demonstration</span></Link>
+						*/}
+							<Link to='avm_demo' activeClassName = 'active'>AVM demo<span className="tooltiptext">try the AVM demonstration</span></Link>
 						</nav>
 					</div>
 				</div>
@@ -122,9 +128,9 @@ class Welcome extends React.Component {
 				<div className = 'intro'>
 					<div className = 'welcome'>
 						<div id = 'one-test'>
-							{currentQuote===''? 'testimonials for Jonathon Nagatani...': currentQuote}
+							<span className = {currentQuote === '' ? '' : 'quote'}>{currentQuote===''? 'testimonials for Jonathon Nagatani...': '"' + currentQuote +'"'}</span>
 							<br/>
-							{currentSource}
+							<span className = 'source'>{currentSource}</span>
 						</div>
 					</div>
 				</div>

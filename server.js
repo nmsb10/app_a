@@ -31,7 +31,7 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
@@ -39,7 +39,7 @@ mongoose.Promise = global.Promise;
 //3increase bodyparser limits?
 //4if adding tsv files, add tsv file folder to within app_a folder
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;

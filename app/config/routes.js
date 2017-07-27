@@ -5,13 +5,27 @@ import {Welcome} from '../components/Welcome';
 //NB: the name of this object you import must be the same as the object you export in eg ../components/SearchProperty
 import { SearchProperty } from '../components/SearchProperty';
 import {AvailProperties} from '../components/AvailProperties';
+import {Login} from '../components/Login.jsx';
+//to enable direct entry of routes ie "hard entry": page.com/login???
+import {SignIn} from '../components/SignIn.jsx';
+import {SignUp} from '../components/SignUp.jsx';
 
 const router = (
 	<Router history={browserHistory}>
 		<Route path='/' component={Main}>
 			<Route path = 'welcome' component = {Welcome} />
-			<Route path = 'search' component = {SearchProperty} />
+			<Route path = {'avm_demo'} component = {SearchProperty}/>
 			<Route path = 'properties_available' component = {AvailProperties}/>
+		{/*
+			<Route path = {'login/:client_category'} component = {Login}>
+				<Route path = {'signin'} component = {SignIn}/>
+				<Route path = {'signup'} component = {SignUp}/>
+				<IndexRoute component={SignUp} />
+			</Route>
+		*/}
+			<Route path = {'login/:client_category'} component = {Login}/>
+			<Route path = {'signin'} component = {SignIn}/>
+			<Route path = {'signup'} component = {SignUp}/>
 			<IndexRoute component={Welcome} />
 		</Route>
 	</Router>

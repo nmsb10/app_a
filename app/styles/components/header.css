@@ -21,16 +21,16 @@ header{
 }
 
 .head-let{
-	color: rgba(255, 255, 255, 1);
-	text-shadow: 0 0 1px rgba(35, 35, 35, 0.95);
-	-webkit-transition: all 0.5s ease 0s; /* For Safari 3.1 to 6.0 */
-	-moz-transition: all 0.5s ease 0s;
-	transition: all 0.5s ease 0s;
+	color: rgba(35, 35, 35, 0.9);
+	text-shadow: 0 0 2px rgba(235, 235, 235, 0.8), 0 0 3.5px rgba(190, 190, 190, 0.8);
+	-webkit-transition: all 0.3s ease 0s; /* For Safari 3.1 to 6.0 */
+	-moz-transition: all 0.3s ease 0s;
+	transition: all 0.3s ease 0s;
 }
 
 .head-let:hover{
-	color: rgba(35, 35, 35, 0.9);
-	text-shadow: 0 0 2px rgba(235, 235, 235, 0.8), 0 0 3.5px rgba(190, 190, 190, 0.8);
+	color: rgba(255, 255, 255, 1);
+	text-shadow: 0 0 1px rgba(35, 35, 35, 0.95);
 }
 /*
 header ul{

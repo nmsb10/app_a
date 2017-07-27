@@ -14,6 +14,8 @@
 
     /*so children divs may be positioned absolutely*/
     position: relative;
+
+    min-width:350px;
 }
 
 .intro:nth-child(2){
@@ -24,6 +26,7 @@
 
 .intro:nth-child(3){
 	background-image: url('https://jonathonn.herokuapp.com/assets/images/01.JPG');
+    min-height: 330px;
 }
 
 .welcome-content{
@@ -35,13 +38,13 @@
 
 .welcome-nav{
     text-align: center;
-    font-size:25px;
+    font-size:21px;
     color: rgba(255, 255, 255, 0.9);
     position: absolute;
     top: 21%;
     left: 50%;
-    width: 360px;
-    margin-left: -180px;
+    width: 320px;
+    margin-left: -160px;
 }
 
 #intro-nav a{
@@ -62,6 +65,10 @@
     background-color: rgba(255, 255, 255, 1);
     color: rgba(15, 5, 15, 1);
     box-shadow: 3px 3px 3px rgba(80, 80, 80, 0.5);
+}
+
+#intro-nav a:active{
+    background-color: lime
 }
 
 /*https://www.w3schools.com/howto/howto_css_tooltip.asp
@@ -120,19 +127,26 @@ https://www.w3schools.com/css/css_tooltip.asp*/
     position: absolute;
     margin: 0 10%;
     width: 80%;
-    min-width: 350px;
-    max-height: 250px;
+    max-height: 265px;
     top:25%;
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.35);
     border-radius:5px;
     overflow: auto;
     color:white;
-    text-align: center;
     letter-spacing: 1px;
     font-size: 17px;
+    text-align:center;
+    padding:3px;
     /*make sure animation duration is same as quoteDispTime in welcome component*/
     -webkit-animation: fadeinout 21s linear 0s infinite;
     animation: fadeinout 21s linear 0s infinite;
+}
+
+.intro .welcome #one-test .quote{
+    font-style: italic;
+}
+
+.intro .welcome #one-test .source{
 }
 
 @-webkit-keyframes fadeinout {
@@ -167,10 +181,11 @@ https://www.w3schools.com/css/css_tooltip.asp*/
 }
 
 #welcome-c2{
-    width:470px;
-    height:60px;
+    left: 0;
+    width:98%;
+    overflow: auto;
+    margin:0 auto;
     line-height:28px;
     padding-top:2px;
     margin-top: -30px;
-    margin-left: -235px;
 }
