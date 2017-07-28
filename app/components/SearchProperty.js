@@ -166,7 +166,7 @@ class SearchProperty extends React.Component {
 		}
 		return(
 			<div className = 'fit-95 searchPropertyComponent' >
-				<div className = 'user-nav'>you're using the demo version today.<br/>thank you for trying!</div>
+				<div className = 'user-nav'>you're using the demo version today.<br/>thank you for <Link to={'prior_user_searches'} className = 'user-priorsearches-link' title = 'see prior user searches'>trying</Link>!</div>
 				<div className={onView === 'loading' ? '' : 'hidden'}>
 				    <div id="loadbox2" >
        					 <div className="loader cn-lang">analyzing. . .</div>
@@ -214,4 +214,4 @@ SearchProperty.contextTypes = {
 	router: React.PropTypes.any
 };
 
-export { SearchProperty};
+export { SearchProperty };

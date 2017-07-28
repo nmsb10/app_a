@@ -8,6 +8,7 @@ var mongoose = require("mongoose");
 var PropertyType = require("./models/Type.js");
 var Property = require("./models/Property.js");
 var LoadedAddresses = require("./models/LoadedAddresses.js");
+var SearchesUser = require('./models/UserSearches.js');
 
 // Create Instance of Express
 var app = express();
@@ -31,7 +32,7 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
@@ -39,7 +40,7 @@ mongoose.Promise = global.Promise;
 //3increase bodyparser limits?
 //4if adding tsv files, add tsv file folder to within app_a folder
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -472,6 +473,15 @@ app.post('/search', function(request, response){
 	twoYearsPrior = parseInt(''+2015040+sampleToday);
 	oneYearPrior = parseInt(''+2016040+sampleToday);
 	//=========================================
+	//================================================
+	//add the address to SearchesUser:
+	var userUnit = rb.unit !== '' ? ', unit ' + rb.unit : '';
+	var userASF = rb.asf !== '' ? ' | approx. sqft: ' + rb.asf : '';
+	var userAddress = rb.strNumber + ' ' + rb.strName +  userUnit +  userASF;
+	SearchesUser.create({
+		AddressEntered: userAddress
+	});
+	//================================================
 	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 		typ: rb.typ,
 		strNumber: rb.strNumber,
@@ -948,6 +958,16 @@ app.get('/api/find/addresses', function(request, response) {
 			console.log('/api/find/addresses error: ',error);
 		}else{
 			response.send(doc);
+		}
+	});
+});
+
+app.get('/api/find/userSearches', function(req, res){
+	SearchesUser.find({}).exec(function(err, doc){
+		if(err){
+			console.log('/api/find/userSearches error: ', error);
+		}else{
+			res.send(doc);
 		}
 	});
 });

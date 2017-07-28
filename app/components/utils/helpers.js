@@ -15,6 +15,10 @@ var helper = {
 	},
 	deleteModelContents: function(deleteWhat){//function called in SearchProperty.js in component render function
 		return axios.get('/api/delete/'+ deleteWhat);
+	},
+	getUserSearches: function(){
+		console.log('getusersearches in helper.sjs called!');
+		return axios.get('/api/find/userSearches');
 	}
 };
 
