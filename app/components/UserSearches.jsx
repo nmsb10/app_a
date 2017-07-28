@@ -26,7 +26,6 @@ class UserSearches extends React.Component {
 	render(){
 		return(
 			<div className = 'fit-95'>
-			<span>hello hello hello!!</span>
 			{this.state.searches.map(function(elem, i) {
 				return (
 					<div key = {i} className = ''>
