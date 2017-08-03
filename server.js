@@ -475,26 +475,19 @@ app.post('/search', function(request, response){
 	//=========================================
 	//================================================
 	//add the address to SearchesUser:
-	// var userAddress = rb.typ + ' ' + rb.strNumber + ' ' + rb.strName +  ', unit ' + rb.unit +  ' | sqft: ' + rb.asf + ' | assessments: $'+ rb.asmDues + ' | taxes: $' + rb.propTax + ' | ' + rb.bds + ' beds' + ', ' + rb.bathF + ' full baths.';
-	// SearchesUser.create({
-	// 	AddressEntered: userAddress,
-	// 	type: rb.typ,
-	// 	streetNumber: rb.strNumber,
-	// 	streetName: rb.strName,
-	// 	unit: rb.unit,
-	// 	asf: isNaN(parseInt(rb.asf)) ? rb.asf : parseInt(rb.asf),
-	// 	assessments: isNaN(parseFloat(rb.asmDues)) ? rb.asmDues : parseFloat(rb.asmDues).toFixed(2),
-	// 	taxes: isNaN(parseFloat(rb.propTax)) ? rb.propTax : parseFloat(rb.propTax).toFixed(2),
-	// 	bedrooms: isNaN(parseInt(rb.bds)) ? rb.bds : parseInt(rb.bds),
-	// 	bathrooms: isNaN(parseInt(rb.bathF)) ? rb.bathF : parseInt(rb.bathF)
-	// });
-	SearchesUser.remove({}, function(error){
-		if(error){
-			console.log('error from deleting all data from SearchesUser database:',error);
-		}
+	var userAddress = rb.typ + ' ' + rb.strNumber + ' ' + rb.strName +  ', unit ' + rb.unit +  ' | sqft: ' + rb.asf + ' | assessments: $'+ rb.asmDues + ' | taxes: $' + rb.propTax + ' | ' + rb.bds + ' beds' + ', ' + rb.bathF + ' full baths.';
+	SearchesUser.create({
+		AddressEntered: userAddress,
+		type: rb.typ,
+		streetNumber: rb.strNumber,
+		streetName: rb.strName,
+		unit: rb.unit,
+		asf: isNaN(parseInt(rb.asf)) ? rb.asf : parseInt(rb.asf),
+		assessments: isNaN(parseFloat(rb.asmDues)) ? rb.asmDues : parseFloat(rb.asmDues).toFixed(2),
+		taxes: isNaN(parseFloat(rb.propTax)) ? rb.propTax : parseFloat(rb.propTax).toFixed(2),
+		bedrooms: isNaN(parseInt(rb.bds)) ? rb.bds : parseInt(rb.bds),
+		bathrooms: isNaN(parseInt(rb.bathF)) ? rb.bathF : parseInt(rb.bathF)
 	});
-
-
 	//================================================
 	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 		typ: rb.typ,
