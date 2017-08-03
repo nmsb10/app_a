@@ -69,14 +69,6 @@ class UserSearches extends React.Component {
 						</tbody>
 					</table>
 				</div>
-				{this.state.searches.map(function(elem, i) {
-					return (
-						<div key = {i} className = ''>
-							<span>{elem.AddressEntered} searched on {elem.searchDate}</span>
-						</div>
-					);
-				{/*VERY IMPORTANT: INCLUDE `THIS` HERE SO YOU CAN PASS FUNCTIONS FROM THIS RESULTS.JS COMPONENT TO ELEMENTS WITHIN THIS MAPPING OF THE articlesFound ARRAY*/}
-				},this)}
 			</div>
 		);
 	}
