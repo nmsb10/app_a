@@ -32,7 +32,7 @@ app.use(express.static("./public"));
 // selected database name: 20170321project_three
 //http://stackoverflow.com/questions/38138445/node3341-deprecationwarning-mongoose-mpromise
 mongoose.Promise = global.Promise;
-//mongoose.connect("mongodb://localhost/20170321project_three");
+mongoose.connect("mongodb://localhost/20170321project_three");
 //for rokehu
 //0.5 webpack
 //1?remove public/bundle.js from gitignore...
@@ -40,7 +40,7 @@ mongoose.Promise = global.Promise;
 //3increase bodyparser limits?
 //4if adding tsv files, add tsv file folder to within app_a folder
 //change mongoose.connect to heroku database
-mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
+//mongoose.connect('mongodb://heroku_4gsqkbvq:1gj0u70l41hhgl3msjn24lfv71@ds145380.mlab.com:45380/heroku_4gsqkbvq');
 
 //save the mongoose connection to db
 var db = mongoose.connection;
@@ -475,16 +475,26 @@ app.post('/search', function(request, response){
 	//=========================================
 	//================================================
 	//add the address to SearchesUser:
-	var userUnit = rb.unit !== '' ? ', unit ' + rb.unit : '';
-	var userASF = rb.asf !== '' ? ' | approx. sqft: ' + rb.asf : '';
-	var userAsmDues = rb.asmDues === '' ? '' : ' | assessments: $'+ rb.asmDues;
-	var userPropTax = rb.propTax === '' ? '' : ' | taxes: $' + rb.propTax;
-	var userBds = rb.bds === '' ? '' : ' | bedrooms: ' + rb.bds;
-	var userBa = rb.bathF !== '' ? ' | full bathrooms: ' + rb.bathF : '';
-	var userAddress = rb.typ + ' ' + rb.strNumber + ' ' + rb.strName +  userUnit +  userASF + userAsmDues + userPropTax + userBds + userBa;
-	SearchesUser.create({
-		AddressEntered: userAddress
+	// var userAddress = rb.typ + ' ' + rb.strNumber + ' ' + rb.strName +  ', unit ' + rb.unit +  ' | sqft: ' + rb.asf + ' | assessments: $'+ rb.asmDues + ' | taxes: $' + rb.propTax + ' | ' + rb.bds + ' beds' + ', ' + rb.bathF + ' full baths.';
+	// SearchesUser.create({
+	// 	AddressEntered: userAddress,
+	// 	type: rb.typ,
+	// 	streetNumber: rb.strNumber,
+	// 	streetName: rb.strName,
+	// 	unit: rb.unit,
+	// 	asf: isNaN(parseInt(rb.asf)) ? rb.asf : parseInt(rb.asf),
+	// 	assessments: isNaN(parseFloat(rb.asmDues)) ? rb.asmDues : parseFloat(rb.asmDues).toFixed(2),
+	// 	taxes: isNaN(parseFloat(rb.propTax)) ? rb.propTax : parseFloat(rb.propTax).toFixed(2),
+	// 	bedrooms: isNaN(parseInt(rb.bds)) ? rb.bds : parseInt(rb.bds),
+	// 	bathrooms: isNaN(parseInt(rb.bathF)) ? rb.bathF : parseInt(rb.bathF)
+	// });
+	SearchesUser.remove({}, function(error){
+		if(error){
+			console.log('error from deleting all data from SearchesUser database:',error);
+		}
 	});
+
+
 	//================================================
 	Property.find({//https://docs.mongodb.com/manual/reference/operator/query/
 		typ: rb.typ,
@@ -967,7 +977,9 @@ app.get('/api/find/addresses', function(request, response) {
 });
 
 app.get('/api/find/userSearches', function(req, res){
-	SearchesUser.find({}).exec(function(err, doc){
+	SearchesUser.find({})
+	//.select('')
+	.exec(function(err, doc){
 		if(err){
 			console.log('/api/find/userSearches error: ', error);
 		}else{

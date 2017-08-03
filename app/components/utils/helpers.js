@@ -17,7 +17,6 @@ var helper = {
 		return axios.get('/api/delete/'+ deleteWhat);
 	},
 	getUserSearches: function(){
-		console.log('getusersearches in helper.sjs called!');
 		return axios.get('/api/find/userSearches');
 	}
 };

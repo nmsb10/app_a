@@ -13,7 +13,8 @@ class SearchForm extends React.Component {
 			streetNameMes:'',
 			streetNumberMes:'',
 			unitMes:'',
-			asfMes:''
+			asfMes:'',
+			allOthersMes:''
 		};
 	}
 	//form event handlers
@@ -25,7 +26,7 @@ class SearchForm extends React.Component {
 			this.setState({
 				streetNumberMes:'please enter a number for Street Number'
 			});
-		}else if(spfields.strName===''){
+		}else if(spfields.strName === ''){
 			this.setState({
 				streetNameMes:'please enter a street name'
 			});
@@ -36,6 +37,10 @@ class SearchForm extends React.Component {
 		}else if(spfields.asf!=='' && isNaN(parseInt(spfields.asf))){
 			this.setState({
 				asfMes: 'please enter a number for approximate square feet'
+			});
+		}else if((spfields.asmDues !== '' && isNaN(parseFloat(spfields.asmDues.trim())) )|| (spfields.propTax !== '' && isNaN(parseFloat(spfields.propTax)) ) || (spfields.bds !== '' && isNaN(parseInt(spfields.bds)) ) || (spfields.bathF !== '' && isNaN(parseFloat(spfields.bathF))) ){
+			this.setState({
+				allOthersMes: 'please enter only numbers for all following fields, or leave any or all blank'
 			});
 		}else{
 			this.props.searchPlease();
@@ -49,7 +54,8 @@ class SearchForm extends React.Component {
 			streetNameMes:'',
 			streetNumberMes:'',
 			unitMes:'',
-			asfMes:''
+			asfMes:'',
+			allOthersMes:''
 		});
 	}
 	//lifecycle methods
@@ -65,7 +71,8 @@ class SearchForm extends React.Component {
 			streetNameMes,
 			streetNumberMes,
 			unitMes,
-			asfMes
+			asfMes,
+			allOthersMes
 		} = this.state;
 		return(
 			<div className = 'search-form-1'>
@@ -147,6 +154,7 @@ class SearchForm extends React.Component {
 								placeholder = 'monthly assessments'
 								onChange = {(event) => this.handleInputChange(event)}
 							/>
+							<div>{allOthersMes}</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor = 'propTax'>property taxes: $</label>
