@@ -177,7 +177,7 @@ class SearchProperty extends React.Component {
 						<span>
 						{noResultsMes}
 						<br/>
-						please confirm <Link to={'properties_available'} activeClassName = 'active' className = 'no-results-pa-link'> target="_blank"
+						please confirm <Link to={'properties_available'} activeClassName = 'active' className = 'no-results-pa-link' target="_blank">
 						searchable addresses</Link> lists your building. <a className = 'no-results-pa-link' href = "https://youtu.be/QLRlnkJPajs" target = "_blank">application demonstration</a>
 						</span>
 					</div>
